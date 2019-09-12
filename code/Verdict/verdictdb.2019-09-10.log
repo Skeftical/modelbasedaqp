@@ -1,0 +1,38 @@
+19:21:26.827 [Thread-2] DEBUG org.verdictdb.VerdictContext - org.postgresql.Driver has been loaded into the classpath.
+19:21:26.831 [Thread-2] DEBUG o.v.c.ConcurrentJdbcConnection - Creating 10 JDBC connections with this url: jdbc:postgresql://localhost:5432/tpch?user=postgres&password=postgres&OpenSourceSubProtocolOverride=true
+19:21:27.182 [Thread-2] DEBUG o.v.connection.JdbcConnection - Issues the following query to DBMS: select schema_name from information_schema.schemata
+19:21:27.330 [Thread-2] DEBUG o.v.connection.JdbcConnection - Issues the following query to DBMS: create schema if not exists verdictdbtemp
+19:22:10.846 [Thread-2] DEBUG o.v.coordinator.ExecutionContext - Query type: show_databases
+19:22:10.846 [Thread-2] DEBUG o.v.connection.JdbcConnection - Issues the following query to DBMS: select schema_name from information_schema.schemata
+19:22:10.858 [Thread-2] TRACE o.v.coordinator.ExecutionContext - Aborts an ExecutionContext: org.verdictdb.coordinator.ExecutionContext@7e2165e6
+19:22:10.858 [Thread-2] DEBUG o.v.connection.JdbcConnection - Issues the following query to DBMS: SELECT table_name FROM information_schema.tables WHERE table_schema = 'verdictdbtemp'
+19:22:34.594 [Thread-2] DEBUG o.v.coordinator.ExecutionContext - Query type: scrambling
+19:22:34.597 [Thread-2] DEBUG o.v.connection.JdbcConnection - Issues the following query to DBMS: select partattrs from pg_partitioned_table join pg_class on pg_class.relname='lineitem' and pg_class.oid = pg_partitioned_table.partrelid join information_schema.tables on table_schema='tpch1g' and table_name = 'lineitem'
+19:22:45.828 [Thread-2] DEBUG o.v.coordinator.ExecutionContext - Query type: scrambling
+19:22:45.830 [Thread-2] DEBUG o.v.connection.JdbcConnection - Issues the following query to DBMS: select partattrs from pg_partitioned_table join pg_class on pg_class.relname='lineitem' and pg_class.oid = pg_partitioned_table.partrelid join information_schema.tables on table_schema='tpch1g' and table_name = 'lineitem'
+19:23:10.856 [Thread-2] TRACE o.v.coordinator.ExecutionContext - Aborts an ExecutionContext: org.verdictdb.coordinator.ExecutionContext@4a72b728
+19:23:10.856 [Thread-2] DEBUG o.v.connection.JdbcConnection - Issues the following query to DBMS: SELECT table_name FROM information_schema.tables WHERE table_schema = 'verdictdbtemp'
+19:23:10.865 [Thread-2] TRACE o.v.coordinator.ExecutionContext - Aborts an ExecutionContext: org.verdictdb.coordinator.ExecutionContext@64d20258
+19:23:10.865 [Thread-2] DEBUG o.v.connection.JdbcConnection - Issues the following query to DBMS: SELECT table_name FROM information_schema.tables WHERE table_schema = 'verdictdbtemp'
+19:23:10.868 [Thread-2] DEBUG o.v.connection.JdbcConnection - Closes a JDBC connection.
+19:23:10.868 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a statement if running.
+19:23:10.868 [Thread-2] DEBUG o.v.connection.JdbcConnection - Closes a JDBC connection.
+19:23:10.868 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a statement if running.
+19:23:10.868 [Thread-2] DEBUG o.v.connection.JdbcConnection - Closes a JDBC connection.
+19:23:10.868 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a statement if running.
+19:23:10.868 [Thread-2] DEBUG o.v.connection.JdbcConnection - Closes a JDBC connection.
+19:23:10.868 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a statement if running.
+19:23:10.868 [Thread-2] DEBUG o.v.connection.JdbcConnection - Closes a JDBC connection.
+19:23:10.868 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a statement if running.
+19:23:10.869 [Thread-2] DEBUG o.v.connection.JdbcConnection - Closes a JDBC connection.
+19:23:10.869 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a statement if running.
+19:23:10.869 [Thread-2] DEBUG o.v.connection.JdbcConnection - Closes a JDBC connection.
+19:23:10.869 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a statement if running.
+19:23:10.869 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a running statement.
+19:23:10.870 [Thread-2] DEBUG o.v.connection.JdbcConnection - Closes a JDBC connection.
+19:23:10.870 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a statement if running.
+19:23:10.870 [Thread-2] DEBUG o.v.connection.JdbcConnection - Closes a JDBC connection.
+19:23:10.870 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a statement if running.
+19:23:10.870 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a running statement.
+19:23:10.870 [Thread-2] DEBUG o.v.connection.JdbcConnection - Closes a JDBC connection.
+19:23:10.870 [Thread-2] TRACE o.v.connection.JdbcConnection - Aborts a statement if running.
