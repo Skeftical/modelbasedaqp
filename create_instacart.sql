@@ -1,14 +1,14 @@
-CREATE TABLE aisles (
+CREATE TABLE IF NOT EXISTS aisles (
   aisleid int PRIMARY KEY,
-  aisle varchar(64),
+  aisle varchar(64)
 );
 
-CREATE TABLE departments (
+CREATE TABLE IF NOT EXISTS departments (
   departmentid int PRIMARY KEY,
   department varchar(64)
 );
 
-CREATE TABLE order_products (
+CREATE TABLE IF NOT EXISTS order_products (
   order_id int,
   product_id int,
   add_to_cart_order int,
@@ -16,7 +16,7 @@ CREATE TABLE order_products (
   PRIMARY KEY(order_id, product_id)
 );
 
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
   order_id int,
   user_id int,
   eval_set varchar(16),
@@ -25,4 +25,11 @@ CREATE TABLE orders (
   order_hour_of_day int,
   days_since_prior_order float,
   PRIMARY KEY(order_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS products (
+  product_id int,
+  product_name varchar(64),
+  aisle_id int,
+  department_id int
 );
