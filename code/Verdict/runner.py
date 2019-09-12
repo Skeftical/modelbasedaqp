@@ -23,5 +23,10 @@ if __name__=='__main__':
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='tpch1g',user='analyst',password='analyst')
     res = verdict.sql('show scrambles;')
     print(res)
-    res = verdict.sql("SELECT avg(l_extendedprice) FROM tpch1g.lineitem_x;")
+    res = verdict.sql("SELECT avg(l_extendedprice) as a1 FROM lineitem_x;")
+    print(res['a1'])
+    y = float(res['a1'])
+    print(y)
+    res = verdict.sql("SELECT avg(l_extendedprice) FROM lineitem;")
     print(res)
+    
