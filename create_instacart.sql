@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS orders (
   PRIMARY KEY(order_id, user_id)
 );
 
-CREATE TABLE IF NOT EXISTS products (
-  product_id int,
-  product_name varchar(64),
-  aisle_id int,
-  department_id int
-);
+  CREATE TABLE IF NOT EXISTS products (
+    product_id int,
+    product_name varchar(512),
+    aisle_id int,
+    department_id int
+  );
