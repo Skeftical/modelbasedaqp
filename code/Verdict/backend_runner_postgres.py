@@ -26,7 +26,7 @@ if not os.path.exists('../../output/backend-postgres-actual'):
 
 if __name__=='__main__':
     print("main executing")
-    directory = os.fsencode('temp')
+    directory = os.fsencode('/home/fotis/Desktop/tpch_2_17_0/dbgen/tpch_queries_10/')
     conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='tpch1g',user='analyst',password='analyst')
     cur = conn.cursor()
     query_answers_dic = {}
@@ -38,7 +38,7 @@ if __name__=='__main__':
         print("Query Name : {0}".format(query_name))
         with open(os.path.join(directory,f),"r") as sql_query_file:
             sql_query = sql_query_file.read()
-            print(sql_query)
+            # print(sql_query)
             start = time.time()
             cur.execute(sql_query)
             res = cur.fetchall()
