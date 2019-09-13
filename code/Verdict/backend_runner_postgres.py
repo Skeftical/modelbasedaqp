@@ -21,7 +21,7 @@ import logging
 # print(args.source)
 if not os.path.exists('../../output/backend-postgres-actual'):
         # logger.info('creating directory Accuracy')
-        os.makedirs('../../ooutput/backend-postgres-actual')
+        os.makedirs('../../output/backend-postgres-actual')
 
 if __name__=='__main__':
     print("main executing")
