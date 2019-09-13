@@ -2,6 +2,7 @@ import psycopg2
 import argparse
 import logging
 import os
+import pandas as pd
 #
 # parser = argparse.ArgumentParser()
 # parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
@@ -36,6 +37,7 @@ if __name__=='__main__':
             sql_query = sql_query_file.read()
             print(sql_query)
             cur.execute(sql_query)
-            print(cur.fetchall())
+            res = cur.fetchall()
+            print(pd.DataFrame(res))
     cur.close()
     conn.close()
