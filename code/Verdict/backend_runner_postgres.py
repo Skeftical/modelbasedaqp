@@ -3,6 +3,7 @@ import argparse
 import logging
 import os
 import pandas as pd
+import logging
 #
 # parser = argparse.ArgumentParser()
 # parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
@@ -19,7 +20,7 @@ import pandas as pd
 #
 # print(args.source)
 if not os.path.exists('../../output/backend-postgres-actual'):
-        logger.info('creating directory Accuracy')
+        # logger.info('creating directory Accuracy')
         os.makedirs('../../ooutput/backend-postgres-actual')
 
 if __name__=='__main__':
