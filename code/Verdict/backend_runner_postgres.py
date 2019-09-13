@@ -29,15 +29,13 @@ if __name__=='__main__':
     query_answers_dic['query'] = []
     query_answers_dic['result'] = []
     query_answers_dic['time'] = []
-    # for f in os.listdir(directory):
-    #     print(f)
-    #     print("Query Name : {0}".format(os.fsdecode(f).split('.')[0]))
-    #     with open(os.path.join(directory,f),"r") as sql_query_file:
-    #         sql_query = sql_query_file.read()
-    #         print(sql_query)
-    #         res_df_v = verdict.sql(sql_query)
-    #         print(res_df_v)
-    #         res = verdict.sql("SELECT avg(l_extendedprice) FROM lineitem;")
-    #         print(res)
+    for f in os.listdir(directory):
+        print(f)
+        print("Query Name : {0}".format(os.fsdecode(f).split('.')[0]))
+        with open(os.path.join(directory,f),"r") as sql_query_file:
+            sql_query = sql_query_file.read()
+            print(sql_query)
+            cur.execute(sql_query)
+            print(cur.fetchall())
     cur.close()
     conn.close()
