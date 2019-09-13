@@ -23,8 +23,8 @@ if __name__=='__main__':
     directory = os.fsencode('temp')
     conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='tpch1g',user='analyst',password='analyst')
     cur = conn.cursor()
-    res = cur.execute("SELECT COUNT(*) FROM lineitem;")
-    print(res.fetchall())
+    cur.execute("SELECT COUNT(*) FROM lineitem;")
+    print(cur.fetchall())
     query_answers_dic = {}
     query_answers_dic['query'] = []
     query_answers_dic['result'] = []
