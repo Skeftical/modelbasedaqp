@@ -35,7 +35,7 @@ class Parser():
         for x in token_list:
             if x.ttype is Comparison:
                 idx_comp_op = token_list.token_index(x) #Index of comparison operator
-                attr = token_list.token_prev(idx_comp_op,skip_ws=True, skip_cm=True)[1].value#Name of the attribute
+                attr = token_list.token_prev(idx_comp_op,skip_ws=True, skip_cm=True)[1].value.replace('_','')#Name of the attribute
                 print(attr)
                 comp_op = x
                 # print(comp_op)
@@ -73,7 +73,7 @@ class Parser():
                 punc_idx, _ = afs_list.token_next(af_idx, skip_ws=True, skip_cm=True)
                 attr_idx, attr = afs_list.token_next(punc_idx, skip_ws=True, skip_cm=True)
                 if attr.ttype is not Wildcard:
-                    self.afs.append('_'.join([af.value, attr.value]))
+                    self.afs.append('_'.join([af.value, attr.value.replace('_','')]))
                 else:
                     self.afs.append(af.value)
 
@@ -82,7 +82,7 @@ class Parser():
         attr_idx , attr = tokenlist.token_next(g_index)
         for g_attr in attr.flatten():
             if g_attr.ttype is Name:
-                self.groupby_attrs.append(g_attr.value)
+                self.groupby_attrs.append(g_attr.value.replace('_',''))
 
     def get_groupby_attrs(self):
         return self.groupby_attrs
@@ -101,7 +101,7 @@ class Parser():
 
 if __name__=='__main__':
     parser = Parser()
-    parser.parse(sql2)
+    parser.parse(sql)
     print(parser.get_vector())
     print(parser.get_projections())
     print(parser.get_groupby_attrs())
