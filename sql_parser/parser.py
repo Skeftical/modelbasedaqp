@@ -1,10 +1,21 @@
 import sqlparse
 from sqlparse.sql import Where, TokenList, Function
-from sqlparse.tokens import Name, Keyword, DML, Wildcard
+from sqlparse.tokens import Name, Keyword, DML, Wildcard, Comparison
 sql = """select avg(add_to_car_order), count(*) tags, sum(cart)
 from order_products
 where add_to_cart_order <= 2 OR add_to_cart_order>0 AND packet=4.555
 group by reordered;"""
+
+sql2 = """
+SELECT product_name, count(*) as order_count
+FROM order_products, orders, products
+WHERE orders.order_id = order_products.order_id
+  AND order_products.product_id = products.product_id
+  AND (order_dow = 0 OR order_dow = 1)
+GROUP BY product_name
+ORDER BY order_count DESC
+LIMIT 5;
+"""
 class Parser():
 
     def parse(self,sql_stmt):
@@ -20,12 +31,13 @@ class Parser():
 
     def __vectorize(self,tokenlist):
         token_list = TokenList(list(tokenlist.flatten()))
-        # print(token_list)
+        # print(token_list.tokens)
         for x in token_list:
-            if x.ttype is Name:
-                attr = x.value #Name of the attribute
-                idx = token_list.token_index(x) # Return index of token after the attribute
-                idx_comp_op, comp_op = token_list.token_next(idx, skip_ws=True, skip_cm=True) #Index of comparison operator
+            if x.ttype is Comparison:
+                idx_comp_op = token_list.token_index(x) #Index of comparison operator
+                attr = token_list.token_prev(idx_comp_op,skip_ws=True, skip_cm=True)[1].value#Name of the attribute
+                print(attr)
+                comp_op = x
                 # print(comp_op)
                 if comp_op.value =='<' or comp_op.value=='<=':
                     lit_dir = 'ub'
@@ -34,7 +46,11 @@ class Parser():
                 else:
                     lit_dir = 'bi'
                 # print(lit_dir)
-                lit = float(token_list.token_next(idx_comp_op, skip_ws=True, skip_cm=True)[1].value) #literal value
+                try :
+                    lit = float(token_list.token_next(idx_comp_op, skip_ws=True, skip_cm=True)[1].value) #literal value
+                except ValueError:
+                    print("Possible join, skipping")
+                    continue;
                 # print(lit)
                 if attr not in self.query_vec:
                     self.query_vec[attr]={}
@@ -83,7 +99,7 @@ class Parser():
 
 if __name__=='__main__':
     parser = Parser()
-    parser.parse(sql)
+    parser.parse(sql2)
     print(parser.get_vector())
     print(parser.get_projections())
     print(parser.get_groupby_attrs())
