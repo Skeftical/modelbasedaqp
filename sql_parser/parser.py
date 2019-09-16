@@ -67,13 +67,15 @@ class Parser():
         for af in afs_list: # Get AFs
 
             if af.value.lower() in ['avg','count','sum','min','max']:
-                if af not in self.afs_dic:
-                    self.afs_dic[af.value] = []
+                # if af not in self.afs_dic:
+                #     self.afs_dic[af.value] = []
                 af_idx = afs_list.token_index(af)
                 punc_idx, _ = afs_list.token_next(af_idx, skip_ws=True, skip_cm=True)
                 attr_idx, attr = afs_list.token_next(punc_idx, skip_ws=True, skip_cm=True)
                 if attr.ttype is not Wildcard:
-                    self.afs_dic[af.value].append(attr.value)
+                    self.afs.append('_'.join([af.value, attr.value]))
+                else:
+                    self.afs.append(af.value)
 
     def __groupbyattrs(self, token, tokenlist):
         g_index = tokenlist.token_index(token)
@@ -86,14 +88,14 @@ class Parser():
         return self.groupby_attrs
 
     def get_projections(self):
-        return self.afs_dic
+        return self.afs
 
     def get_vector(self):
         return self.query_vec
 
     def __init__(self):
         self.query_vec = {} # {attr : {'lb' : val, 'ub': val}}
-        self.afs_dic = {} # {'af' : ['attr1','attr2']}
+        self.afs = [] # {'af' : ['attr1','attr2']}
         self.groupby_attrs = []
 
 
