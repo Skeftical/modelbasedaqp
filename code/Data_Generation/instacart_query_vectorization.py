@@ -31,7 +31,7 @@ print(attrs_array)
 attrs_dict = { key : [] for key in attrs_array } #dict.fromkeys(attrs_array,[[]]*len(attrs_array))
 afs = {}
 distinct_attr = {}
-sys.exit(0)
+
 for i,q in enumerate(queries):
     print(q)
     pr.parse(q)
