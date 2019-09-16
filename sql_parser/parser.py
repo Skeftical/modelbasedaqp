@@ -82,7 +82,7 @@ class Parser():
         attr_idx , attr = tokenlist.token_next(g_index)
         for g_attr in attr.flatten():
             if g_attr.ttype is Name:
-                self.groupby_attrs.append(g_attr.value.replace('_',''))
+                self.groupby_attrs.append(g_attr.value)
 
     def get_groupby_attrs(self):
         return self.groupby_attrs
