@@ -65,7 +65,10 @@ for i,q in enumerate(queries):
         if g in distinct_attr:
             gattrs = distinct_attr[g]
         else:
-            cur.execute("SELECT DISTINCT({0}) FROM ")
+            print("SELECT DISTINCT({0}) FROM {1};".format(g, gattr_to_table_map[g]))
+            cur.execute("SELECT DISTINCT({0}) FROM {1};".format(g, gattr_to_table_map[g]))
+            dvalues = cur.fetchall()
+            print(dvalues)
     cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
