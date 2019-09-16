@@ -25,7 +25,7 @@ for a in set_of_attributes:
 	attrs_array.append('_'.join([a,'ub']))
 print(attrs_array)
 attrs_dict = dict.fromkeys(attrs_array,[])
-attrs_dict['af'] = [] 
+attrs_dict['af'] = []
 
 for q in queries:
     print(q)
@@ -33,7 +33,20 @@ for q in queries:
     cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
-    print(pr.get_vector())
+
+    dict_obj = pr.get_vector()
+    for a in attrs_dict:
+        attr, dir = a.split('_')
+        if attr not in dict_obj:#If this attribute is not in the query vector then leave as None
+            attrs_dict[a].append(None) # Fill with None initially
+        else:
+            if dir=='lb':
+                lb = dict_obj[attr].get('lb',None)
+            else:
+                ub = dict_obj[attr].get('ub', None)
+            attrs_dict[a].append(lb)
+    print(attrs_dict)
+
     print(pr.get_projections())
     print(pr.get_groupby_attrs())
     print(res_df)
