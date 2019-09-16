@@ -55,6 +55,8 @@ for i,q in enumerate(queries):
     for af in proj_dict:
         if af in afs:
             afs[af].append(i)
+        else:
+            afs[af] = [i]
     print(afs)
     print(pr.get_groupby_attrs())
     res = cur.fetchall()
