@@ -20,11 +20,13 @@ cur.execute("SELECT table_name, column_name FROM information_schema.columns WHER
 res = cur.fetchall()
 df = pd.DataFrame(res)
 print(df)
-set_of_attributes = set(map(lambda x: x[0].replace('_',''),df['column_name']))
+set_of_attributes = set(map(lambda x: x.replace('_',''),df['column_name']))
 attrs_array = []
 for a in set_of_attributes:
 	attrs_array.append('_'.join([a,'lb']))
 	attrs_array.append('_'.join([a,'ub']))
+gattr_to_table_map = dict.fromkeys(df['column_name'].values, df['table_name'].values)
+print(gattr_to_table_map)
 print(attrs_array)
 attrs_dict = { key : [] for key in attrs_array } #dict.fromkeys(attrs_array,[[]]*len(attrs_array))
 afs = {}
