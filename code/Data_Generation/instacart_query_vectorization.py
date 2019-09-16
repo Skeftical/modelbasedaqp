@@ -31,11 +31,11 @@ for q in queries:
     print(q)
     pr.parse(q)
     cur.execute(q)
-    res = cur.fetchall()
-    res_df = pd.DataFrame(res)
+
 
     dict_obj = pr.get_vector()
     for a in attrs_dict:
+        print(a)
         attr, dir = a.split('_')
         if attr not in dict_obj:#If this attribute is not in the query vector then leave as None
             attrs_dict[a].append(None) # Fill with None initially
@@ -49,6 +49,8 @@ for q in queries:
 
     print(pr.get_projections())
     print(pr.get_groupby_attrs())
+    res = cur.fetchall()
+    res_df = pd.DataFrame(res)
     print(res_df)
     break;
 cur.close()
