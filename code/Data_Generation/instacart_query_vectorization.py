@@ -1,8 +1,11 @@
 import os
 import sys
 os.chdir('../../')
+#print(os.listdir('.'))
+sys.path.append('.')
 import pickle
 import psycopg2
+from psycopg2.extras import NamedTupleCursor
 import pandas as pd
 from sql_parser.parser import Parser
 
@@ -10,12 +13,19 @@ queries = []
 with open('input/instacart_queries/queries.pkl','rb') as f:
     queries = pickle.load(f)
 pr = Parser()
-conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='instacart',user='analyst',password='analyst')
+conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='instacart',user='analyst',password='analyst',cursor_factory=NamedTupleCursor)
 cur = conn.cursor()
 #Obtain all attribute columns
 cur.execute("SELECT column_name FROM information_schema.columns WHERE table_schema='public';")
 res = cur.fetchall()
-print(res)
+set_of_attributes = set(map(lambda x: x[0].replace('_',''),res))
+attrs_array = []
+for a in set_of_attributes:
+	attrs_array.append('_'.join([a,'lb']))
+	attrs_array.append('_'.join([a,'ub']))
+print(attrs_array)
+attrs_dict = dict.fromkeys(attrs_array,[])
+attrs_dict['af'] = [] 
 
 for q in queries:
     print(q)
