@@ -24,7 +24,7 @@ for a in set_of_attributes:
 	attrs_array.append('_'.join([a,'lb']))
 	attrs_array.append('_'.join([a,'ub']))
 print(attrs_array)
-attrs_dict = dict.fromkeys(attrs_array,[])
+attrs_dict = { key : [] for key in attrs_array } #dict.fromkeys(attrs_array,[[]]*len(attrs_array))
 attrs_dict['af'] = []
 
 for q in queries:
@@ -34,17 +34,21 @@ for q in queries:
 
 
     dict_obj = pr.get_vector()
+    print(dict_obj)
     for a in attrs_dict:
-        print(a)
-        attr, dir = a.split('_')
+        if a=='af':
+             continue;
+        attr, dire = a.split('_')
+        print((attr,dire))
         if attr not in dict_obj:#If this attribute is not in the query vector then leave as None
             attrs_dict[a].append(None) # Fill with None initially
         else:
-            if dir=='lb':
+            if dire=='lb':
                 lb = dict_obj[attr].get('lb',None)
+                attrs_dict[a].append(lb)
             else:
                 ub = dict_obj[attr].get('ub', None)
-            attrs_dict[a].append(lb)
+                attrs_dict[a].append(ub)
     print(attrs_dict)
 
     print(pr.get_projections())
