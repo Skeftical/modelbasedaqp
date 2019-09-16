@@ -14,7 +14,7 @@ cur = conn.cursor()
 
 for q in queries:
     print(q)
-    cur.execute(sql_query)
+    cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
 
