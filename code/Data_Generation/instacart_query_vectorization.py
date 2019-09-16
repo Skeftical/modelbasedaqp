@@ -27,7 +27,7 @@ print(attrs_array)
 attrs_dict = { key : [] for key in attrs_array } #dict.fromkeys(attrs_array,[[]]*len(attrs_array))
 afs = {}
 
-for q in queries:
+for i,q in enumerate(queries):
     print(q)
     pr.parse(q)
     cur.execute(q)
@@ -52,8 +52,10 @@ for q in queries:
     print(attrs_dict)
 
     proj_dict = pr.get_projections()
-    print(proj_dict)
-
+    for af in proj_dict:
+        if af in afs:
+            afs[af].append(i)
+    print(afs)
     print(pr.get_groupby_attrs())
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
