@@ -53,9 +53,12 @@ for i,q in enumerate(queries):
             cur.execute("SELECT DISTINCT({0}) FROM {1};".format(g, gattr_to_table_map[g]))
             dvalues = cur.fetchall()
             dvalues = pd.DataFrame(dvalues)[g].tolist()
+
             qv.insert(g+'_lb',dvalues)
     for a in dict_obj:
         qv.insert(a, dict_obj[a])
+    print(qv.get_column_names())
+    print(len(qv.get_column_names()))
     print(qv.to_dataframe())
     cur.execute(q)
     res = cur.fetchall()
