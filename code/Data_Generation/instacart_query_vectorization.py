@@ -26,11 +26,11 @@ print(df)
 # 	attrs_array.append('_'.join([a,'ub']))
 gattr_to_table_map = { key : value for key,value in zip(df['column_name'].values, df['table_name'].values) }
 print(gattr_to_table_map)
-print(attrs_array)
+#print(attrs_array)
 # attrs_dict = { key : [] for key in attrs_array } #dict.fromkeys(attrs_array,[[]]*len(attrs_array))
 afs = {}
 distinct_attr = {}
-qv = QueryVectorizer(df['column_name'].tolist())
+qv = QueryVectorizer(set(df['column_name'].tolist()))
 
 for i,q in enumerate(queries):
     print(q)
@@ -58,6 +58,8 @@ for i,q in enumerate(queries):
     for a in dict_obj:
         qv.insert(a, dict_obj[a])
     print(qv.get_column_names())
+    print(qv.to_matrix())
+    print(qv.to_dense().shape)
     print(len(qv.get_column_names()))
     print(qv.to_dataframe())
     cur.execute(q)
