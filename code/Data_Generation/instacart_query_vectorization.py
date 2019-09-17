@@ -7,7 +7,7 @@ import pickle
 import psycopg2
 from psycopg2.extras import NamedTupleCursor
 import pandas as pd
-from sql_parser.parser import Parser
+from sql_parser.parser import Parser, QueryVectorizer
 
 queries = []
 with open('input/instacart_queries/queries.pkl','rb') as f:
@@ -20,38 +20,23 @@ cur.execute("SELECT table_name, column_name FROM information_schema.columns WHER
 res = cur.fetchall()
 df = pd.DataFrame(res)
 print(df)
-set_of_attributes = set(map(lambda x: x.replace('_',''),df['column_name']))
-attrs_array = []
-for a in set_of_attributes:
-	attrs_array.append('_'.join([a,'lb']))
-	attrs_array.append('_'.join([a,'ub']))
+# attrs_array = []
+# for a in df['column_name'].values:
+# 	attrs_array.append('_'.join([a,'lb']))
+# 	attrs_array.append('_'.join([a,'ub']))
 gattr_to_table_map = { key : value for key,value in zip(df['column_name'].values, df['table_name'].values) }
 print(gattr_to_table_map)
 print(attrs_array)
-attrs_dict = { key : [] for key in attrs_array } #dict.fromkeys(attrs_array,[[]]*len(attrs_array))
+# attrs_dict = { key : [] for key in attrs_array } #dict.fromkeys(attrs_array,[[]]*len(attrs_array))
 afs = {}
 distinct_attr = {}
+qv = QueryVectorizer(df['column_name'].tolist())
 
 for i,q in enumerate(queries):
     print(q)
     pr.parse(q)
-
-
-
     dict_obj = pr.get_vector()
-    for a in attrs_dict:
-        if a=='af':
-             continue;
-        attr, dire = a.split('_')
-        if attr not in dict_obj:#If this attribute is not in the query vector then leave as None
-            attrs_dict[a].append(None) # Fill with None initially
-        else:
-            if dire=='lb':
-                lb = dict_obj[attr].get('lb',None)
-                attrs_dict[a].append(lb)
-            else:
-                ub = dict_obj[attr].get('ub', None)
-                attrs_dict[a].append(ub)
+
 
     proj_dict = pr.get_projections()
     for af in proj_dict:
@@ -67,7 +52,11 @@ for i,q in enumerate(queries):
         else:
             cur.execute("SELECT DISTINCT({0}) FROM {1};".format(g, gattr_to_table_map[g]))
             dvalues = cur.fetchall()
-            print(pd.DataFrame(dvalues)[g].values)
+            dvalues = pd.DataFrame(dvalues)[g].tolist()
+            qv.insert(g+'_lb',dvalues)
+    for a in dict_obj:
+        qv.insert(a, dict_obj[a])
+    print(qv.to_dataframe())
     cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
