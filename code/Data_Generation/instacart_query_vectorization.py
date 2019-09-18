@@ -64,10 +64,9 @@ for q in queries:
     res_df = res_df.set_index(np.arange(i,i+res_df.shape[0]))
     print(res_df)
     if len(gattr)!=0:
-        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='inner')
+        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left')
     else:#No groupby attributes
         qdf = qdf.merge(res_df, right_index=True, how='left')
-    print(qdf[gattr])
     qdf = qdf.drop(columns=gattr)
     print(qdf)
     for af in proj_dict:
