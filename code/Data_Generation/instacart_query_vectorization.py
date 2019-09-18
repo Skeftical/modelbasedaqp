@@ -20,10 +20,7 @@ cur.execute("SELECT table_name, column_name FROM information_schema.columns WHER
 res = cur.fetchall()
 df = pd.DataFrame(res)
 print(df)
-# attrs_array = []
-# for a in df['column_name'].values:
-# 	attrs_array.append('_'.join([a,'lb']))
-# 	attrs_array.append('_'.join([a,'ub']))
+
 gattr_to_table_map = { key : value for key,value in zip(df['column_name'].values, df['table_name'].values) }
 print(gattr_to_table_map)
 #print(attrs_array)
@@ -58,9 +55,13 @@ for q in queries:
     cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
+    res_df = res_df.set_index(range(i,i+res_df.shape[0]))
     print(res_df)
     if len(gattr)!=0:
-        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left')
+        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='inner')
+    else:#No groupby attributes
+        qdf = qdf.merge(res_df, right_index=True, how='left')
+    qdf = qdf.drop(columns=gattr)
     print(qdf)
     for af in proj_dict:
         if af in afs:
