@@ -31,20 +31,14 @@ print(gattr_to_table_map)
 afs = {}
 distinct_attr = {}
 qv = QueryVectorizer(set(df['column_name'].tolist()))
-
-for i,q in enumerate(queries):
+i = 0
+qdf = None
+for q in queries:
     print(q)
     pr.parse(q)
     dict_obj = pr.get_vector()
-
-
     proj_dict = pr.get_projections()
-    for af in proj_dict:
-        if af in afs:
-            afs[af].append(i)
-        else:
-            afs[af] = [i]
-    print(afs)
+
     gattr = pr.get_groupby_attrs()
     for a in dict_obj:
         qv.insert(a, dict_obj[a])
@@ -56,15 +50,25 @@ for i,q in enumerate(queries):
             dvalues = cur.fetchall()
             dvalues = pd.DataFrame(dvalues)[g].tolist()
             qv.insert(g+'_lb',dvalues)
-    qdf = qv.to_dataframe()
+    if qdf is None:
+        qdf = qv.to_dataframe()
+    else:
+        qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True)
     print(qdf.shape)
     cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
     print(res_df)
     if len(gattr)!=0:
-        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr)
+        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left')
     print(qdf)
+    for af in proj_dict:
+        if af in afs:
+            afs[af].append((i,qdf.shape[0]))
+        else:
+            afs[af] = [(i,qdf.shape[0])]
+    print(afs)
+    i+=qdf.shape[0]
     break;
 cur.close()
 conn.close()
