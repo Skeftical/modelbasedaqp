@@ -8,6 +8,7 @@ import psycopg2
 from psycopg2.extras import NamedTupleCursor
 import pandas as pd
 from sql_parser.parser import Parser, QueryVectorizer
+import numpy as np 
 
 queries = []
 with open('input/instacart_queries/queries.pkl','rb') as f:
@@ -55,7 +56,7 @@ for q in queries:
     cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
-    res_df = res_df.set_index(list(range(i,i+res_df.shape[0])))
+    res_df = res_df.set_index(np.arange(i,i+res_df.shape[0]))
     print(res_df)
     if len(gattr)!=0:
         qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='inner')
