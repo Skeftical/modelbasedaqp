@@ -46,6 +46,8 @@ for i,q in enumerate(queries):
             afs[af] = [i]
     print(afs)
     gattr_dict = pr.get_groupby_attrs()
+    for a in dict_obj:
+        qv.insert(a, dict_obj[a])
     for g in gattr_dict:
         if g in distinct_attr:
             gattrs = distinct_attr[g]
@@ -55,13 +57,12 @@ for i,q in enumerate(queries):
             dvalues = pd.DataFrame(dvalues)[g].tolist()
 
             qv.insert(g+'_lb',dvalues)
-    for a in dict_obj:
-        qv.insert(a, dict_obj[a])
     print(qv.get_column_names())
     print(qv.to_matrix())
     print(qv.to_dense().shape)
     print(len(qv.get_column_names()))
     print(qv.to_dataframe())
+    print(qv.to_dataframe()['order_dow_lb'])
     cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
