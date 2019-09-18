@@ -13,7 +13,7 @@ import numpy as np
 queries = []
 with open('input/instacart_queries/queries.pkl','rb') as f:
     queries = pickle.load(f)
-pr = Parser()
+
 conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='instacart',user='analyst',password='analyst',cursor_factory=NamedTupleCursor)
 cur = conn.cursor()
 #Obtain all attribute columns
@@ -34,11 +34,13 @@ qdf = None
 j=1
 for q in queries:
     print(q)
+    pr = Parser()
     pr.parse(q)
     dict_obj = pr.get_vector()
     proj_dict = pr.get_projections()
-
+    print(proj_dict)
     gattr = pr.get_groupby_attrs()
+    print(gattr)
     for a in dict_obj:
         qv.insert(a, dict_obj[a])
     for g in gattr:
@@ -49,10 +51,10 @@ for q in queries:
             dvalues = cur.fetchall()
             dvalues = pd.DataFrame(dvalues)[g].tolist()
             qv.insert(g+'_lb',dvalues)
-    if qdf is None:
-        qdf = qv.to_dataframe()
-    else:
-        qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True)
+    # if qdf is None:
+    #     qdf = qv.to_dataframe()
+    # else:
+    #     qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True, sort=False)
     print(qdf.shape)
     cur.execute(q)
     res = cur.fetchall()
