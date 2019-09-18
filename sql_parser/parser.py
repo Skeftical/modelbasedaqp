@@ -103,7 +103,7 @@ class Parser():
 class QueryVectorizer():
 
     def __trickle_down(self, length):
-        
+
         for k in self.__internal_dict:
             k_length = len(self.__internal_dict[k])
             if k_length<length and k_length!=0:
@@ -135,6 +135,7 @@ class QueryVectorizer():
         if self.__sparse_matrix is not None:
             self.inverse_attr_str_mapper = dict([(value, key) for key, value in self.attr_str_mapper.items()])
             df = pd.DataFrame(self.__sparse_matrix.todense(), columns=self.__column_names)
+            df = df.replace(0,np.nan)
             for attr in self.attrs_with_str:
                 df[attr] = df[attr].replace(self.inverse_attr_str_mapper)
             return df
@@ -193,6 +194,6 @@ if __name__=='__main__':
     qv.insert('a2_lb',['a','b','c'])
 
     print(qv._get_internal_representation())
-    # print(qv.to_matrix())
-    # print(qv.to_dense())
+    print(qv.to_matrix())
+    print(qv.to_dense())
     print(qv.to_dataframe())
