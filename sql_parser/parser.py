@@ -102,6 +102,12 @@ class Parser():
 
 class QueryVectorizer():
 
+    def __trickle_down(self, length):
+        for k in self.__internal_dict:
+            k_length = len(self.__internal_dict[k])
+            if k_length<length:
+                self.__internal_dict[k]+=[self.__internal_dict[k][-1]]*length-k_length
+
     def insert(self,key, value):
         """
         Insert using key(=attribute) and value(s)
@@ -109,8 +115,10 @@ class QueryVectorizer():
         key : str
         value : int,str,float,list
         """
+        #Whenever there is a list it must be a groupby attribute
         if isinstance(value, list):
             self.__internal_dict[key]+=value
+            self.__trickle_down(len(self.__internal_dict[key]))
         else:
             self.__internal_dict[key].append(value)
         listlength = len(self.__internal_dict[key])
