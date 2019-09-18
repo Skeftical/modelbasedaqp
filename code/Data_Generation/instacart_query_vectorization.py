@@ -55,18 +55,16 @@ for i,q in enumerate(queries):
             cur.execute("SELECT DISTINCT({0}) FROM {1};".format(g, gattr_to_table_map[g]))
             dvalues = cur.fetchall()
             dvalues = pd.DataFrame(dvalues)[g].tolist()
-
             qv.insert(g+'_lb',dvalues)
-    print(qv.get_column_names())
-    print(qv.to_matrix())
-    print(qv.to_dense().shape)
-    print(len(qv.get_column_names()))
-    print(qv.to_dataframe())
-    print(qv.to_dataframe()['order_dow_lb'])
+    qdf = qv.to_dataframe())
     cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
     print(res_df)
+    if len(gattr_dict)!=0:
+        lofattrs = gattr_dict.keys()
+        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,lofattrs)), right_on=lofattrs)
     break;
+    print(qdf)
 cur.close()
 conn.close()

@@ -127,7 +127,9 @@ class QueryVectorizer():
     def to_dense(self):
         if self.__sparse_matrix is not None:
             return self.__sparse_matrix.todense()
-        return None
+        else:
+            self.to_matrix()
+            return self.to_dense()
     def to_dataframe(self):
         if self.__sparse_matrix is not None:
             self.inverse_attr_str_mapper = dict([(value, key) for key, value in self.attr_str_mapper.items()])
