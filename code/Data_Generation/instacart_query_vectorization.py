@@ -67,6 +67,7 @@ for q in queries:
         qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='inner')
     else:#No groupby attributes
         qdf = qdf.merge(res_df, right_index=True, how='left')
+    print(qdf[gattr])
     qdf = qdf.drop(columns=gattr)
     print(qdf)
     for af in proj_dict:
@@ -75,7 +76,7 @@ for q in queries:
         else:
             afs[af] = [(i,qdf.shape[0])]
     print(afs)
-    i+=qdf.shape[0]
+    i=qdf.shape[0]
     if j>2:
         break;
     else:
