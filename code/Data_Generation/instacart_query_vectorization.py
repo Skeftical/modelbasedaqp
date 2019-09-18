@@ -30,8 +30,8 @@ afs = {}
 distinct_attr = {}
 i = 0
 qdf = None
-j=1
-for q in queries:
+
+for j,q in enumerate(queries):
     print(q)
     pr = Parser()
     qv = QueryVectorizer(set(df['column_name'].tolist()))
@@ -76,9 +76,13 @@ for q in queries:
             afs[af] = [(i,qdf.shape[0])]
     print(afs)
     i=qdf.shape[0]
-    if j>2:
-        break;
-    else:
-        j+=1
+    # if j>2:
+    #     break;
+    # else:
+    #     j+=1
+    print("{}/{} Queries Processed ================".format(j,len(queries)))
+with open('input/instacart_queries/afs.pkl','w') as f:
+    pickle.dump(afs, f)
+qdf.to_pickle('input/instacart_queries/qdf.pkl')
 cur.close()
 conn.close()
