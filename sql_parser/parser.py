@@ -105,7 +105,7 @@ class QueryVectorizer():
     def __trickle_down(self, length):
         for k in self.__internal_dict:
             k_length = len(self.__internal_dict[k])
-            if k_length<length:
+            if k_length<length and k_length!=0:
                 self.__internal_dict[k]+=[self.__internal_dict[k][-1]]*length-k_length
 
     def insert(self,key, value):
