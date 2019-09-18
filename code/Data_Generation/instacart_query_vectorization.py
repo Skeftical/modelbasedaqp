@@ -56,6 +56,8 @@ for j,q in enumerate(queries):
     if qdf is None:
         qdf = qv.to_dataframe()
     else:
+        print(qdf.shape)
+        print(qv.to_dataframe().shape)
         qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True, sort=False)
     print(qdf.shape)
     cur.execute(q)
@@ -64,9 +66,9 @@ for j,q in enumerate(queries):
     res_df = res_df.set_index(np.arange(i,i+res_df.shape[0]))
     print(res_df)
     if len(gattr)!=0:
-        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_'+j,'_right'+j))
+        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),'_right_{}'.format(j)))
     else:#No groupby attributes
-        qdf = qdf.merge(res_df, right_index=True, how='left',suffixes=('_left_'+j,'_right'+j))
+        qdf = qdf.merge(res_df, right_index=True, how='left',suffixes=('_left_{}'.format(j),'_right_{}'.format(j)))
     qdf = qdf.drop(columns=gattr)
     print(qdf)
     for af in proj_dict:
