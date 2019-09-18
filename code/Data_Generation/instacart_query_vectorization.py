@@ -45,10 +45,10 @@ for i,q in enumerate(queries):
         else:
             afs[af] = [i]
     print(afs)
-    gattr_dict = pr.get_groupby_attrs()
+    gattr = pr.get_groupby_attrs()
     for a in dict_obj:
         qv.insert(a, dict_obj[a])
-    for g in gattr_dict:
+    for g in gattr:
         if g in distinct_attr:
             gattrs = distinct_attr[g]
         else:
@@ -56,15 +56,15 @@ for i,q in enumerate(queries):
             dvalues = cur.fetchall()
             dvalues = pd.DataFrame(dvalues)[g].tolist()
             qv.insert(g+'_lb',dvalues)
-    qdf = qv.to_dataframe())
+    qdf = qv.to_dataframe()
+    print(qdf.shape)
     cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
     print(res_df)
-    if len(gattr_dict)!=0:
-        lofattrs = gattr_dict.keys()
-        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,lofattrs)), right_on=lofattrs)
-    break;
+    if len(gattr)!=0:
+        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr)
     print(qdf)
+    break;
 cur.close()
 conn.close()
