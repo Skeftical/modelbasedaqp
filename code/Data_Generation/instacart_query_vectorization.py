@@ -8,7 +8,7 @@ import psycopg2
 from psycopg2.extras import NamedTupleCursor
 import pandas as pd
 from sql_parser.parser import Parser, QueryVectorizer
-import numpy as np 
+import numpy as np
 
 queries = []
 with open('input/instacart_queries/queries.pkl','rb') as f:
@@ -31,6 +31,7 @@ distinct_attr = {}
 qv = QueryVectorizer(set(df['column_name'].tolist()))
 i = 0
 qdf = None
+j=1
 for q in queries:
     print(q)
     pr.parse(q)
@@ -71,6 +72,9 @@ for q in queries:
             afs[af] = [(i,qdf.shape[0])]
     print(afs)
     i+=qdf.shape[0]
-    break;
+    if j>2:
+        break;
+    else:
+        j+=1
 cur.close()
 conn.close()
