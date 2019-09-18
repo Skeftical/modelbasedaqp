@@ -28,13 +28,14 @@ print(gattr_to_table_map)
 # attrs_dict = { key : [] for key in attrs_array } #dict.fromkeys(attrs_array,[[]]*len(attrs_array))
 afs = {}
 distinct_attr = {}
-qv = QueryVectorizer(set(df['column_name'].tolist()))
 i = 0
 qdf = None
 j=1
 for q in queries:
     print(q)
     pr = Parser()
+    qv = QueryVectorizer(set(df['column_name'].tolist()))
+
     pr.parse(q)
     dict_obj = pr.get_vector()
     proj_dict = pr.get_projections()
@@ -51,10 +52,11 @@ for q in queries:
             dvalues = cur.fetchall()
             dvalues = pd.DataFrame(dvalues)[g].tolist()
             qv.insert(g+'_lb',dvalues)
-    # if qdf is None:
-    #     qdf = qv.to_dataframe()
-    # else:
-    #     qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True, sort=False)
+
+    if qdf is None:
+        qdf = qv.to_dataframe()
+    else:
+        qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True, sort=False)
     print(qdf.shape)
     cur.execute(q)
     res = cur.fetchall()
