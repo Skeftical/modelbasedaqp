@@ -33,6 +33,13 @@ qdf = None
 
 for j,q in enumerate(queries):
     print(q)
+    cur.execute(q)
+    res = cur.fetchall()
+    res_df = pd.DataFrame(res)
+    res_df = res_df.set_index(np.arange(i,i+res_df.shape[0]))
+    print(res_df)
+    if res_df.empty:
+        continue;
     pr = Parser()
     qv = QueryVectorizer(set(df['column_name'].tolist()))
 
@@ -60,11 +67,6 @@ for j,q in enumerate(queries):
         print(qv.to_dataframe().shape)
         qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True, sort=False)
     print(qdf.shape)
-    cur.execute(q)
-    res = cur.fetchall()
-    res_df = pd.DataFrame(res)
-    res_df = res_df.set_index(np.arange(i,i+res_df.shape[0]))
-    print(res_df)
     if len(gattr)!=0:
         qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),'_right_{}'.format(j)))
     else:#No groupby attributes
