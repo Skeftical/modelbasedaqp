@@ -70,7 +70,7 @@ for j,q in enumerate(queries):
     if len(gattr)!=0:
         qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),'_right_{}'.format(j)))
     else:#No groupby attributes
-        qdf = qdf.merge(res_df, right_index=True, how='left',suffixes=('_left_{}'.format(j),'_right_{}'.format(j)))
+        qdf = qdf.merge(res_df, left_index=True, right_index=True, how='left',suffixes=('_left_{}'.format(j),'_right_{}'.format(j)))
     qdf = qdf.drop(columns=gattr)
     print(qdf)
     for af in proj_dict:
@@ -85,7 +85,7 @@ for j,q in enumerate(queries):
     # else:
     #     j+=1
     print("{}/{} Queries Processed ================".format(j,len(queries)))
-with open('input/instacart_queries/afs.pkl','w') as f:
+with open('input/instacart_queries/afs.pkl','wb') as f:
     pickle.dump(afs, f)
 qdf.to_pickle('input/instacart_queries/qdf.pkl')
 cur.close()
