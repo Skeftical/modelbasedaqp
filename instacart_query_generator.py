@@ -26,3 +26,19 @@ for f in os.listdir(directory):
 print(len(queries))
 with open('input/instacart_queries/queries.pkl', 'wb') as f:
   pickle.dump(queries, f)
+queries = []
+np.random.seed(15)
+for f in os.listdir(directory):
+    # print(f)
+    with open(os.path.join(directory,f),"r") as sql_query_file:
+        sql_query = sql_query_file.read()
+        # print(sql_query)
+        if os.fsdecode(f) in query_templates:
+            # print(sql_query.replace(':d','10'))
+            for i in range(50):
+                queries.append(sql_query.replace(':d','{}'.format(np.random.normal(8.3510755171755596, 7.1266711612044177))))
+        else:
+            queries.append(sql_query)
+print(len(queries))
+with open('input/instacart_queries/queries-test.pkl', 'wb') as f:
+  pickle.dump(queries, f)
