@@ -19,16 +19,21 @@ import time
 #
 # print(args.source)
 
-if not os.path.exists('../../output/verdict'):
+if not os.path.exists('../../output/verdict/tpch'):
         # logger.info('creating directory Accuracy')
-        os.makedirs('../../output/verdict')
+        os.makedirs('../../output/verdict/tpch')
 
 if __name__=='__main__':
     print("main executing")
     directory = os.fsencode('temp')
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='tpch1g',user='analyst',password='analyst')
-    res = verdict.sql('show scrambles;')
+    res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
+                        FROM public.lineitem SIZE 0.1""")
+    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_x
+                        FROM public.orders SIZE 0.1""")
+    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.partsupp_x
+                        FROM public.partsupp SIZE 0.1""")
     print(res)
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
@@ -41,7 +46,7 @@ if __name__=='__main__':
             start = time.time()
             res_df_v = verdict.sql(sql_query)
             end = time.time()-start
-            res_df_v.to_pickle('../../output/verdict/{}.pkl'.format(query_name))
+            res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(query_name))
             query_answers_dic['time'].append(end)
             query_answers_dic['query_name'].append(query_name)
     verdict.close()
