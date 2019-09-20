@@ -6,28 +6,29 @@ import pandas as pd
 import logging
 import time
 #
-# parser = argparse.ArgumentParser()
-# parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
-#                     action="store_true")
-# parser.add_argument('-v',help='verbosity',dest='verbosity',action="store_true")
-# parser.add_argument('source')
-# args = parser.parse_args()
-#
-# if args.verbosity:
-#    print("verbosity turned on")
-#    handler = logging.StreamHandler(sys.stdout)
-#    handler.setLevel(logging.DEBUG)
-#    logger.addHandler(handler)
-#
-# print(args.source)
+parser = argparse.ArgumentParser()
+parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
+                    action="store_true")
+parser.add_argument('-v',help='verbosity',dest='verbosity',action="store_true")
+parser.add_argument('source')
+args = parser.parse_args()
+
+if args.verbosity:
+   print("verbosity turned on")
+   handler = logging.StreamHandler(sys.stdout)
+   handler.setLevel(logging.DEBUG)
+   logger.addHandler(handler)
+
+source = args.source
+dbname = args.dbname
 if not os.path.exists('../../output/backend-postgres-actual'):
         # logger.info('creating directory Accuracy')
         os.makedirs('../../output/backend-postgres-actual')
 
 if __name__=='__main__':
     print("main executing")
-    directory = os.fsencode('/home/fotis/Desktop/tpch_2_17_0/dbgen/tpch_queries_10/')
-    conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='tpch1g',user='analyst',password='analyst')
+    directory = os.fsencode(source)
+    conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname=dbname,user='analyst',password='analyst')
     cur = conn.cursor()
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
@@ -44,7 +45,7 @@ if __name__=='__main__':
             res = cur.fetchall()
             end = time.time()-start
             res_df = pd.DataFrame(res)
-            res_df.to_pickle('../../output/backend-postgres-actual/{}.pkl'.format(query_name))
+            res_df.to_pickle('../../output/backend-postgres-actual/{}/{}.pkl'.format(dbname, query_name))
             query_answers_dic['time'].append(end)
             query_answers_dic['query_name'].append(query_name)
     cur.close()
