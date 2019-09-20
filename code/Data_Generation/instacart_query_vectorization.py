@@ -68,7 +68,8 @@ for j,q in enumerate(queries):
         qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True, sort=False)
     print(qdf.shape)
     if len(gattr)!=0:
-        qdf = qdf.merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),'_right_{}'.format(j)))
+        temp = qdf[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),'_right_{}'.format(j)))
+        qdf = pd.concat([qdf.iloc[:i],temp],ignore_index=True, sort=False)
     else:#No groupby attributes
         qdf = qdf.merge(res_df, left_index=True, right_index=True, how='left',suffixes=('_left_{}'.format(j),'_right_{}'.format(j)))
     qdf = qdf.drop(columns=gattr)
