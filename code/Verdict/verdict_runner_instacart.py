@@ -5,6 +5,7 @@ import os
 import time
 import pandas as pd
 import pickle
+import re
 # parser = argparse.ArgumentParser()
 # parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
 #                     action="store_true")
@@ -30,20 +31,27 @@ if __name__=='__main__':
        queries = pickle.load(f)
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='instacart',user='analyst',password='analyst')
-#    res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
-#                        FROM public.lineitem SIZE 0.1""")
-#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
- #                      FROM public.order_products SIZE 0.1""")
-  #  verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
-   #                    FROM public.orders SIZE 0.1""")
+
+    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
+                      FROM public.order_products SIZE 0.1""")
+    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
+                      FROM public.orders SIZE 0.1""")
 #    print(res)
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
     query_names = {}
     i = 0
+    regex_orders = re.compile(r"FROM orders", re.IGNORECASE)
+    regex_order_products = re.compile(r"FROM order_products", re.IGNORECASE)
     for qname,q in queries:
             start = time.time()
+            print(q)
+            q = regex_orders.sub("from orders_instacart_x")
+            q = regex_order_products.sub("from order_products_instacart_x")
+            print("Changed Query :")
+            print(q)
+            print("================================")
             try:
                 res_df_v = verdict.sql(q)
             except Exception as e:
