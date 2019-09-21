@@ -4,7 +4,7 @@ import logging
 import os
 import time
 import pandas as pd
-
+import pickle
 # parser = argparse.ArgumentParser()
 # parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
 #                     action="store_true")
@@ -27,14 +27,14 @@ if not os.path.exists('../../output/verdict/instacart'):
 if __name__=='__main__':
     print("main executing")
     with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
-        queries = pickle.load(f)
+       queries = pickle.load(f)
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='instacart',user='analyst',password='analyst')
 #    res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
 #                        FROM public.lineitem SIZE 0.1""")
-   verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
+    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
                        FROM public.order_products SIZE 0.1""")
-   verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
+    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
                        FROM public.orders SIZE 0.1""")
 #    print(res)
     query_answers_dic = {}
