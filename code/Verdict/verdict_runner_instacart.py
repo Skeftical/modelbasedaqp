@@ -47,8 +47,8 @@ if __name__=='__main__':
     for qname,q in queries:
             start = time.time()
             print(q)
-            q = regex_orders.sub("from orders_instacart_x")
-            q = regex_order_products.sub("from order_products_instacart_x")
+            q = regex_orders.sub("from orders_instacart_x",q)
+            q = regex_order_products.sub("from order_products_instacart_x",q)
             print("Changed Query :")
             print(q)
             print("================================")
