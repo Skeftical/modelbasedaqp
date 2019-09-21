@@ -20,9 +20,9 @@ for f in os.listdir(directory):
         if os.fsdecode(f) in query_templates:
             # print(sql_query.replace(':d','10'))
             for i in range(50):
-                queries.append(sql_query.replace(':d','{}'.format(np.random.normal(8.3510755171755596, 7.1266711612044177))))
+                queries.append((os.fsdecode(f),sql_query.replace(':d','{}'.format(np.random.normal(8.3510755171755596, 7.1266711612044177)))))
         else:
-            queries.append(sql_query)
+            queries.append((os.fsdecode(f),sql_query))
 print(len(queries))
 with open('input/instacart_queries/queries.pkl', 'wb') as f:
   pickle.dump(queries, f)
@@ -36,9 +36,9 @@ for f in os.listdir(directory):
         if os.fsdecode(f) in query_templates:
             # print(sql_query.replace(':d','10'))
             for i in range(50):
-                queries.append(sql_query.replace(':d','{}'.format(np.random.normal(8.3510755171755596, 7.1266711612044177))))
+                queries.append((os.fsdecode(f),sql_query.replace(':d','{}'.format(np.random.normal(8.3510755171755596, 7.1266711612044177)))))
         else:
-            queries.append(sql_query)
+            queries.append((os.fsdecode(f),sql_query))
 print(len(queries))
 with open('input/instacart_queries/queries-test.pkl', 'wb') as f:
   pickle.dump(queries, f)

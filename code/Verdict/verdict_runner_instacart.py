@@ -40,16 +40,25 @@ if __name__=='__main__':
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
-    for i,q in enumerate(queries):
+    query_names = {}
+    i = 0
+    for qname,q in queries:
             start = time.time()
             try:
                 res_df_v = verdict.sql(q)
             except Exception:
-                print("Query {} not supported".format(i))
+                print("Query {} not supported".format(qname))
             end = time.time()-start
             res_df_v.to_pickle('../../output/verdict/instacart/{}.pkl'.format(i))
+            if qname not in query_names:
+                query_names[qname] = [i]
+            else:
+                query_names[qname].append(i)
             query_answers_dic['time'].append(end)
-            query_answers_dic['query_name'].append(i)
+            query_answers_dic['query_name'].append(qname)
+            i+=1
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
     qa.to_csv('../../output/verdict/instacart/query-response-time.csv')
+    with open('../../output/vedict/instacart/query-assoc-names.pkl', 'wb') as f:
+        pickle.dump(query_names, f)
