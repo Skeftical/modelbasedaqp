@@ -32,10 +32,10 @@ if __name__=='__main__':
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='instacart',user='analyst',password='analyst')
 #    res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
 #                        FROM public.lineitem SIZE 0.1""")
-    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
-                       FROM public.order_products SIZE 0.1""")
-    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
-                       FROM public.orders SIZE 0.1""")
+#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
+ #                      FROM public.order_products SIZE 0.1""")
+  #  verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
+   #                    FROM public.orders SIZE 0.1""")
 #    print(res)
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
@@ -46,8 +46,9 @@ if __name__=='__main__':
             start = time.time()
             try:
                 res_df_v = verdict.sql(q)
-            except Exception:
+            except Exception as e:
                 print("Query {} not supported".format(qname))
+                print(e)
             end = time.time()-start
             res_df_v.to_pickle('../../output/verdict/instacart/{}.pkl'.format(i))
             if qname not in query_names:
@@ -60,5 +61,5 @@ if __name__=='__main__':
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
     qa.to_csv('../../output/verdict/instacart/query-response-time.csv')
-    with open('../../output/vedict/instacart/query-assoc-names.pkl', 'wb') as f:
+    with open('../../output/verdict/instacart/query-assoc-names.pkl', 'wb') as f:
         pickle.dump(query_names, f)
