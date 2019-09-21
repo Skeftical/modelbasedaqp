@@ -32,23 +32,23 @@ if __name__=='__main__':
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='instacart',user='analyst',password='analyst')
 
-    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
-                      FROM public.order_products SIZE 0.1""")
-    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
-                      FROM public.orders SIZE 0.1""")
+#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
+ #                     FROM public.order_products SIZE 0.1""")
+ #   verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
+  #                    FROM public.orders SIZE 0.1""")
 #    print(res)
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
     query_names = {}
     i = 0
-    regex_orders = re.compile(r"FROM orders", re.IGNORECASE)
-    regex_order_products = re.compile(r"FROM order_products", re.IGNORECASE)
+    regex_orders = re.compile(r"orders", re.IGNORECASE)
+    regex_order_products = re.compile(r"order_products", re.IGNORECASE)
     for qname,q in queries:
             start = time.time()
             print(q)
-            q = regex_orders.sub("from orders_instacart_x",q)
-            q = regex_order_products.sub("from order_products_instacart_x",q)
+            q = regex_orders.sub("orders_instacart_x",q)
+            q = regex_order_products.sub("order_products_instacart_x",q)
             print("Changed Query :")
             print(q)
             print("================================")
