@@ -65,7 +65,7 @@ for qname,q in queries:
     else:
         query_names[qname].append(i)
     i+=1
-    print("{}/{} Queries Processed ================".format(j,len(queries)))
+    print("{}/{} Queries Processed ================".format(i,len(queries)))
     break;
 
 qa = pd.DataFrame(query_answers_dic)
