@@ -52,7 +52,7 @@ for qname,q in queries:
                 gvalues = distinct_attr[g]
                 print("length of groupby values {}".format(len(gvalues)))
                 for gval in gvalues:
-                    dict_obj[g+'_lb'] = labels_catalogue[gval]
+                    dict_obj[g+'_lb'] = labels_catalogue.get(gval,np.nan)
                     res[p].append(est.predict_one(dict_obj))
         else:
             res[p].append(est.predict_one(dict_obj))
