@@ -8,6 +8,7 @@ import psycopg2
 import pandas as pd
 from sql_parser.parser import Parser
 import numpy as np
+import time
 
 if not os.path.exists('output/model-based/instacart'):
         os.makedirs('output/model-based/instacart')
@@ -44,6 +45,7 @@ for qname,q in queries:
     #####
     # Estimation Phase
     res = {}
+    start = time.time()
     for p in proj_dict:
         res[p] = []
         est = model_catalogue[p]
@@ -56,11 +58,13 @@ for qname,q in queries:
                     res[p].append(est.predict_one(dict_obj))
         else:
             res[p].append(est.predict_one(dict_obj))
-
+    end = time.time()-start
     res_df = pd.DataFrame(res)
     print(res_df.describe())
+    res_df.to_pickle('../../output/model-based/instacart/{}.pkl'.format(i))
+
     #####
-    # query_answers_dic['time'].append(end)
+    query_answers_dic['time'].append(end)
     query_answers_dic['query_name'].append(qname)
     if qname not in query_names:
         query_names[qname] = [i]
@@ -70,7 +74,7 @@ for qname,q in queries:
     print("{}/{} Queries Processed ================".format(i,len(queries)))
     break;
 
-# qa = pd.DataFrame(query_answers_dic)
-# qa.to_csv('output/model-based/instacart/query-response-time.csv')
-# with open('output/model-based/instacart/query-assoc-names.pkl', 'wb') as f:
-#     pickle.dump(query_names, f)
+qa = pd.DataFrame(query_answers_dic)
+qa.to_csv('output/model-based/instacart/query-response-time.csv')
+with open('output/model-based/instacart/query-assoc-names.pkl', 'wb') as f:
+    pickle.dump(query_names, f)
