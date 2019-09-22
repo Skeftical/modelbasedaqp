@@ -61,7 +61,7 @@ for qname,q in queries:
     end = time.time()-start
     res_df = pd.DataFrame(res)
     print(res_df.describe())
-    res_df.to_pickle('../../output/model-based/instacart/{}.pkl'.format(i))
+    res_df.to_pickle('output/model-based/instacart/{}.pkl'.format(i))
 
     #####
     query_answers_dic['time'].append(end)
