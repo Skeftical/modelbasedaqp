@@ -31,7 +31,7 @@ distinct_attr = {}
 i = 0
 qdf = None
 
-for j,q in enumerate(queries):
+for qname,q in queries:
     print(q)
     cur.execute(q)
     res = cur.fetchall()
