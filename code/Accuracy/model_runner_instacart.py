@@ -56,7 +56,9 @@ for qname,q in queries:
                     res[p].append(est.predict_one(dict_obj))
         else:
             res[p].append(est.predict_one(dict_obj))
-    print(res)
+
+    res_df = pd.DataFrame(res)
+    print(res_df.describe())
     #####
     # query_answers_dic['time'].append(end)
     query_answers_dic['query_name'].append(qname)
@@ -68,7 +70,7 @@ for qname,q in queries:
     print("{}/{} Queries Processed ================".format(i,len(queries)))
     break;
 
-qa = pd.DataFrame(query_answers_dic)
-qa.to_csv('output/model-based/instacart/query-response-time.csv')
-with open('output/model-based/instacart/query-assoc-names.pkl', 'wb') as f:
-    pickle.dump(query_names, f)
+# qa = pd.DataFrame(query_answers_dic)
+# qa.to_csv('output/model-based/instacart/query-response-time.csv')
+# with open('output/model-based/instacart/query-assoc-names.pkl', 'wb') as f:
+#     pickle.dump(query_names, f)
