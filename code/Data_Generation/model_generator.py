@@ -41,11 +41,14 @@ target_count = 'count_af'
 count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces an error on relative error
 
 models_train = [(sum_df, target_sum, 'count'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'sum_add_to_cart_order')]
-
 # # read in data
 for df, label,af in models_train:
     if label=='count_af':
-        df['product_name_lb'] = df['product_name_lb'].astype('category').cat.codes
+        labels =  df['product_name_lb'].astype('category').cat.codes
+        categorical_attribute_catalogue = {key : value for key,value in zip(df['product_name_lb'].values, labels)}
+        df['product_name_lb'] = labels
+        with open('catalogues/labels_catalogue.pkl', 'wb') as f:
+            pickle.dump(categorical_attribute_catalogue,f)
 #         obj = 'count:poisson'
     X = df[features].values
     y = df[label].values

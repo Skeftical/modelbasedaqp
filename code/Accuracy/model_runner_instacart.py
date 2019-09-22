@@ -21,6 +21,9 @@ with open('catalogues/distinct_attribute_catalogue.pkl', 'rb') as f:
 with open('catalogues/model_catalogue.pkl', 'rb') as f:
     model_catalogue = pickle.load(f)
 
+with open('catalogues/labels_catalogue.pkl', 'rb') as f:
+    labels_catalogue = pickle.load(f)
+
 print(model_catalogue)
 query_answers_dic = {}
 query_answers_dic['query_name'] = []
@@ -49,7 +52,7 @@ for qname,q in queries:
                 gvalues = distinct_attr[g]
                 print("length of groupby values {}".format(len(gvalues)))
                 for gval in gvalues:
-                    dict_obj[g+'_lb'] = gval
+                    dict_obj[g+'_lb'] = labels_catalogue[g]
                     res[p].append(est.predict_one(dict_obj))
         else:
             res[p].append(est.predict_one(dict_obj))

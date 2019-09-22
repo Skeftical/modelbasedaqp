@@ -9,7 +9,7 @@ class MLAF:
     def predict_one(self, attr_dict):
         for k in attr_dict:
             self.vector_dict[k] = attr_dict[k]
-        query_vector = np.array(self.vector_dict.values()).reshape(-1,1)
+        query_vector = np.array(list(self.vector_dict.values())).reshape(-1,1)
         print(query_vector)
         print(xgb.DMatrix(query_vector))
         return self.estimator.predict(xgb.DMatrix(query_vector))
