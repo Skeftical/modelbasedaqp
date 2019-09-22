@@ -59,7 +59,7 @@ for j,q in enumerate(queries):
             dvalues = cur.fetchall()
             dvalues = pd.DataFrame(dvalues)[g].tolist()
             qv.insert(g+'_lb',dvalues)
-
+            distinct_attr[g] = dvalues
     if qdf is None:
         qdf = qv.to_dataframe()
     else:
@@ -88,6 +88,8 @@ for j,q in enumerate(queries):
     print("{}/{} Queries Processed ================".format(j,len(queries)))
 with open('input/instacart_queries/afs.pkl','wb') as f:
     pickle.dump(afs, f)
+with open('catalogues/distinct_attribute_catalogue.pkl', 'wb') as f:
+    pickle.dump(distinct_attr, f)
 qdf.to_pickle('input/instacart_queries/qdf.pkl')
 cur.close()
 conn.close()
