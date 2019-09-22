@@ -1,4 +1,5 @@
 import numpy as np
+import xgboost as xgb
 
 class MLAF:
     """
@@ -9,7 +10,7 @@ class MLAF:
         for k in attr_dict:
             self.vector_dict[k] = attr_dict[k]
         query_vector = np.array(self.vector_dict.values())
-        return self.estimator.predict(query_vector)
+        return self.estimator.predict(xgb.DMatrix(query_vector))
 
     def __init__(self, estimator, rel_error, feature_names):
         self.estimator = estimator
