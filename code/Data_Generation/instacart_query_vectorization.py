@@ -30,7 +30,7 @@ afs = {}
 distinct_attr = {}
 i = 0
 qdf = None
-
+j = 0
 for qname,q in queries:
     print(q)
     cur.execute(q)
@@ -85,6 +85,7 @@ for qname,q in queries:
     #     break;
     # else:
     #     j+=1
+    j+=1
     print("{}/{} Queries Processed ================".format(j,len(queries)))
 with open('input/instacart_queries/afs.pkl','wb') as f:
     pickle.dump(afs, f)
