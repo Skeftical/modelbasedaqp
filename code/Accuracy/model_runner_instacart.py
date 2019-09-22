@@ -72,7 +72,6 @@ for qname,q in queries:
         query_names[qname].append(i)
     i+=1
     print("{}/{} Queries Processed ================".format(i,len(queries)))
-    break;
 
 qa = pd.DataFrame(query_answers_dic)
 qa.to_csv('output/model-based/instacart/query-response-time.csv')
