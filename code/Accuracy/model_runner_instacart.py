@@ -17,10 +17,11 @@ with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
 
 with open('../../catalogues/distinct_attribute_catalogue.pkl', 'rb') as f:
     distinct_attr = pickle.load(f)
-conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='instacart',user='analyst',password='analyst')
-cur = conn.cursor()
 
+with open('../../catalogues/model_catalogue.pkl', 'rb') as f:
+    model_catalogue = pickle.load(f)
 
+print(model_catalogue)
 query_answers_dic = {}
 query_answers_dic['query_name'] = []
 query_answers_dic['time'] = []
@@ -36,27 +37,33 @@ for qname,q in queries:
     print(proj_dict)
     gattr = pr.get_groupby_attrs()
     print(gattr)
-    for g in gattr:
-        if g in distinct_attr:
-            dict_obj[g] = distinct_attr[g]
-
     print(dict_obj)
+    #####
+    # Estimation Phase
+    res = {}
+    for p in proj_dict:
+        res[p] = []
+        est = model_catalogue[p]
+        if len(gattr)>0:
+            for g in gattr:
+                gvalues = distinct_attr[g]
+                for gval in gvalues:
+                    dict_obj[g+'_lb'] = gval
+                    res[p].append(est.predict(dict_obj))
+        else:
+            res[p].append(est.predict(dict_obj))
+    print(res)
+    #####
+    # query_answers_dic['time'].append(end)
+    query_answers_dic['query_name'].append(qname)
     if qname not in query_names:
         query_names[qname] = [i]
     else:
         query_names[qname].append(i)
-
-    #####
-    # Estimation Phase
-    #####
-    # query_answers_dic['time'].append(end)
-    query_answers_dic['query_name'].append(qname)
     i+=1
-
     print("{}/{} Queries Processed ================".format(j,len(queries)))
     break;
-cur.close()
-conn.close()
+
 qa = pd.DataFrame(query_answers_dic)
 qa.to_csv('../../output/model-based/instacart/query-response-time.csv')
 with open('../../output/model-based/instacart/query-assoc-names.pkl', 'wb') as f:
