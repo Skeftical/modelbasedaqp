@@ -52,7 +52,7 @@ for df, label,af in models_train:
     dtrain = xgb.DMatrix(X,y)
     # dtest = xgb.DMatrix(y)
     # # specify parameters via map
-    param = {'max_depth':3, 'eta':1, 'objective':'reg:linear'}
+    param = {'max_depth':3, 'eta':1, 'objective':'reg:squared_error'}
     num_round = 20
     # bst = xgb.train(param, dtrain, num_round)
     xgb_model = xgb.train(param, dtrain, num_round)

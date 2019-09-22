@@ -15,7 +15,7 @@ class MLAF:
         self.estimator = estimator
         self.rel_error = rel_error
         self.vector_dict = { key : np.nan for key in feature_names}
-        print(self.vector_dict.values())
+        print(self.vector_dict)
 
 
 if __name__=="__main__":
