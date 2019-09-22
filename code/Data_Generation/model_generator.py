@@ -16,7 +16,7 @@ def relative_error(y_true, y_hat):
 MODEL_CATALOGUE = {}
 
 
-qdf = pd.read_pickle('../../input/instacart_queries/qdf.pkl')
+qdf = pd.read_pickle('input/instacart_queries/qdf.pkl')
 targets = [name  for name in qdf.columns if 'lb' not in name and 'ub' not in name]
 #Filtering out the product of joins in the aggregate functions
 sum_columns = [name for name in qdf[targets].columns if 'sum' in name]
@@ -61,5 +61,5 @@ for df, label,af in models_train:
     ml_est = MLAF(xgb_model, rel_error, features)
     MODEL_CATALOGUE[af] = ml_est
     # xgb_model.save_model('/home/fotis/dev_projects/model-based-aqp/catalogues/{}.dict_model'.format(label))
-with open('../../catalogues/model_catalogue.pkl', 'wb') as f:
+with open('catalogues/model_catalogue.pkl', 'wb') as f:
     pickle.dump(MODEL_CATALOGUE, f)
