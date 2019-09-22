@@ -47,11 +47,12 @@ for qname,q in queries:
         if len(gattr)>0:
             for g in gattr:
                 gvalues = distinct_attr[g]
+                print("length of groupby values {}".format(len(gvalues)))
                 for gval in gvalues:
                     dict_obj[g+'_lb'] = gval
-                    res[p].append(est.predict(dict_obj))
+                    res[p].append(est.predict_one(dict_obj))
         else:
-            res[p].append(est.predict(dict_obj))
+            res[p].append(est.predict_one(dict_obj))
     print(res)
     #####
     # query_answers_dic['time'].append(end)
