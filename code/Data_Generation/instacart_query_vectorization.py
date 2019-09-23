@@ -40,6 +40,8 @@ for qname,q in queries:
     res_df = pd.DataFrame(res)
     res_df = res_df.set_index(np.arange(i,i+res_df.shape[0]))
     if res_df.empty:
+        print("Query is empty")
+        j+=1
         continue;
     pr = Parser()
     qv = QueryVectorizer(set(df['column_name'].tolist()))
