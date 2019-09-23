@@ -77,6 +77,7 @@ for qname,q in queries:
         try:
             qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
         except KeyError:
+            print("Key of projection in current dataframe does not exist")
             qdf[proj_list] = temp[proj_list]
     else:#No groupby attributes
         qdf.loc[i:i+res_df.shape[0], proj_list] = res_df[proj_list]
