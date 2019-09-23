@@ -64,6 +64,7 @@ for qname,q in queries:
             dvalues = cur.fetchall()
             dvalues = pd.DataFrame(dvalues)[g].tolist()
             qv.insert(g+'_lb',dvalues)
+            print("length of dvalues {}".format(len(dvalues)))
             distinct_attr[g] = dvalues
     if qdf is None:
         qdf = qv.to_dataframe()
@@ -76,6 +77,8 @@ for qname,q in queries:
         temp = qdf.iloc[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),False))
         try:
             print(temp.columns)
+            print(temp[proj_list])
+            print(qdf.loc[i:i+res_df.shape[0],'reordered_lb'])
             qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
         except KeyError:
             print("Key of projection in current dataframe does not exist")
