@@ -49,6 +49,7 @@ for qname,q in queries:
     dict_obj = pr.get_vector()
     proj_list = pr.get_projections()
     print(proj_list)
+    print(zip(res_df.columns, proj_list))
     print({key : value  for key,value in zip(res_df.columns, proj_list) if key in value})
     gattr = pr.get_groupby_attrs()
     print(gattr)
