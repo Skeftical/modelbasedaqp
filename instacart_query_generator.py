@@ -11,6 +11,7 @@ if not os.path.exists('input/instacart_queries'):
 
 query_templates = ['q2.sql', 'q4.sql', 'q6.sql', 'q8.sql','q10.sql','q12.sql']
 directory = os.fsencode('instacart_query_templates')
+
 queries = []
 for f in os.listdir(directory):
     # print(f)
@@ -19,8 +20,11 @@ for f in os.listdir(directory):
         # print(sql_query)
         if os.fsdecode(f) in query_templates:
             # print(sql_query.replace(':d','10'))
-            for i in range(50):
+            for i in range(160):
                 queries.append((os.fsdecode(f),sql_query.replace(':d','{}'.format(np.random.normal(8.3510755171755596, 7.1266711612044177)))))
+        elif os.fsdecode(f)=='q14.sql':
+            for i in range(160):
+                queries.append((os.fsdecode(f),sql_query.replace(':d','{}'.format(np.random.uniform(0,7)))))
         else:
             queries.append((os.fsdecode(f),sql_query))
 print(len(queries))
@@ -35,7 +39,7 @@ for f in os.listdir(directory):
         # print(sql_query)
         if os.fsdecode(f) in query_templates:
             # print(sql_query.replace(':d','10'))
-            for i in range(50):
+            for i in range(40):
                 queries.append((os.fsdecode(f),sql_query.replace(':d','{}'.format(np.random.normal(8.3510755171755596, 7.1266711612044177)))))
         else:
             queries.append((os.fsdecode(f),sql_query))
