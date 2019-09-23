@@ -75,16 +75,17 @@ for qname,q in queries:
     if len(gattr)!=0:
         temp = qdf.iloc[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),False))
         try:
+            print(temp.columns)
             qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
         except KeyError:
             print("Key of projection in current dataframe does not exist")
             qdf = qdf.assign(**{key : np.zeros(qdf.shape[0]).astype(float).fill(np.nan) for key in proj_list})
-            print(qdf[proj_list])
-            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list] 
+            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
     else:#No groupby attributes
         qdf.loc[i:i+res_df.shape[0], proj_list] = res_df[proj_list]
 
     print(qdf)
+    print(qdf.iloc[i:i+res_df.shape[0]])
     for af in proj_list:
         if af in afs:
             afs[af].append((i,qdf.shape[0]))
