@@ -76,14 +76,14 @@ for qname,q in queries:
         qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True, sort=False)
     print(qdf.shape)
     if len(gattr)!=0:
-        temp = qdf.iloc[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left'.format(j),),validate='one_to_one')
+        temp = qdf.iloc[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), suffixes=('_left','_right'), right_on=gattr,how='left',validate='one_to_one')
         try:
             print(temp.columns)
 
             print(qdf.loc[i:i+res_df.shape[0]-1,'reordered_lb'])
             temp = temp.set_index(np.arange(i,i+res_df.shape[0]))
             print(temp[proj_list])
-            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
+            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[list(map(lambda x: '_'.join([x,'right']),proj_list))]
         except KeyError:
             print("Key of projection in current dataframe does not exist")
             qdf = qdf.assign(**{key : np.zeros(qdf.shape[0])*np.nan for key in proj_list})
