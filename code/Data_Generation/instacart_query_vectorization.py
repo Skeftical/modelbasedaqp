@@ -100,7 +100,7 @@ for qname,q in queries:
     i=qdf.shape[0]
     j+=1
     print("{}/{} Queries Processed ================".format(j,len(queries)))
-with open('input/instacart_queries-/afs.pkl','wb') as f:
+with open('input/instacart_queries/afs.pkl','wb') as f:
     pickle.dump(afs, f)
 with open('catalogues/distinct_attribute_catalogue.pkl', 'wb') as f:
     pickle.dump(distinct_attr, f)
