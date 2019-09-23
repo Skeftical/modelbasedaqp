@@ -82,11 +82,11 @@ for qname,q in queries:
             qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
         except KeyError:
             print("Key of projection in current dataframe does not exist")
-            qdf = qdf.assign(**{key : np.zeros(qdf.shape[0]).astype(float).fill(np.nan) for key in proj_list})
+            qdf = qdf.assign(**{key : np.zeros(qdf.shape[0])*np.nan for key in proj_list})
             qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
     else:#No groupby attributes
         qdf.loc[i:i+res_df.shape[0], proj_list] = res_df[proj_list]
-
+    print("Resulting QDF")
     print(qdf)
     print(qdf.iloc[i:i+res_df.shape[0]])
     for af in proj_list:

@@ -101,7 +101,7 @@ class Parser():
 
 
 class QueryVectorizer():
-    
+
     def __trickle_down(self, length):
 
         for k in self.__internal_dict:
@@ -127,7 +127,6 @@ class QueryVectorizer():
 
     def to_dense(self):
         if self.__sparse_matrix is not None:
-            print(self.__sparse_matrix.nonzero())
             return self.__sparse_matrix.todense()
         else:
             self.to_matrix()
