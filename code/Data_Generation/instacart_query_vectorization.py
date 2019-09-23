@@ -79,13 +79,13 @@ for qname,q in queries:
             print(temp.columns)
             print(temp[proj_list])
             print(qdf.loc[i:i+res_df.shape[0],'reordered_lb'])
-            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
+            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list].values
         except KeyError:
             print("Key of projection in current dataframe does not exist")
             qdf = qdf.assign(**{key : np.zeros(qdf.shape[0])*np.nan for key in proj_list})
-            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
+            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list].values
     else:#No groupby attributes
-        qdf.loc[i:i+res_df.shape[0], proj_list] = res_df[proj_list]
+        qdf.loc[i:i+res_df.shape[0], proj_list] = res_df[proj_list].values
     print("Resulting QDF")
     print(qdf)
     print(qdf.iloc[i:i+res_df.shape[0]])
