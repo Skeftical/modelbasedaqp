@@ -53,9 +53,12 @@ for qname,q in queries:
             for g in gattr:
                 gvalues = distinct_attr[g]
                 print("length of groupby values {}".format(len(gvalues)))
+                res[g] = []
                 for gval in gvalues:
                     dict_obj[g+'_lb'] = labels_catalogue.get(gval,np.nan)
                     res[p].append(est.predict_one(dict_obj))
+                    res[g].append(gval)
+
         else:
             res[p].append(est.predict_one(dict_obj))
     end = time.time()-start
