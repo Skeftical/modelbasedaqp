@@ -9,6 +9,7 @@ from psycopg2.extras import NamedTupleCursor
 import pandas as pd
 from sql_parser.parser import Parser, QueryVectorizer
 import numpy as np
+import time
 
 queries = []
 with open('input/instacart_queries/queries.pkl','rb') as f:
@@ -31,6 +32,7 @@ distinct_attr = {}
 i = 0
 qdf = None
 j = 0
+start = time.time()
 for qname,q in queries:
     print(q)
     cur.execute(q)
@@ -45,8 +47,9 @@ for qname,q in queries:
 
     pr.parse(q)
     dict_obj = pr.get_vector()
-    proj_dict = pr.get_projections()
-    print(proj_dict)
+    proj_list = pr.get_projections()
+    print(proj_list)
+    print({key : value  for key,value in zip(res_df.columns, proj_list) if key in value})
     gattr = pr.get_groupby_attrs()
     print(gattr)
     for a in dict_obj:
@@ -74,23 +77,20 @@ for qname,q in queries:
         qdf = qdf.merge(res_df, left_index=True, right_index=True, how='left',suffixes=('_left_{}'.format(j),'_right_{}'.format(j)))
     qdf = qdf.drop(columns=gattr)
     print(qdf)
-    for af in proj_dict:
+    for af in proj_list:
         if af in afs:
             afs[af].append((i,qdf.shape[0]))
         else:
             afs[af] = [(i,qdf.shape[0])]
     print(afs)
     i=qdf.shape[0]
-    # if j>2:
-    #     break;
-    # else:
-    #     j+=1
     j+=1
     print("{}/{} Queries Processed ================".format(j,len(queries)))
-with open('input/instacart_queries/afs.pkl','wb') as f:
+with open('input/instacart_queries-/afs.pkl','wb') as f:
     pickle.dump(afs, f)
 with open('catalogues/distinct_attribute_catalogue.pkl', 'wb') as f:
     pickle.dump(distinct_attr, f)
 qdf.to_pickle('input/instacart_queries/qdf.pkl')
 cur.close()
 conn.close()
+print("Process took {}".format(time.time()-start))
