@@ -73,14 +73,16 @@ for qname,q in queries:
         qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True, sort=False)
     print(qdf.shape)
     if len(gattr)!=0:
-        temp = qdf.iloc[res_df.index].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),False))
+        temp = qdf.iloc[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),False))
         try:
-            qdf.loc[res_df.index, proj_list] = temp[proj_list]
+            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
         except KeyError:
             print("Key of projection in current dataframe does not exist")
-            qdf[proj_list] = temp[proj_list]
+            qdf = qdf.assign(**{key : np.zeros(qdf.shape[0]).astype(float).fill(np.nan) for key in proj_list})
+            print(qdf[proj_list])
+            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list] 
     else:#No groupby attributes
-        qdf.loc[res_df.index, proj_list] = res_df[proj_list]
+        qdf.loc[i:i+res_df.shape[0], proj_list] = res_df[proj_list]
 
     print(qdf)
     for af in proj_list:
