@@ -101,10 +101,7 @@ class Parser():
 
 
 class QueryVectorizer():
-    """"
-    This is used PER-QUERY cannot handle multiple queries at the moment as the
-    trickle down functionality will fail
-    """"
+    
     def __trickle_down(self, length):
 
         for k in self.__internal_dict:
