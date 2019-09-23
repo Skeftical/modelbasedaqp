@@ -78,11 +78,7 @@ for qname,q in queries:
     if len(gattr)!=0:
         temp = qdf.iloc[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), suffixes=('_left','_right'), right_on=gattr,how='left',validate='one_to_one')
         try:
-            print(temp.columns)
-
-            print(qdf.loc[i:i+res_df.shape[0]-1,'reordered_lb'])
             temp = temp.set_index(np.arange(i,i+res_df.shape[0]))
-            print(temp[proj_list])
             qdf.loc[i:i+res_df.shape[0], proj_list] = temp[list(map(lambda x: '_'.join([x,'right']),proj_list))]
         except KeyError:
             print("Key of projection in current dataframe does not exist")
