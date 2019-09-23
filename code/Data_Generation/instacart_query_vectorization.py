@@ -79,7 +79,7 @@ for qname,q in queries:
         except KeyError:
             qdf.iloc[i:i+res_df.shape[0]][proj_list] = temp[proj_list]
     else:#No groupby attributes
-        qdf[i:i+res_df.shape[0]][proj_list] = res_df[proj_list]
+        qdf.loc[i:i+res_df.shape[0], proj_list] = res_df[proj_list]
 
     print(qdf)
     for af in proj_list:
