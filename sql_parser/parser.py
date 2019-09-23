@@ -101,7 +101,10 @@ class Parser():
 
 
 class QueryVectorizer():
-
+    """"
+    This is used PER-QUERY cannot handle multiple queries at the moment as the
+    trickle down functionality will fail
+    """"
     def __trickle_down(self, length):
 
         for k in self.__internal_dict:
@@ -127,17 +130,20 @@ class QueryVectorizer():
 
     def to_dense(self):
         if self.__sparse_matrix is not None:
+            print(self.__sparse_matrix.nonzero())
             return self.__sparse_matrix.todense()
         else:
             self.to_matrix()
             return self.to_dense()
+
     def to_dataframe(self):
         if self.__sparse_matrix is not None:
             self.inverse_attr_str_mapper = dict([(value, key) for key, value in self.attr_str_mapper.items()])
-            df = pd.DataFrame(self.__sparse_matrix.todense(), columns=self.__column_names)
-            df = df.replace(0,np.nan)
+            df = pd.DataFrame(self.to_dense(), columns=self.__column_names)
             for attr in self.attrs_with_str:
                 df[attr] = df[attr].replace(self.inverse_attr_str_mapper)
+            df = df.replace({0:np.nan, -10: 0})
+
             return df
         else:
             self.to_matrix()
@@ -151,14 +157,13 @@ class QueryVectorizer():
             for j,val in enumerate(self.__internal_dict[attr]):
                 col_ind.append(i)
                 row_ind.append(j)
+                if val==0:
+                    val = -10
                 if isinstance(val, str):
                     self.attrs_with_str.add(attr)
                     val = self.attr_str_mapper.setdefault(val, len(self.attr_str_mapper))
+
                 data.append(val)
-        # print(row_ind)
-        # print(col_ind)
-        # print(data)
-        # print(self.attr_str_mapper)
         self.__sparse_matrix = csr_matrix((data, (row_ind, col_ind)),shape=(self.__max_row_size,self.__column_size))
         return self.__sparse_matrix
 
@@ -192,7 +197,7 @@ if __name__=='__main__':
     qv.insert('a1_lb',10)
     qv.insert('a2_lb',['a','b','c'])
     qv.insert('a2_lb',['a','b','c'])
-
+    qv.insert('a3_ub', [0,1])
     print(qv._get_internal_representation())
     print(qv.to_matrix())
     print(qv.to_dense())
