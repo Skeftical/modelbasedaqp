@@ -74,7 +74,7 @@ for qname,q in queries:
     print(qdf.shape)
     if len(gattr)!=0:
         temp = qdf[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),False))
-        qdf.iloc[i:i+res_df.shape[0]][proj_list] = temp[proj_list]
+        qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
     else:#No groupby attributes
         qdf[i:i+res_df.shape[0]][proj_list] = res_df[proj_list]
 
