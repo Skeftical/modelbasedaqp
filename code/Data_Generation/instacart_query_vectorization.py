@@ -59,6 +59,8 @@ for qname,q in queries:
     for g in gattr:
         if g in distinct_attr:
             gattrs = distinct_attr[g]
+            print("length of dvalues {}".format(len(gattrs)))
+            qv.insert(g+'_lb',gattrs)
         else:
             cur.execute("SELECT DISTINCT({0}) FROM {1};".format(g, gattr_to_table_map[g]))
             dvalues = cur.fetchall()
@@ -74,7 +76,7 @@ for qname,q in queries:
         qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True, sort=False)
     print(qdf.shape)
     if len(gattr)!=0:
-        temp = qdf.iloc[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left_{}'.format(j),False),validate='one_to_one')
+        temp = qdf.iloc[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), right_on=gattr,how='left',suffixes=('_left'.format(j),),validate='one_to_one')
         try:
             print(temp.columns)
 
