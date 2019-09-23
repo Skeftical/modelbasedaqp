@@ -79,7 +79,7 @@ for qname,q in queries:
             print(temp.columns)
 
             print(qdf.loc[i:i+res_df.shape[0]-1,'reordered_lb'])
-            temp = temp.set_index(i,i+res_df.shape[0])
+            temp = temp.set_index(np.arange(i,i+res_df.shape[0]))
             print(temp[proj_list])
             qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
         except KeyError:
