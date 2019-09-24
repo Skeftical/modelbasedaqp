@@ -25,7 +25,7 @@ for f in os.listdir(directory):
         elif os.fsdecode(f)=='q14.sql':
             for i in range(NUMBER_OF_QUERIES):
                 queries.append((os.fsdecode(f),sql_query.replace(':d','{}'.format(np.random.randint(0,7)))))
-        else:
+        elif os.fsdecode(f) not in ['q1.sql','q3.sql', 'q5.sql']:
             queries.append((os.fsdecode(f),sql_query))
 print(len(queries))
 with open('input/instacart_queries/queries.pkl', 'wb') as f:
