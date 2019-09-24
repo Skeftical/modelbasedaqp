@@ -10,6 +10,20 @@ import pandas as pd
 from sql_parser.parser import Parser, QueryVectorizer
 import numpy as np
 import time
+import logging
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
+                    action="store_true")
+parser.add_argument('-v',help='verbosity',dest='verbosity',action="store_true")
+args = parser.parse_args()
+
+if args.verbosity:
+   print("verbosity turned on")
+   logger = logging.getLogger('main')
+   handler = logging.StreamHandler(sys.stdout)
+   handler.setLevel(logging.DEBUG)
+   logger.addHandler(handler)
 
 queries = []
 with open('input/instacart_queries/queries.pkl','rb') as f:
@@ -34,63 +48,69 @@ qdf = None
 j = 0
 start = time.time()
 for qname,q in queries:
-    print(q)
+    logger.info("Query :\n{}\n".format(q))
+    ####Execute Query and obtain result
     cur.execute(q)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
     res_df = res_df.set_index(np.arange(i,i+res_df.shape[0]))
     if res_df.empty:
-        print("Query is empty")
+        logger.debug("Query is empty")
         j+=1
         continue;
     pr = Parser()
     qv = QueryVectorizer(set(df['column_name'].tolist()))
-
+    #Begin parsing the query and vectorizing its parameters
     pr.parse(q)
     dict_obj = pr.get_vector()
     proj_list = pr.get_projections()
-    print(proj_list)
+    logger.info("List of Projections : \n {}".format(proj_list))
     rename_names = {key : value  for key in res_df.columns for value in proj_list if value.split('_')[0] in key}
-    print(rename_names)
     res_df = res_df.rename(columns=rename_names)
-    print(res_df)
     gattr = pr.get_groupby_attrs()
-    print(gattr)
+    logger.debug("List of group-by attributes : \n {}".format(gattr))
+    logger.debug("Resulting DataFrame : \n{}".format(res_df))
+    #Query Vectorization, adding parameter values and group by values to vector
     for a in dict_obj:
         qv.insert(a, dict_obj[a])
     for g in gattr:
         if g in distinct_attr:
             gattrs = distinct_attr[g]
-            print("length of dvalues {}".format(len(gattrs)))
+            logger.debug("Length of dvalues {}".format(len(gattrs)))
             qv.insert(g+'_lb',gattrs)
         else:
             cur.execute("SELECT DISTINCT({0}) FROM {1};".format(g, gattr_to_table_map[g]))
             dvalues = cur.fetchall()
             dvalues = pd.DataFrame(dvalues)[g].tolist()
             qv.insert(g+'_lb',dvalues)
-            print("length of dvalues {}".format(len(dvalues)))
+            logger.info("Length of dvalues {}".format(len(dvalues)))
             distinct_attr[g] = dvalues
+    #Initializing dataframe to hold the vectors of all queries that will be processed
     if qdf is None:
         qdf = qv.to_dataframe()
     else:
-        print(qdf.shape)
-        print(qv.to_dataframe().shape)
+        logger.debug("Current Query Vector dataframe : \n {}".format(qv.to_dataframe().shape))
         qdf = pd.concat([qdf, qv.to_dataframe()], ignore_index=True, sort=False)
-    print(qdf.shape)
+    logger.info("Appended QDF holding all queries : \n{}".format(qdf.shape))
+    #Concatenating result dataframe with query DataFrame
+    #Have to beware of goupby attributes as well as trying to keep the targets
+    #in a single column
     if len(gattr)!=0:
-        temp = qdf.iloc[i:i+res_df.shape[0]].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), suffixes=('_left','_right'), right_on=gattr,how='left',validate='one_to_one')
+        temp = qdf.iloc[i:].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), suffixes=('_left','_right'), right_on=gattr,how='left',validate='one_to_one')
+        logger.debug("Are the shapes of temp and res_df the same ? : {}".format(temp.shape[0]==res_df.shape[0]))
         try:
-            temp = temp.set_index(np.arange(i,i+res_df.shape[0]))
-            qdf.loc[i:i+res_df.shape[0]-1, proj_list] = temp[list(map(lambda x: '_'.join([x,'right']),proj_list))].values
+            logger.debug(temp.index)
+            # temp = temp.set_index(np.arange(i,i+res_df.shape[0]))
+            qdf.loc[temp.index, proj_list] = temp[list(map(lambda x: '_'.join([x,'right']),proj_list))].values
         except KeyError:
-            print("Key of projection in current dataframe does not exist")
+            logger.warning("Key of projection in current dataframe does not exist")
             qdf = qdf.assign(**{key : np.zeros(qdf.shape[0])*np.nan for key in proj_list})
             qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
     else:#No groupby attributes
         qdf.loc[i:i+res_df.shape[0]-1, proj_list] = res_df[proj_list]
-    print("Resulting QDF")
+    print("Resulting QDF =================")
     print(qdf)
-    print(qdf.iloc[i:i+res_df.shape[0]])
+    print(qdf.iloc[i:i+res_df.shape[0]][proj_list])
     for af in proj_list:
         if af in afs:
             afs[af].append((i,qdf.shape[0]))
@@ -99,7 +119,8 @@ for qname,q in queries:
     print(afs)
     i=qdf.shape[0]
     j+=1
-    print("{}/{} Queries Processed ================".format(j,len(queries)))
+    logger.info("{}/{} Queries Processed ================".format(j,len(queries)))
+    break;
 with open('input/instacart_queries/afs.pkl','wb') as f:
     pickle.dump(afs, f)
 with open('catalogues/distinct_attribute_catalogue.pkl', 'wb') as f:
@@ -107,4 +128,4 @@ with open('catalogues/distinct_attribute_catalogue.pkl', 'wb') as f:
 qdf.to_pickle('input/instacart_queries/qdf.pkl')
 cur.close()
 conn.close()
-print("Process took {}".format(time.time()-start))
+logger.info("Process took {}".format(time.time()-start))
