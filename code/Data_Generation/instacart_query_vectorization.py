@@ -45,11 +45,13 @@ distinct_attr = {}
 i = 0
 qdf = None
 j = 0
+tot_query_answering_time = 0
 start = time.time()
 for qname,q in queries:
     logger.info("Query :\n{}\n".format(q))
     ####Execute Query and obtain result
     cur.execute(q)
+    tot_query_answering_time+=time.time()-start
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
     res_df = res_df.set_index(np.arange(i,i+res_df.shape[0]))
@@ -121,4 +123,6 @@ with open('catalogues/distinct_attribute_catalogue.pkl', 'wb') as f:
 qdf.to_pickle('input/instacart_queries/qdf.pkl')
 cur.close()
 conn.close()
-logger.info("Process took {}".format(time.time()-start))
+end = time.time()-start
+logger.info("Process took {}".format(end))
+logger.info("Total Query Answering Time : {} ({})".format(tot_query_answering_time/end, tot_query_answering_time))
