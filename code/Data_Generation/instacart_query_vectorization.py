@@ -11,7 +11,8 @@ from sql_parser.parser import Parser, QueryVectorizer
 import numpy as np
 import time
 import logging
-
+import argparse
+from setup import logger
 parser = argparse.ArgumentParser()
 parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
                     action="store_true")
@@ -19,8 +20,7 @@ parser.add_argument('-v',help='verbosity',dest='verbosity',action="store_true")
 args = parser.parse_args()
 
 if args.verbosity:
-   print("verbosity turned on")
-   logger = logging.getLogger('main')
+   print("verbosity turned on")   
    handler = logging.StreamHandler(sys.stdout)
    handler.setLevel(logging.DEBUG)
    logger.addHandler(handler)
