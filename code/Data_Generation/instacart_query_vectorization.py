@@ -20,7 +20,7 @@ parser.add_argument('-v',help='verbosity',dest='verbosity',action="store_true")
 args = parser.parse_args()
 
 if args.verbosity:
-   print("verbosity turned on")   
+   print("verbosity turned on")
    handler = logging.StreamHandler(sys.stdout)
    handler.setLevel(logging.DEBUG)
    logger.addHandler(handler)
@@ -64,7 +64,7 @@ for qname,q in queries:
     pr.parse(q)
     dict_obj = pr.get_vector()
     proj_list = pr.get_projections()
-    logger.info("List of Projections : \n {}".format(proj_list))
+    logger.debug("List of Projections : \n {}".format(proj_list))
     rename_names = {key : value  for key in res_df.columns for value in proj_list if value.split('_')[0] in key}
     res_df = res_df.rename(columns=rename_names)
     gattr = pr.get_groupby_attrs()
@@ -102,15 +102,16 @@ for qname,q in queries:
             logger.debug(temp.index)
             # temp = temp.set_index(np.arange(i,i+res_df.shape[0]))
             qdf.loc[temp.index, proj_list] = temp[list(map(lambda x: '_'.join([x,'right']),proj_list))].values
-        except KeyError:
+        except KeyError as e:
             logger.warning("Key of projection in current dataframe does not exist")
+            logger.error("The error was : --- {}".format(e))
             qdf = qdf.assign(**{key : np.zeros(qdf.shape[0])*np.nan for key in proj_list})
-            qdf.loc[i:i+res_df.shape[0], proj_list] = temp[proj_list]
+            qdf.loc[temp.index, proj_list] = temp[proj_list]
     else:#No groupby attributes
-        qdf.loc[i:i+res_df.shape[0]-1, proj_list] = res_df[proj_list]
+        qdf.loc[res_df.index, proj_list] = res_df[proj_list]
     print("Resulting QDF =================")
     print(qdf)
-    print(qdf.iloc[i:i+res_df.shape[0]][proj_list])
+    print(qdf.iloc[i:][proj_list])
     for af in proj_list:
         if af in afs:
             afs[af].append((i,qdf.shape[0]))
@@ -120,7 +121,6 @@ for qname,q in queries:
     i=qdf.shape[0]
     j+=1
     logger.info("{}/{} Queries Processed ================".format(j,len(queries)))
-    break;
 with open('input/instacart_queries/afs.pkl','wb') as f:
     pickle.dump(afs, f)
 with open('catalogues/distinct_attribute_catalogue.pkl', 'wb') as f:
