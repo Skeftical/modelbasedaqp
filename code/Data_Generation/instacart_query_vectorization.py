@@ -51,7 +51,7 @@ for qname,q in queries:
     logger.info("Query :\n{}\n".format(q))
     ####Execute Query and obtain result
     cur.execute(q)
-    tot_query_answering_time+=time.time()-start
+    tot_query_answering_time+=(time.time()-start)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
     res_df = res_df.set_index(np.arange(i,i+res_df.shape[0]))
@@ -113,7 +113,7 @@ for qname,q in queries:
         qdf.loc[res_df.index, proj_list] = res_df[proj_list]
     print("Resulting QDF =================")
     print(qdf)
-    print(qdf.iloc[i:][['count','product_name_lb']])
+    print(qdf.iloc[i:][proj_list+gattr])
 
     i=qdf.shape[0]
     j+=1

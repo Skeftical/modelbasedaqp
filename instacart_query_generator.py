@@ -11,7 +11,7 @@ if not os.path.exists('input/instacart_queries'):
 
 query_templates = ['q2.sql', 'q4.sql', 'q6.sql', 'q8.sql','q10.sql','q12.sql']
 directory = os.fsencode('instacart_query_templates')
-NUMBER_OF_QUERIES = 2
+NUMBER_OF_QUERIES = 150
 queries = []
 for f in os.listdir(directory):
     # print(f)
