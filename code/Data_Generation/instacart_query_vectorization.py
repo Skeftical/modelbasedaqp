@@ -111,7 +111,7 @@ for qname,q in queries:
         qdf.loc[res_df.index, proj_list] = res_df[proj_list]
     print("Resulting QDF =================")
     print(qdf)
-    print(qdf.iloc[i:][proj_list])
+    print(qdf.iloc[i:][['count','product_name_lb']])
 
     i=qdf.shape[0]
     j+=1
