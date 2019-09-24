@@ -41,7 +41,6 @@ gattr_to_table_map = { key : value for key,value in zip(df['column_name'].values
 print(gattr_to_table_map)
 #print(attrs_array)
 # attrs_dict = { key : [] for key in attrs_array } #dict.fromkeys(attrs_array,[[]]*len(attrs_array))
-afs = {}
 distinct_attr = {}
 i = 0
 qdf = None
@@ -99,8 +98,9 @@ for qname,q in queries:
         temp = qdf.iloc[i:].merge(res_df, left_on=list(map(lambda x:x+'_lb' ,gattr)), suffixes=('_left','_right'), right_on=gattr,how='left',validate='one_to_one')
         logger.debug("Are the shapes of temp and res_df the same ? : {}".format(temp.shape[0]==res_df.shape[0]))
         try:
+            #Index is reset
+            temp = temp.set_index(np.arange(i, qdf.shape[0]))
             logger.debug(temp.index)
-            # temp = temp.set_index(np.arange(i,i+res_df.shape[0]))
             qdf.loc[temp.index, proj_list] = temp[list(map(lambda x: '_'.join([x,'right']),proj_list))].values
         except KeyError as e:
             logger.warning("Key of projection in current dataframe does not exist")
@@ -112,17 +112,10 @@ for qname,q in queries:
     print("Resulting QDF =================")
     print(qdf)
     print(qdf.iloc[i:][proj_list])
-    for af in proj_list:
-        if af in afs:
-            afs[af].append((i,qdf.shape[0]))
-        else:
-            afs[af] = [(i,qdf.shape[0])]
-    print(afs)
+
     i=qdf.shape[0]
     j+=1
     logger.info("{}/{} Queries Processed ================".format(j,len(queries)))
-with open('input/instacart_queries/afs.pkl','wb') as f:
-    pickle.dump(afs, f)
 with open('catalogues/distinct_attribute_catalogue.pkl', 'wb') as f:
     pickle.dump(distinct_attr, f)
 qdf.to_pickle('input/instacart_queries/qdf.pkl')
