@@ -22,25 +22,26 @@ targets = [name  for name in qdf.columns if 'lb' not in name and 'ub' not in nam
 sum_columns = [name for name in qdf[targets].columns if 'sum' in name]
 avg_columns = [name for name in qdf[targets].columns if 'avg' in name]
 count_columns = [name for name in qdf[targets].columns if 'count' in name]
-#Dropping unnecessary columns and colapsing everything into one column
-qdf['sum_af'] = qdf[sum_columns].apply(lambda x: float(x.dropna()) if not x.dropna().empty else np.nan,axis=1)
-qdf = qdf.drop(columns=sum_columns)
-qdf['avg_af'] = qdf[avg_columns].apply(lambda x: float(x.dropna()) if not x.dropna().empty else np.nan,axis=1)
-qdf = qdf.drop(columns=avg_columns)
-qdf['count_af'] = qdf[count_columns].apply(lambda x: float(x.dropna()) if not x.dropna().empty else np.nan,axis=1)
-qdf = qdf.drop(columns=count_columns)
+# #Dropping unnecessary columns and colapsing everything into one column
+# qdf['sum_af'] = qdf[sum_columns].apply(lambda x: float(x.dropna()) if not x.dropna().empty else np.nan,axis=1)
+# qdf = qdf.drop(columns=sum_columns)
+# qdf['avg_af'] = qdf[avg_columns].apply(lambda x: float(x.dropna()) if not x.dropna().empty else np.nan,axis=1)
+# qdf = qdf.drop(columns=avg_columns)
+# qdf['count_af'] = qdf[count_columns].apply(lambda x: float(x.dropna()) if not x.dropna().empty else np.nan,axis=1)
+# qdf = qdf.drop(columns=count_columns)
 #Generate Dataframes per aggregate function
-sum_df = qdf.iloc[qdf['sum_af'].dropna(axis=0).index]
-avg_df = qdf.iloc[qdf['avg_af'].dropna(axis=0).index]
-count_df = qdf.iloc[qdf['count_af'].dropna(axis=0).index]
+sum_df = qdf.iloc[qdf['sum_add_to_cart_order'].dropna(axis=0).index]
+avg_df = qdf.iloc[qdf['avg_add_to_cart_order'].dropna(axis=0).index]
+count_df = qdf.iloc[qdf['count'].dropna(axis=0).index]
 
-features = [name for name in sum_df.columns if name not in ['sum_af','avg_af','count_af','c']]
-target_sum = 'sum_af'
-target_avg = 'avg_af'
-target_count = 'count_af'
+features = [name for name in sum_df.columns if name not in ['sum_add_to_cart_order','avg_add_to_cart_order','count']]
+
+target_sum = 'sum_add_to_cart_order'
+target_avg = 'avg_add_to_cart_order'
+target_count = 'count'
 count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces an error on relative error
 
-models_train = [(sum_df, target_sum, 'count'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'sum_add_to_cart_order')]
+models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
 # # read in data
 for df, label,af in models_train:
     if label=='count_af':
