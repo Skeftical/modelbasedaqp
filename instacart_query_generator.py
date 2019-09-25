@@ -41,6 +41,9 @@ for f in os.listdir(directory):
             # print(sql_query.replace(':d','10'))
             for i in range(np.ceil(NUMBER_OF_QUERIES/4).astype(int)):
                 queries.append((os.fsdecode(f),sql_query.replace(':d','{}'.format(np.random.normal(8.3510755171755596, 7.1266711612044177)))))
+        elif os.fsdecode(f)=='q14.sql':
+            for i in range(np.ceil(NUMBER_OF_QUERIES/4).astype(int)):
+                queries.append((os.fsdecode(f),sql_query.replace(':d','{}'.format(np.random.randint(0,7)))))
         else:
             queries.append((os.fsdecode(f),sql_query))
 print(len(queries))
