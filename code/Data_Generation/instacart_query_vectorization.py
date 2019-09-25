@@ -22,8 +22,12 @@ args = parser.parse_args()
 if args.verbosity:
    print("verbosity turned on")
    handler = logging.StreamHandler(sys.stdout)
+   formatter = logging.Formatter("[%(asctime)s;%(levelname)s;%(message)s]",
+                              "%Y-%m-%d %H:%M:%S")
    handler.setLevel(logging.DEBUG)
+   handler.setFormatter(formatter)
    logger.addHandler(handler)
+   
 
 queries = []
 with open('input/instacart_queries/queries.pkl','rb') as f:
@@ -50,8 +54,9 @@ start = time.time()
 for qname,q in queries:
     logger.info("Query :\n{}\n".format(q))
     ####Execute Query and obtain result
+    start_query = time.time()
     cur.execute(q)
-    tot_query_answering_time+=(time.time()-start)
+    tot_query_answering_time+=(time.time()-start_query)
     res = cur.fetchall()
     res_df = pd.DataFrame(res)
     res_df = res_df.set_index(np.arange(i,i+res_df.shape[0]))
@@ -113,7 +118,7 @@ for qname,q in queries:
         qdf.loc[res_df.index, proj_list] = res_df[proj_list]
     print("Resulting QDF =================")
     print(qdf)
-    print(qdf.iloc[i:][proj_list+gattr])
+    print(qdf.iloc[i:])
 
     i=qdf.shape[0]
     j+=1

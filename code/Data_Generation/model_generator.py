@@ -44,7 +44,7 @@ count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces 
 models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
 # # read in data
 for df, label,af in models_train:
-    if label=='count_af':
+    if label=='count':
         labels =  df['product_name_lb'].astype('category').cat.codes
         categorical_attribute_catalogue = {key : value for key,value in zip(df['product_name_lb'].values, labels)}
         df['product_name_lb'] = labels
@@ -52,7 +52,7 @@ for df, label,af in models_train:
             pickle.dump(categorical_attribute_catalogue,f)
 #         obj = 'count:poisson'
     X = df[features].values
-    y = df[label].values
+    y = df[label].values.astype(float)
     dtrain = xgb.DMatrix(X,y)
     # dtest = xgb.DMatrix(y)
     # # specify parameters via map
