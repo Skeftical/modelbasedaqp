@@ -66,7 +66,9 @@ if __name__=='__main__':
                 continue;
             end = time.time()-start
             print(res_df_v)
-            res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i))
+            # res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i))
+            with open('../../output/verdict/tpch/{}.pkl'.format(i), 'wb') as f:
+                pickle.dump(res_df_v, f)            
             if query_name not in query_names:
                 query_names[query_name] = [i]
             else:
