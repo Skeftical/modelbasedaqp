@@ -5,6 +5,7 @@ import os
 import time
 import pandas as pd
 import pickle
+import re
 # parser = argparse.ArgumentParser()
 # parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
 #                     action="store_true")
@@ -64,6 +65,7 @@ if __name__=='__main__':
                 print("Query {} not supported".format(query_name))
                 continue;
             end = time.time()-start
+            print(res_df_v)
             res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i))
             if query_name not in query_names:
                 query_names[query_name] = [i]
