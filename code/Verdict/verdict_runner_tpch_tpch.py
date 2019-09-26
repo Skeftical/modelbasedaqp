@@ -29,12 +29,12 @@ if __name__=='__main__':
     directory = os.fsencode('/home/fotis/Desktop/tpch_2_17_0/dbgen/tpch_queries_10/')
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='tpch1g',user='analyst',password='analyst')
-#    res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
-#                        FROM public.lineitem SIZE 0.1""")
-#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_x
-#                        FROM public.orders SIZE 0.1""")
-#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.partsupp_x
- #                       FROM public.partsupp SIZE 0.1""")
+   res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
+                       FROM public.lineitem SIZE 0.1""")
+   verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_x
+                       FROM public.orders SIZE 0.1""")
+   verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.partsupp_x
+                       FROM public.partsupp SIZE 0.1""")
 #    print(res)
     query_answers_dic = {}
     query_answers_dic['query_name'] = []

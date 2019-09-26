@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 from ml.model import MLAF
 import xgboost as xgb
-
+import time
 
 def relative_error(y_true, y_hat):
     return np.mean(np.abs((y_true-y_hat)/y_true))
@@ -40,7 +40,6 @@ target_sum = 'sum_add_to_cart_order'
 target_avg = 'avg_add_to_cart_order'
 target_count = 'count'
 count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces an error on relative error
-
 models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
 # # read in data
 for df, label,af in models_train:
@@ -56,9 +55,8 @@ for df, label,af in models_train:
     dtrain = xgb.DMatrix(X,y)
     # dtest = xgb.DMatrix(y)
     # # specify parameters via map
-    param = {'max_depth':3, 'eta':1, 'objective':'reg:squarederror'}
-    num_round = 20
-    # bst = xgb.train(param, dtrain, num_round)
+    param = {'max_depth':10, 'eta':0.3, 'objective':obj}
+    num_round = 100
     xgb_model = xgb.train(param, dtrain, num_round)
     rel_error =relative_error(y, xgb_model.predict(dtrain))
     print("Relative Error for {} is {}".format(label, rel_error))
