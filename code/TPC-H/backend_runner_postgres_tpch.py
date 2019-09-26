@@ -6,7 +6,7 @@ import pandas as pd
 import logging
 import time
 import sys
-#
+import pickle
 parser = argparse.ArgumentParser()
 parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
                     action="store_true")
