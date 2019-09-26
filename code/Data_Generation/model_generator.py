@@ -55,8 +55,9 @@ for df, label,af in models_train:
     dtrain = xgb.DMatrix(X,y)
     # dtest = xgb.DMatrix(y)
     # # specify parameters via map
-    param = {'max_depth':10, 'eta':0.3, 'objective':obj}
+    param = {'max_depth':10, 'eta':0.31, 'objective':'reg:squarederror'}
     num_round = 100
+    # bst = xgb.train(param, dtrain, num_round)
     xgb_model = xgb.train(param, dtrain, num_round)
     rel_error =relative_error(y, xgb_model.predict(dtrain))
     print("Relative Error for {} is {}".format(label, rel_error))

@@ -29,12 +29,12 @@ if __name__=='__main__':
     directory = os.fsencode('/home/fotis/Desktop/tpch_2_17_0/dbgen/tpch_queries_10/')
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='tpch1g',user='analyst',password='analyst')
-   res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
-                       FROM public.lineitem SIZE 0.1""")
-   verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_x
-                       FROM public.orders SIZE 0.1""")
-   verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.partsupp_x
-                       FROM public.partsupp SIZE 0.1""")
+#    res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
+ #                      FROM public.lineitem SIZE 0.1""")
+#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_x
+ #                      FROM public.orders SIZE 0.1""")
+ #   verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.partsupp_x
+  #                     FROM public.partsupp SIZE 0.1""")
 #    print(res)
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
@@ -42,6 +42,8 @@ if __name__=='__main__':
     for f in os.listdir(directory):
         print(f)
         query_name = os.fsdecode(f).split('.')[0]
+        if query_name.split('-')[0] not in ['1', '3', '4', '5', '6']:
+            continue;
         print("Query Name : {0}".format(os.fsdecode(f).split('.')[0]))
         with open(os.path.join(directory,f),"r") as sql_query_file:
             sql_query = sql_query_file.read()

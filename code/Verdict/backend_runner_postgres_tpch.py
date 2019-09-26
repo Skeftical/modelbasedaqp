@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import logging
 import time
+import sys
 #
 parser = argparse.ArgumentParser()
 parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
