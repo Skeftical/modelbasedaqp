@@ -62,6 +62,7 @@ if __name__=='__main__':
                 res_df_v = verdict.sql(sql_query)
             except Exception:
                 print("Query {} not supported".format(query_name))
+                continue;
             end = time.time()-start
             res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i))
             if query_name not in query_names:
