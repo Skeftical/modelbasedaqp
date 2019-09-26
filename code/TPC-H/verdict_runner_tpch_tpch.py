@@ -63,13 +63,14 @@ if __name__=='__main__':
             except Exception:
                 print("Query {} not supported".format(query_name))
             end = time.time()-start
-            res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(query_name))
+            res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i))
             if query_name not in query_names:
                 query_names[query_name] = [i]
             else:
                 query_names[query_name].append(i)
             query_answers_dic['time'].append(end)
             query_answers_dic['query_name'].append(query_name)
+            i+=1
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
     qa.to_csv('../../output/verdict/tpch/query-response-time.csv')

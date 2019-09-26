@@ -47,7 +47,7 @@ if __name__=='__main__':
             res = cur.fetchall()
             end = time.time()-start
             res_df = pd.DataFrame(res)
-            res_df.to_pickle('../../output/backend-postgres-actual/tpch/{}.pkl'.format(query_name))
+            res_df.to_pickle('../../output/backend-postgres-actual/tpch/{}.pkl'.format(i))
             if query_name not in query_names:
                 query_names[query_name] = [i]
             else:
