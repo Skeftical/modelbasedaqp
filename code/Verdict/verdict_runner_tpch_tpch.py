@@ -39,14 +39,24 @@ if __name__=='__main__':
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
+    query_names = {}
+    i = 0
+    regex_lineitem = re.compile(r"lineitem", re.IGNORECASE)
+    regex_orders = re.compile(r"orders", re.IGNORECASE)
+    regex_order_partsupp = re.compile(r"partsupp", re.IGNORECASE)
+
     for f in os.listdir(directory):
         print(f)
-        query_name = os.fsdecode(f).split('.')[0]
-        if query_name.split('-')[0] not in ['1', '3', '4', '5', '6']:
+        query_name = os.fsdecode(f).split('.')[0].split('-')[0]
+        if query_name not in ['1', '3', '4', '5', '6']:
             continue;
         print("Query Name : {0}".format(os.fsdecode(f).split('.')[0]))
         with open(os.path.join(directory,f),"r") as sql_query_file:
             sql_query = sql_query_file.read()
+            sql_query = regex_lineitem.sub("lineitem_x",sql_query)
+            sql_query = regex_orders.sub("orders_x",sql_query)
+            sql_query = regex_order_partsupp.sub("partsupp_x",sql_query)
+            print(sql_query)
             start = time.time()
             try:
                 res_df_v = verdict.sql(sql_query)
@@ -54,8 +64,14 @@ if __name__=='__main__':
                 print("Query {} not supported".format(query_name))
             end = time.time()-start
             res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(query_name))
+            if query_name not in query_names:
+                query_names[query_name] = [i]
+            else:
+                query_names[query_name].append(i)
             query_answers_dic['time'].append(end)
             query_answers_dic['query_name'].append(query_name)
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
     qa.to_csv('../../output/verdict/tpch/query-response-time.csv')
+    with open('../../output/verdict/tpch/query-assoc-names.pkl', 'wb') as f:
+        pickle.dump(query_names, f)

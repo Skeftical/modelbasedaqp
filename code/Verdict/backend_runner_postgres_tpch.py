@@ -32,9 +32,11 @@ if __name__=='__main__':
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
+    query_names = {}
+    i = 0
     for f in os.listdir(directory):
-        query_name = os.fsdecode(f).split('.')[0]
-        if query_name.split('-')[0] not in ['1', '3', '4', '5', '6']:
+        query_name = os.fsdecode(f).split('.')[0].split('-')[0]
+        if query_name not in ['1', '3', '4', '5', '6']:
             continue;
         print("Query Name : {0}".format(query_name))
         with open(os.path.join(directory,f),"r") as sql_query_file:
@@ -46,9 +48,16 @@ if __name__=='__main__':
             end = time.time()-start
             res_df = pd.DataFrame(res)
             res_df.to_pickle('../../output/backend-postgres-actual/tpch/{}.pkl'.format(query_name))
+            if query_name not in query_names:
+                query_names[query_name] = [i]
+            else:
+                query_names[query_name].append(i)
             query_answers_dic['time'].append(end)
             query_answers_dic['query_name'].append(query_name)
+            i+=1
     cur.close()
     conn.close()
     qa = pd.DataFrame(query_answers_dic)
     qa.to_csv('../../output/backend-postgres-actual/tpch/query-response-time.csv')
+    with open('../../output/backend-postgres-actual/tpch/query-assoc-names.pkl', 'wb') as f:
+        pickle.dump(query_names, f)
