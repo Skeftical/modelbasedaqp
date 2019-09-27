@@ -54,29 +54,29 @@ if __name__=='__main__':
         print("Query Name : {0}".format(os.fsdecode(f).split('.')[0]))
         with open(os.path.join(directory,f),"r") as sql_query_file:
             sql_query = sql_query_file.read()
-            sql_query = regex_lineitem.sub("lineitem_x",sql_query)
-            sql_query = regex_orders.sub("orders_x",sql_query)
-            sql_query = regex_order_partsupp.sub("partsupp_x",sql_query)
-            print(sql_query)
-            start = time.time()
-            try:
-                res_df_v = verdict.sql(sql_query)
-            except Exception:
-                print("Query {} not supported".format(query_name))
-                continue;
-            end = time.time()-start
-            print(res_df_v)
-            new_df = pd.DataFrame(res_df_v.to_numpy(),columns=res_df_v.columns)
-            new_df.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i))
+        sql_query = regex_lineitem.sub("lineitem_x",sql_query)
+        sql_query = regex_orders.sub("orders_x",sql_query)
+        sql_query = regex_order_partsupp.sub("partsupp_x",sql_query)
+        print(sql_query)
+        start = time.time()
+        try:
+            res_df_v = verdict.sql(sql_query)
+        except Exception:
+            print("Query {} not supported".format(query_name))
+            continue;
+        end = time.time()-start
+        print(res_df_v)
+        new_df = pd.DataFrame(res_df_v.to_numpy(),columns=res_df_v.columns)
+        new_df.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i))
 #            with open('../../output/verdict/tpch/{}.pkl'.format(i), 'wb') as f:
 #                pickle.dump(res_df_v.to_numpy(), f)
-            if query_name not in query_names:
-                query_names[query_name] = [i]
-            else:
-                query_names[query_name].append(i)
-            query_answers_dic['time'].append(end)
-            query_answers_dic['query_name'].append(query_name)
-            i+=1
+        if query_name not in query_names:
+            query_names[query_name] = [i]
+        else:
+            query_names[query_name].append(i)
+        query_answers_dic['time'].append(end)
+        query_answers_dic['query_name'].append(query_name)
+        i+=1
 #        break;
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
