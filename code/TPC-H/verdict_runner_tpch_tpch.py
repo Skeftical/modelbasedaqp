@@ -66,9 +66,9 @@ if __name__=='__main__':
                 continue;
             end = time.time()-start
             print(res_df_v)
-            # res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i))
-            with open('../../output/verdict/tpch/{}.pkl'.format(i), 'wb') as f:
-                pickle.dump(res_df_v, f)            
+            res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i), protocol=-1)
+#            with open('../../output/verdict/tpch/{}.pkl'.format(i), 'wb') as f:
+#                pickle.dump(res_df_v.to_numpy(), f)            
             if query_name not in query_names:
                 query_names[query_name] = [i]
             else:
@@ -76,6 +76,7 @@ if __name__=='__main__':
             query_answers_dic['time'].append(end)
             query_answers_dic['query_name'].append(query_name)
             i+=1
+#        break;
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
     qa.to_csv('../../output/verdict/tpch/query-response-time.csv')
