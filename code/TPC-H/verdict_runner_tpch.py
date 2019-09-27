@@ -45,8 +45,8 @@ if __name__=='__main__':
     regex_lineitem = re.compile(r"lineitem", re.IGNORECASE)
     regex_orders = re.compile(r"orders", re.IGNORECASE)
     regex_order_partsupp = re.compile(r"partsupp", re.IGNORECASE)
-
-    for f in os.listdir(directory):
+    list_of_files = os.listdir(directory)
+    for f in list_of_files:
         print(f)
         query_name = os.fsdecode(f).split('.')[0].split('-')[0]
         if query_name not in ['1', '3', '4', '5', '6']:
@@ -63,9 +63,13 @@ if __name__=='__main__':
             res_df_v = verdict.sql(sql_query)
         except Exception:
             print("Query {} not supported".format(query_name))
+            i+=1
             continue;
         end = time.time()-start
         print(res_df_v)
+        if 'o_orderdate' in res_df_v.columns:
+            res_df_v['o_orderdate'] = res_df_v['o_orderdate'].astype(str)
+        print(res_df_v.to_numpy())
         res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i))
 
         if query_name not in query_names:
