@@ -45,13 +45,13 @@ if __name__=='__main__':
     regex_orders = re.compile(r"orders", re.IGNORECASE)
     regex_order_products = re.compile(r"order_products", re.IGNORECASE)
     for qname,q in queries:
-            start = time.time()
             print(q)
             q = regex_orders.sub("orders_instacart_x",q)
             q = regex_order_products.sub("order_products_instacart_x",q)
             print("Changed Query :")
             print(q)
             print("================================")
+            start = time.time()
             try:
                 res_df_v = verdict.sql(q)
             except Exception as e:
