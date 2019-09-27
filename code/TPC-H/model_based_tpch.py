@@ -37,9 +37,10 @@ target6 = ['revenue']
 features6 = [c for c in df6.columns if c!='revenue']
 
 test_indices = np.random.randint(0,100,20)
-
+k=0
 for i,t in zip([1,3,4,5,6],tpch_dfs):
-    tpch_dfs[i] = t.set_index(map(lambda x: str(i)+'-'+str(x),t.index))
+    tpch_dfs[k] = t.set_index(map(lambda x: str(i)+'-'+str(x),t.index))
+    k+=1
 
 complete_df = pd.concat(tpch_dfs, sort=False)
 
@@ -68,7 +69,7 @@ query_answers_dic['query_name'] = []
 query_answers_dic['time'] = []
 avg_rel_error_queries = {}
 for ix in complete_df_test.index:
-    q = complete_df_test.loc[ix]
+    q = complete_df_test.loc[[ix]]
     print("Query : {}".format(ix))
     X = q[tpch_features].values
     targets = q[tpch_targets].dropna(axis=1).columns
