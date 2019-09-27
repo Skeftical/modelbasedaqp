@@ -27,7 +27,7 @@ if not os.path.exists('../../output/backend-postgres-actual/tpch'):
 if __name__=='__main__':
     print("main executing")
     directory = os.fsencode('/home/fotis/Desktop/tpch_2_17_0/dbgen/tpch_queries_10/')
-    conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='tpch1g',user='analyst',password='analyst')
+    conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='tpch1g',user='analyst',password='analyst',cursor_factory=psycopg2.extras.NamedTupleCursor)
     cur = conn.cursor()
     query_answers_dic = {}
     query_answers_dic['query_name'] = []

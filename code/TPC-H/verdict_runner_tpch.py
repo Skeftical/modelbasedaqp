@@ -69,7 +69,7 @@ if __name__=='__main__':
         print(res_df_v)
         if 'o_orderdate' in res_df_v.columns:
             res_df_v['o_orderdate'] = res_df_v['o_orderdate'].astype(str)
-        print(res_df_v.to_numpy())
+
         res_df_v.to_pickle('../../output/verdict/tpch/{}.pkl'.format(i))
 
         if query_name not in query_names:
