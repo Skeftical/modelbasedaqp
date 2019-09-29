@@ -57,7 +57,7 @@ for df, label,af in models_train:
          verbose_eval=True,)
     rel_error =relative_error(y_test, xgb_model.predict(dtest))
     print("Relative Error for {} is {}".format(label, rel_error))
-    print("Time to train for {} \t took : {}".format(label, time.time()-end))
+    print("Time to train for {} \t took : {}".format(label, time.time()-start))
     ml_est = MLAF(xgb_model, rel_error, features)
     MODEL_CATALOGUE[af] = ml_est
     # xgb_model.save_model('/home/fotis/dev_projects/model-based-aqp/catalogues/{}.dict_model'.format(label))
