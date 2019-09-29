@@ -24,13 +24,6 @@ targets = [name  for name in qdf.columns if 'lb' not in name and 'ub' not in nam
 sum_columns = [name for name in qdf[targets].columns if 'sum' in name]
 avg_columns = [name for name in qdf[targets].columns if 'avg' in name]
 count_columns = [name for name in qdf[targets].columns if 'count' in name]
-# #Dropping unnecessary columns and colapsing everything into one column
-# qdf['sum_af'] = qdf[sum_columns].apply(lambda x: float(x.dropna()) if not x.dropna().empty else np.nan,axis=1)
-# qdf = qdf.drop(columns=sum_columns)
-# qdf['avg_af'] = qdf[avg_columns].apply(lambda x: float(x.dropna()) if not x.dropna().empty else np.nan,axis=1)
-# qdf = qdf.drop(columns=avg_columns)
-# qdf['count_af'] = qdf[count_columns].apply(lambda x: float(x.dropna()) if not x.dropna().empty else np.nan,axis=1)
-# qdf = qdf.drop(columns=count_columns)
 #Generate Dataframes per aggregate function
 sum_df = qdf.iloc[qdf['sum_add_to_cart_order'].dropna(axis=0).index]
 avg_df = qdf.iloc[qdf['avg_add_to_cart_order'].dropna(axis=0).index]
@@ -58,12 +51,13 @@ for df, label,af in models_train:
     dtrain = xgb.DMatrix(X_train,y_train)
     dtest = xgb.DMatrix(X_test, y_test)
 
-    params = {'max_depth':5, 'eta':0.3, 'objective':obj, 'eval_metric':['rmse']}
-
+    params = {'max_depth':5, 'eta':0.3, 'objective':'reg:squarederror', 'eval_metric':['rmse']}
+    start = time.time()
     xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
          verbose_eval=True,)
     rel_error =relative_error(y_test, xgb_model.predict(dtest))
     print("Relative Error for {} is {}".format(label, rel_error))
+    print("Time to train for {} \t took : {}".format(label, time.time()-end))
     ml_est = MLAF(xgb_model, rel_error, features)
     MODEL_CATALOGUE[af] = ml_est
     # xgb_model.save_model('/home/fotis/dev_projects/model-based-aqp/catalogues/{}.dict_model'.format(label))
