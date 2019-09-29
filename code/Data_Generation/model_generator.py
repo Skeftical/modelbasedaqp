@@ -9,6 +9,8 @@ import numpy as np
 from ml.model import MLAF
 import xgboost as xgb
 import time
+from catboost import CatBoostRegressor
+from sklearn.model_selection import train_test_split
 
 def relative_error(y_true, y_hat):
     return np.mean(np.abs((y_true-y_hat)/y_true))
@@ -52,14 +54,15 @@ for df, label,af in models_train:
 #         obj = 'count:poisson'
     X = df[features].values
     y = df[label].values.astype(float)
-    dtrain = xgb.DMatrix(X,y)
-    # dtest = xgb.DMatrix(y)
-    # # specify parameters via map
-    param = {'max_depth':10, 'eta':0.31, 'objective':'reg:squarederror'}
-    num_round = 100
-    # bst = xgb.train(param, dtrain, num_round)
-    xgb_model = xgb.train(param, dtrain, num_round)
-    rel_error =relative_error(y, xgb_model.predict(dtrain))
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
+    dtrain = xgb.DMatrix(X_train,y_train)
+    dtest = xgb.DMatrix(X_test, y_test)
+
+    params = {'max_depth':5, 'eta':0.3, 'objective':obj, 'eval_metric':['rmse']}
+
+    xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
+         verbose_eval=True,)
+    rel_error =relative_error(y_test, xgb_model.predict(dtest))
     print("Relative Error for {} is {}".format(label, rel_error))
     ml_est = MLAF(xgb_model, rel_error, features)
     MODEL_CATALOGUE[af] = ml_est
