@@ -43,9 +43,9 @@ del qdf
 for df, label,af in models_train:
 
     if label=='count':
-        df = df.groupby('product_name_lb', group_keys=False).apply(lambda x: x.sample(min(len(x), 100)))
-        print("Resulting sample {}".format(df.shape))
-        df['product_name_lb'] = df['product_name_lb'].astype(str)
+        # df = df.groupby('product_name_lb', group_keys=False).apply(lambda x: x.sample(min(len(x), 100)))
+        # print("Resulting sample {}".format(df.shape))
+        df['product_name_lb'] = df['product_name_lb'].astype('category')
         X = df[features].values
         y = df[label].values
         y = y.astype(int)
