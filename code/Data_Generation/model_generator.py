@@ -37,6 +37,12 @@ target_count = 'count'
 count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces an error on relative error
 count_df['product_name_lb'] = count_df['product_name_lb'].replace(np.nan, 'isnone')
 count_df['product_name_lb'] = count_df['product_name_lb'].astype('category')
+labels =  count_df['product_name_lb'].cat.codes
+categorical_attribute_catalogue = {key : value for key,value in zip(df['product_name_lb'].values, labels)}
+count_df['product_name_lb'] = labels
+
+with open('catalogues/labels_catalogue.pkl', 'wb') as f:
+    pickle.dump(categorical_attribute_catalogue,f)
 
 avg_df[target_avg] = avg_df[target_avg].astype(float)
 models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
@@ -44,24 +50,7 @@ models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_a
 del qdf
 # # read in data
 for df, label,af in models_train:
-
-    if label=='count':
-        # df = df.groupby('product_name_lb', group_keys=False).apply(lambda x: x.sample(min(len(x), 100)))
-        # print("Resulting sample {}".format(df.shape))
-        X = df[features].values
-        y = df[label].values
-        y = y.astype(int)
-        X_train, X_validation, y_train, y_validation = train_test_split(X, y, train_size=0.7, random_state=1234)
-
-        cat_model=CatBoostRegressor(iterations=1000, depth=3, learning_rate=0.1, loss_function='RMSE')
-        cat_model.fit(X_train, y_train,cat_features=[12],eval_set=(X_validation, y_validation))
-
-        rel_error = relative_error(y_validation, cat_model.predict(X_validation))
-        ml_est = MLAF(cat_model, rel_error, features, label)
-        MODEL_CATALOGUE[af] = ml_est
-        print("Relative Error for {} is {}".format(label, rel_error))
-        continue;
-
+    
     X = df[features].values
     y = df[label].values
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
