@@ -56,7 +56,7 @@ for qname,q in queries:
                 res[g] = []
                 for gval in gvalues:
                     dict_obj[g+'_lb'] = labels_catalogue.get(gval,np.nan)
-                    print("QUERY VECTOR : ===== \n {}".format(dict_obj))
+                    # print("QUERY VECTOR : ===== \n {}".format(dict_obj))
                     res[g].append(gval)
                     res[p].append(est.predict_one(dict_obj))
         else:

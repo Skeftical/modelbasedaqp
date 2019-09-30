@@ -53,7 +53,7 @@ for df, label,af in models_train:
 
     params = {'max_depth':5, 'eta':0.3, 'objective':'reg:squarederror', 'eval_metric':['rmse']}
     start = time.time()
-    xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
+    xgb_model = xgb.train(params, dtrain, num_boost_round=1000, early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
          verbose_eval=True,)
     rel_error =relative_error(y_test, xgb_model.predict(dtest))
     print("Relative Error for {} is {}".format(label, rel_error))
