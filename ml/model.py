@@ -16,7 +16,7 @@ class MLAF:
 
     def __init__(self, estimator, rel_error, feature_names, af):
         self.estimator = estimator
-        self.AF =
+        self.AF = af
         self.rel_error = rel_error
         self.vector_dict = { key : np.nan for key in feature_names}
         print(self.vector_dict)

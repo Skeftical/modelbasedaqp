@@ -51,7 +51,7 @@ for df, label,af in models_train:
         cat_model.fit(X_train, y_train,cat_features=[12],eval_set=(X_validation, y_validation))
 
         rel_error = relative_error(y_validation, cat_model.predict(X_validation))
-        ml_est = MLAF(cat_model, rel_error, features)
+        ml_est = MLAF(cat_model, rel_error, features, label)
         MODEL_CATALOGUE[af] = ml_est
         print("Relative Error for {} is {}".format(label, rel_error))
         continue;
@@ -72,7 +72,7 @@ for df, label,af in models_train:
     print("Relative Error for {} is {}".format(label, rel_error))
     print("Time to train for {} \t took : {}".format(label, time.time()-start))
 
-    ml_est = MLAF(xgb_model, rel_error, features)
+    ml_est = MLAF(xgb_model, rel_error, features, label)
     MODEL_CATALOGUE[af] = ml_est
     # xgb_model.save_model('/home/fotis/dev_projects/model-based-aqp/catalogues/{}.dict_model'.format(label))
 with open('catalogues/model_catalogue.pkl', 'wb') as f:
