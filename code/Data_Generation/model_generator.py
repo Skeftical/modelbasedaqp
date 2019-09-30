@@ -66,7 +66,8 @@ for df, label,af in models_train:
 
     xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
          verbose_eval=True)
-
+         
+    rel_error =relative_error(y_test, xgb_model.predict(dtest))
     print("Relative Error for {} is {}".format(label, rel_error))
     print("Time to train for {} \t took : {}".format(label, time.time()-start))
 
