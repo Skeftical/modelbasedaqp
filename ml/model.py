@@ -10,12 +10,13 @@ class MLAF:
         for k in attr_dict:
             self.vector_dict[k] = attr_dict[k]
         query_vector = np.array(list(self.vector_dict.values())).reshape(1,-1)
-        # print(query_vector)
-        # print(xgb.DMatrix(query_vector))
-        return float(self.estimator.predict(xgb.DMatrix(query_vector)))
+        if af!='count':
+            query_vector = xgb.DMatrix(query_vector)
+        return float(self.estimator.predict(query_vector))
 
-    def __init__(self, estimator, rel_error, feature_names):
+    def __init__(self, estimator, rel_error, feature_names, af):
         self.estimator = estimator
+        self.AF =
         self.rel_error = rel_error
         self.vector_dict = { key : np.nan for key in feature_names}
         print(self.vector_dict)

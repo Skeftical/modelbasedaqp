@@ -47,7 +47,7 @@ for df, label,af in models_train:
         y = y.astype(int)
         X_train, X_validation, y_train, y_validation = train_test_split(X, y, train_size=0.7, random_state=1234)
 
-        cat_model=CatBoostRegressor(iterations=100, depth=3, learning_rate=0.1, loss_function='RMSE')
+        cat_model=CatBoostRegressor(iterations=1000, depth=3, learning_rate=0.1, loss_function='RMSE')
         cat_model.fit(X_train, y_train,cat_features=[12],eval_set=(X_validation, y_validation))
 
         rel_error = relative_error(y_validation, cat_model.predict(X_validation))
