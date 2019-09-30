@@ -35,6 +35,7 @@ target_sum = 'sum_add_to_cart_order'
 target_avg = 'avg_add_to_cart_order'
 target_count = 'count'
 count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces an error on relative error
+avg_df[target_avg] = avg_df[target_avg].astype(float)
 models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
 # # read in data
 for df, label,af in models_train:
@@ -66,7 +67,7 @@ for df, label,af in models_train:
 
     xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
          verbose_eval=True)
-         
+
     rel_error =relative_error(y_test, xgb_model.predict(dtest))
     print("Relative Error for {} is {}".format(label, rel_error))
     print("Time to train for {} \t took : {}".format(label, time.time()-start))
