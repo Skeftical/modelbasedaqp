@@ -37,10 +37,14 @@ target_count = 'count'
 count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces an error on relative error
 avg_df[target_avg] = avg_df[target_avg].astype(float)
 models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
+
+del qdf
 # # read in data
 for df, label,af in models_train:
 
     if label=='count':
+        df = df.groupby('product_name_lb', group_keys=False).apply(lambda x: x.sample(min(len(x), 100)))
+        print("Resulting sample {}".format(df.shape))
         df['product_name_lb'] = df['product_name_lb'].astype(str)
         X = df[features].values
         y = df[label].values
