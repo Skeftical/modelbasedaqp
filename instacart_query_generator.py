@@ -26,7 +26,8 @@ for f in os.listdir(directory):
             for i in range(NUMBER_OF_QUERIES):
                 queries.append((os.fsdecode(f),sql_query.replace(':d','{}'.format(np.random.randint(0,7)))))
         elif os.fsdecode(f) not in ['q1.sql','q3.sql', 'q5.sql']:
-            queries.append((os.fsdecode(f),sql_query))
+            for i in range(NUMBER_OF_QUERIES):
+                queries.append((os.fsdecode(f),sql_query))
 print(len(queries))
 with open('input/instacart_queries/queries.pkl', 'wb') as f:
   pickle.dump(queries, f)
@@ -45,7 +46,8 @@ for f in os.listdir(directory):
             for i in range(np.ceil(NUMBER_OF_QUERIES/4).astype(int)):
                 queries.append((os.fsdecode(f),sql_query.replace(':d','{}'.format(np.random.randint(0,7)))))
         else:
-            queries.append((os.fsdecode(f),sql_query))
+            for i in range(np.ceil(NUMBER_OF_QUERIES/4).astype(int)):
+                queries.append((os.fsdecode(f),sql_query))
 print(len(queries))
 with open('input/instacart_queries/queries-test.pkl', 'wb') as f:
   pickle.dump(queries, f)
