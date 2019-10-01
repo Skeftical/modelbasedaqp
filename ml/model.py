@@ -9,7 +9,7 @@ class MLAF:
     def predict_one(self, attr_dict):
         array = []
         for k in self.features:
-            array.append(np.float(attr[k]))
+            array.append(np.float(attr_dict.get(k, np.nan)))
     #     temp.append(m.predict_one(attr))
         query_vector = xgb.DMatrix(np.array(array).reshape(1,-1), feature_names=self.features)
         return float(self.estimator.predict(query_vector))
