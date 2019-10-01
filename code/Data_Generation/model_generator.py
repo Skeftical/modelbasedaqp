@@ -15,6 +15,25 @@ from sklearn.model_selection import train_test_split
 def relative_error(y_true, y_hat):
     return np.mean(np.abs((y_true-y_hat)/y_true))
 
+def f_relative_error(y_true, dtrain):
+    y_hat = dtrain.get_label()
+    return np.mean(np.abs((y_true-y_hat)/y_true))
+
+def gradient(preds, dtrain):
+    #Gradient for custom error
+    y = dtrain.get_label()
+    return (2*(preds-y)) / np.power(y,2)
+
+def hessian(preds, dtrain):
+    y = dtrain.get_label()
+    return 2/np.power(y,2)
+
+def custom_relative_error_loss(preds, dtrain):
+    grad = gradient(preds, dtrain)
+    hess = hessian(preds, dtrain)
+    return grad, hess
+
+
 MODEL_CATALOGUE = {}
 
 
@@ -50,17 +69,17 @@ models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_a
 del qdf
 # # read in data
 for df, label,af in models_train:
-    
+
     X = df[features].values
     y = df[label].values
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
     dtrain = xgb.DMatrix(X_train,y_train, feature_names=features)
     dtest = xgb.DMatrix(X_test, y_test, feature_names=features)
 
-    params = {'max_depth':6, 'eta':0.3, 'objective':'reg:squarederror', 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
+    params = {'max_depth':6, 'eta':0.3, 'objective':custom_relative_error_loss, 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
     start = time.time()
 
-    xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
+    xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')],
          verbose_eval=True)
 
     rel_error =relative_error(y_test, xgb_model.predict(dtest))
