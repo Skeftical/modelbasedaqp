@@ -38,7 +38,7 @@ count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces 
 count_df['product_name_lb'] = count_df['product_name_lb'].replace(np.nan, 'isnone')
 count_df['product_name_lb'] = count_df['product_name_lb'].astype('category')
 labels =  count_df['product_name_lb'].cat.codes
-categorical_attribute_catalogue = {key : value for key,value in zip(df['product_name_lb'].values, labels)}
+categorical_attribute_catalogue = {key : value for key,value in zip(count_df['product_name_lb'].values, labels)}
 count_df['product_name_lb'] = labels
 
 with open('catalogues/labels_catalogue.pkl', 'wb') as f:
@@ -54,8 +54,8 @@ for df, label,af in models_train:
     X = df[features].values
     y = df[label].values
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
-    dtrain = xgb.DMatrix(X_train,y_train)
-    dtest = xgb.DMatrix(X_test, y_test)
+    dtrain = xgb.DMatrix(X_train,y_train, feature_names=features)
+    dtest = xgb.DMatrix(X_test, y_test, feature_names=features)
 
     params = {'max_depth':5, 'eta':0.3, 'objective':'reg:squarederror', 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
     start = time.time()
