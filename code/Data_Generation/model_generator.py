@@ -57,7 +57,7 @@ for df, label,af in models_train:
     dtrain = xgb.DMatrix(X_train,y_train, feature_names=features)
     dtest = xgb.DMatrix(X_test, y_test, feature_names=features)
 
-    params = {'max_depth':5, 'eta':0.3, 'objective':'reg:squarederror', 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
+    params = {'max_depth':6, 'eta':0.3, 'objective':'reg:squarederror', 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
     start = time.time()
 
     xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
