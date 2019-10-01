@@ -7,6 +7,8 @@ import logging
 import time
 import pickle
 import sys
+from psycopg2.extras import NamedTupleCursor
+
 # logger = logging.getLogger(__name__)
 # parser = argparse.ArgumentParser()
 # parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
@@ -30,7 +32,7 @@ if __name__=='__main__':
     print("main executing")
     with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
         queries = pickle.load(f)
-    conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='instacart',user='analyst',password='analyst')
+    conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='instacart',user='analyst',password='analyst',cursor_factory=NamedTupleCursor)
     cur = conn.cursor()
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
