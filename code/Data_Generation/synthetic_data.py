@@ -2,10 +2,9 @@ import pandas as pd
 import numpy as np
 import os
 import sys
-os.chdir("../../../dynamic-reproducibility")
+os.chdir("../../")
 sys.path.append('utils')
 from confs import Config
-from terminal_outputs import printProgressBar
 import datetime
 import logging
 import re
@@ -160,7 +159,7 @@ def generate_queries(queries=Config.queries):
                 printProgressBar(i, queries,prefix = 'Progress:', suffix = 'Complete', length = 50)
             print(" Fraction of queries with nans {}".format(float(errors)/queries))
             q_set = np.array(query_set)
-            
+
             np.savetxt("input/synthetic_workloads/{}-Queries/query-workload-predicates_{}-cols_{}.csv".format(queries,PREDICATES, COLS), q_set.reshape(queries,q_set.shape[2]), delimiter=",")
 
 if __name__=='__main__':

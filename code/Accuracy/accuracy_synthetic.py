@@ -13,7 +13,7 @@ from sklearn.neural_network import MLPRegressor
 from sklearn import metrics
 import sys
 import os
-os.chdir("../../../dynamic-reproducibility")
+os.chdir("../../")
 sys.path.append('utils')
 from confs import Config
 from terminal_outputs import printProgressBar
