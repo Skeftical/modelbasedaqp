@@ -9,6 +9,8 @@ import numpy as np
 from ml.model import MLAF
 import xgboost as xgb
 import time
+from sklearn.model_selection import train_test_split
+
 
 
 
@@ -35,22 +37,21 @@ features = [name for name in sum_df.columns if name not in ['sum_add_to_cart_ord
 
 target_sum = 'sum_add_to_cart_order'
 
-
+print("NUmber of total rows : {}".format(sum_df.shape[0]))
 del qdf
 query_results = {}
 query_results['boosting'] = []
 query_results['max_depth'] = []
-query_results['storage'] = []
 query_results['time'] = []
 query_results['size'] = []
 boosting = [10, 100, 300, 500, 1000]
 max_depth = [1,3,5,7,9,12]
 # # read in data
 for b in boosting:
-    for d in max_depth
+    for d in max_depth:
 
         X = sum_df.loc[:, features].values
-        y = sum_df.loc[:, label].values
+        y = sum_df.loc[:, target_sum].values
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
         dtrain = xgb.DMatrix(X_train,y_train, feature_names=features)
         dtest = xgb.DMatrix(X_test, y_test, feature_names=features)
@@ -64,11 +65,11 @@ for b in boosting:
             query_results['boosting'].append(b)
             query_results['max_depth'].append(d)
             query_results['time'].append(end)
-        pkl_filename = "pickle_model.pkl"
-        with open(pkl_filename, 'wb') as file:
-            pickle.dump(m, file)
-        statinfo = os.stat('pickle_model.pkl')
-        query_results['size'].append(statinfo.st_size)
+            pkl_filename = "pickle_model.pkl"
+            with open(pkl_filename, 'wb') as file:
+               pickle.dump(xgb_model, file)
+            statinfo = os.stat('pickle_model.pkl')
+            query_results['size'].append(statinfo.st_size)
         print("Time to train for {} \t took : {}+-".format((b,d), np.mean(query_results['time']), np.std(query_results['time'])))
 
     # xgb_model.save_model('/home/fotis/dev_projects/model-based-aqp/catalogues/{}.dict_model'.format(label))
