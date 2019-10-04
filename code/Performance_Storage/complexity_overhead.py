@@ -28,16 +28,24 @@ if not os.path.exists('output/performance/complexity_store'):
 qdf = pd.read_pickle('input/instacart_queries/qdf.pkl')
 targets = [name  for name in qdf.columns if 'lb' not in name and 'ub' not in name]
 #Filtering out the product of joins in the aggregate functions
-sum_columns = [name for name in qdf[targets].columns if 'sum' in name]
+count_columns = [name for name in qdf[targets].columns if 'count' in name]
 #Generate Dataframes per aggregate function
-sum_df = qdf.iloc[qdf['sum_add_to_cart_order'].dropna(axis=0).index]
+count_df = qdf.iloc[qdf['count'].dropna(axis=0).index]
+count_df = count_df.iloc[:5000]
+features = [name for name in count_df.columns if name not in ['sum_add_to_cart_order','avg_add_to_cart_order','count']]
 
-features = [name for name in sum_df.columns if name not in ['sum_add_to_cart_order','avg_add_to_cart_order','count']]
 
+target_count = 'count'
+count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces an error on relative error
+count_df['product_name_lb'] = count_df['product_name_lb'].replace(np.nan, 'isnone')
+count_df['product_name_lb'] = count_df['product_name_lb'].astype('category')
+labels =  count_df['product_name_lb'].cat.codes
+categorical_attribute_catalogue = {key : value for key,value in zip(count_df['product_name_lb'].values, labels)}
+count_df['product_name_lb'] = labels
 
-target_sum = 'sum_add_to_cart_order'
+del qdf
 
-print("NUmber of total rows : {}".format(sum_df.shape[0]))
+print("NUmber of total rows : {}".format(count_df.shape[0]))
 del qdf
 query_results = {}
 query_results['boosting'] = []
@@ -50,8 +58,8 @@ max_depth = [1,3,5,7,9,12]
 for b in boosting:
     for d in max_depth:
 
-        X = sum_df.loc[:, features].values
-        y = sum_df.loc[:, target_sum].values
+        X = count_df.loc[:, features].values
+        y = count_df.loc[:, target_count].values
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
         dtrain = xgb.DMatrix(X_train,y_train, feature_names=features)
         dtest = xgb.DMatrix(X_test, y_test, feature_names=features)
