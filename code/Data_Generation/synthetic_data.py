@@ -3,7 +3,8 @@ import numpy as np
 import os
 import sys
 os.chdir("../../")
-sys.path.append('utils')
+print(os.listdir('.'))
+sys.path.append(".")
 from confs import Config
 import datetime
 import logging
@@ -14,6 +15,28 @@ logger = logging.getLogger(__name__)
 SELECTIVITY = 0.1 # Selectivity scaler
 MIN_VAL = 0
 MAX_VAL = 1
+
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '|'):
+    """
+    Call in a loop to create terminal progress bar
+    @params:
+        iteration   - Required  : current iteration (Int)
+        total       - Required  : total iterations (Int)
+        prefix      - Optional  : prefix string (Str)
+        suffix      - Optional  : suffix string (Str)
+        decimals    - Optional  : positive number of decimals in percent complete (Int)
+        length      - Optional  : character length of bar (Int)
+        fill        - Optional  : bar fill character (Str)
+    """
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = '\r')
+    # Print New Line on Complete
+    if iteration == total:
+        print()
+
+
 def generate_dataset(min_val=MIN_VAL, max_val=MAX_VAL, total=Config.data):
     '''
     Generate Uniform Dataset across values
