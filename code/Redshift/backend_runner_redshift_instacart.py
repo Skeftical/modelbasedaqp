@@ -39,8 +39,12 @@ if __name__=='__main__':
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
     i = 0
+    counter = {}
     for qname,q in queries:
         print("Query {}".format(q))
+        counter[qname] = counter.get(qname,0)+1
+        if counter[qname]==5:
+            continue;
         start = time.time()
         try:
             cur.execute(q)
