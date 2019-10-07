@@ -33,7 +33,7 @@ if __name__=='__main__':
     with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
         queries = pickle.load(f)
     conn = psycopg2.connect(host='examplecluster.ck9mym5op4yd.eu-west-1.redshift.amazonaws.com',port=5439,dbname='dev',user='awsuser',password=args.password,cursor_factory=NamedTupleCursor)
-
+    cur = conn.cursor()
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
