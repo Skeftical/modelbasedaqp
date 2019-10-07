@@ -42,7 +42,6 @@ if __name__=='__main__':
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
-    query_names = {}
     i = 0
     regex_orders = re.compile(r"orders", re.IGNORECASE)
     regex_order_products = re.compile(r"order_products", re.IGNORECASE)
@@ -60,16 +59,11 @@ if __name__=='__main__':
                 print("Query {} not supported".format(qname))
                 print(e)
             end = time.time()-start
-            res_df_v.to_pickle('../../output/verdict-redshift/instacart/{}.pkl'.format(i))
-            if qname not in query_names:
-                query_names[qname] = [i]
-            else:
-                query_names[qname].append(i)
+
             query_answers_dic['time'].append(end)
             query_answers_dic['query_name'].append(qname)
             i+=1
+            break;
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
     qa.to_csv('../../output/verdict-redshift/instacart/query-response-time.csv')
-    with open('../../output/verdict-redshift/instacart/query-assoc-names.pkl', 'wb') as f:
-        pickle.dump(query_names, f)
