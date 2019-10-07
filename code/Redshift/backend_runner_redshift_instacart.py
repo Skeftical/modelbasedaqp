@@ -29,7 +29,7 @@ if not os.path.exists('../../output/backend-redshift/instacart'):
         os.makedirs('../../output/backend-redshift/instacart')
 
 if __name__=='__main__':
-    THRESH = 60000
+    THRESH = 60000*5 #minutes
     print("main executing")
     with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
         queries = pickle.load(f)
@@ -39,6 +39,7 @@ if __name__=='__main__':
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
     i = 0
+    sys.stdout.flush()
     for qname,q in queries:
         print("Query {}".format(q))
         start = time.time()
@@ -50,10 +51,12 @@ if __name__=='__main__':
             print("Query {} exceeded threshold".format(qname))
             print(e)
             end = THRESH/1000
+            conn.rollback()
+            sys.stdout.flush()
         query_answers_dic['time'].append(end)
         query_answers_dic['query_name'].append(qname)
         i+=1
-        break;
+      
     cur.close()
     conn.close()
     qa = pd.DataFrame(query_answers_dic)

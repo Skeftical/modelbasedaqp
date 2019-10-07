@@ -2,8 +2,8 @@ import numpy as np
 import xgboost as xgb
 import os
 import sys
-os.chdir('../')
-sys.path.append('.')
+#os.chdir('../')
+#sys.path.append('.')
 from sql_parser.parser import QueryVectorizer
 
 class MLAF:
@@ -24,7 +24,7 @@ class MLAF:
         for a in attr_dict:
             qv.insert(a, attr_dict[a])
         query_matrix = xgb.DMatrix(qv.to_matrix(), feature_names=self.features)
-        return self.estimator.predict(query_vector)
+        return self.estimator.predict(query_matrix)
 
     def __init__(self, estimator, rel_error, feature_names, af):
         self.estimator = estimator

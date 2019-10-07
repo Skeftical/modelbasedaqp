@@ -1,7 +1,7 @@
 import os
 import sys
 os.chdir('../../')
-#print(os.listdir('.'))
+print(os.listdir('.'))
 sys.path.append('.')
 import pickle
 import psycopg2
@@ -21,7 +21,7 @@ with open('catalogues/distinct_attribute_catalogue.pkl', 'rb') as f:
 
 with open('catalogues/model_catalogue.pkl', 'rb') as f:
     model_catalogue = pickle.load(f)
-
+print(os.listdir('.'))
 with open('catalogues/labels_catalogue.pkl', 'rb') as f:
     labels_catalogue = pickle.load(f)
 
@@ -55,15 +55,15 @@ for qname,q in queries:
                 print("length of groupby values {}".format(len(gvalues)))
                 res[g] = gvalues
                 dict_obj[g+'_lb'] = [labels_catalogue.get(gval,np.nan) for gval in gvalues]
-                res[p]+=est.predict_many(dict_obj).tolist())
+                res[p]+=est.predict_many(dict_obj).tolist()
         else:
             res[p].append(est.predict_one(dict_obj))
     end = time.time()-start
-    print(res)
+    
     res_df = pd.DataFrame(res)
+    print(res_df)
     print(res_df.describe())
     res_df.to_pickle('output/model-based/instacart/{}.pkl'.format(i))
-    break;
     #####
     query_answers_dic['time'].append(end)
     query_answers_dic['query_name'].append(qname)
