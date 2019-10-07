@@ -29,28 +29,27 @@ if not os.path.exists('../../output/backend-redshift/instacart'):
         os.makedirs('../../output/backend-redshift/instacart')
 
 if __name__=='__main__':
+    THRESH = 60000
     print("main executing")
     with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
         queries = pickle.load(f)
-    conn = psycopg2.connect(host='examplecluster.ck9mym5op4yd.eu-west-1.redshift.amazonaws.com',port=5439,dbname='dev',user='awsuser',password=args.password,cursor_factory=NamedTupleCursor,options='-c statement_timeout=60000' )
+    conn = psycopg2.connect(host='examplecluster.ck9mym5op4yd.eu-west-1.redshift.amazonaws.com',port=5439,dbname='dev',user='awsuser',password=args.password,cursor_factory=NamedTupleCursor,options='-c statement_timeout={}'.format(THRESH) )
     cur = conn.cursor()
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
-    query_names = {}
     i = 0
     for qname,q in queries:
         print("Query {}".format(q))
         start = time.time()
-        cur.execute(q)
-        res = cur.fetchall()
-        end = time.time()-start
-        res_df = pd.DataFrame(res)
-        res_df.to_pickle('../../output/backend-redshift/instacart/{}.pkl'.format(i))
-        if qname not in query_names:
-            query_names[qname] = [i]
-        else:
-            query_names[qname].append(i)
+        try:
+            cur.execute(q)
+            res = cur.fetchall()
+            end = time.time()-start
+        except psycopg2.errors.QueryCanceled as e:
+            print("Query {} exceeded threshold".format(qname))
+            print(e)
+            end = THRESH/1000
         query_answers_dic['time'].append(end)
         query_answers_dic['query_name'].append(qname)
         i+=1
@@ -59,5 +58,3 @@ if __name__=='__main__':
     conn.close()
     qa = pd.DataFrame(query_answers_dic)
     qa.to_csv('../../output/backend-redshift/instacart/query-response-time.csv')
-    with open('../../output/backend-redshift/instacart/query-assoc-names.pkl', 'wb') as f:
-        pickle.dump(query_names, f)
