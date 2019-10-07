@@ -169,17 +169,20 @@ class QueryVectorizer():
     def _get_internal_representation(self):
         return self.__internal_dict
 
-    def __init__(self, attributes):
+    def __init__(self, attributes, SET_OWN=False):
         self.__internal_dict = {}
         self.attrs_with_str = set()
         self.attr_str_mapper = {}
         self.__max_row_size = 0
-        self.__column_size = len(attributes)*2
         self.__sparse_matrix = None
-        for k in attributes:
-            self.__internal_dict['_'.join([k,'lb'])] = []
-            self.__internal_dict['_'.join([k,'ub'])] = []
-
+        if not SET_OWN:
+            for k in attributes:
+                self.__internal_dict['_'.join([k,'lb'])] = []
+                self.__internal_dict['_'.join([k,'ub'])] = []
+        else:
+            for k in attributes:
+                self.__internal_dict[k] = []
+        self.__column_size = len(self.__internal_dict)
         self.__column_names = self.__internal_dict.keys()
 
 
