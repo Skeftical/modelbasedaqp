@@ -31,7 +31,7 @@ targets = [name  for name in qdf.columns if 'lb' not in name and 'ub' not in nam
 count_columns = [name for name in qdf[targets].columns if 'count' in name]
 #Generate Dataframes per aggregate function
 count_df = qdf.iloc[qdf['count'].dropna(axis=0).index]
-count_df = count_df.iloc[:5000]
+count_df = count_df.iloc[:10000]
 features = [name for name in count_df.columns if name not in ['sum_add_to_cart_order','avg_add_to_cart_order','count']]
 
 
@@ -46,7 +46,6 @@ count_df['product_name_lb'] = labels
 del qdf
 
 print("NUmber of total rows : {}".format(count_df.shape[0]))
-del qdf
 query_results = {}
 query_results['boosting'] = []
 query_results['max_depth'] = []
