@@ -31,12 +31,13 @@ if __name__=='__main__':
     with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
        queries = pickle.load(f)
 
-    verdict = pyverdict.redshift(host='examplecluster.ck9mym5op4yd.eu-west-1.redshift.amazonaws.com',port=5439,dbname='dev',user='awsuser',password=args.pass)
-
-#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
- #                     FROM public.order_products SIZE 0.1""")
- #   verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
-  #                    FROM public.orders SIZE 0.1""")
+    verdict = pyverdict.redshift(host='examplecluster.ck9mym5op4yd.eu-west-1.redshift.amazonaws.com',port=5439,dbname='dev',user='awsuser',password=args.password)
+    start = time.time()
+    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
+                     FROM public.order_products SIZE 0.1""")
+    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
+                     FROM public.orders SIZE 0.1""")
+    print("Time to build samples {}".format(time.time()-start))
 #    print(res)
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
@@ -59,7 +60,7 @@ if __name__=='__main__':
                 print("Query {} not supported".format(qname))
                 print(e)
             end = time.time()-start
-            res_df_v.to_pickle('../../output/verdict/instacart/{}.pkl'.format(i))
+            res_df_v.to_pickle('../../output/verdict-redshift/instacart/{}.pkl'.format(i))
             if qname not in query_names:
                 query_names[qname] = [i]
             else:
@@ -69,6 +70,6 @@ if __name__=='__main__':
             i+=1
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
-    qa.to_csv('../../output/verdict/instacart/query-response-time.csv')
-    with open('../../output/verdict/instacart/query-assoc-names.pkl', 'wb') as f:
+    qa.to_csv('../../output/verdict-redshift/instacart/query-response-time.csv')
+    with open('../../output/verdict-redshift/instacart/query-assoc-names.pkl', 'wb') as f:
         pickle.dump(query_names, f)

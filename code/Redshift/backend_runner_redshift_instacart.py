@@ -54,6 +54,7 @@ if __name__=='__main__':
         query_answers_dic['time'].append(end)
         query_answers_dic['query_name'].append(qname)
         i+=1
+        break;
     cur.close()
     conn.close()
     qa = pd.DataFrame(query_answers_dic)
