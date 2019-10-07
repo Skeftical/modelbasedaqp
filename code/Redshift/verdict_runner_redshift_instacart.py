@@ -6,12 +6,13 @@ import time
 import pandas as pd
 import pickle
 import re
-# parser = argparse.ArgumentParser()
+
+parser = argparse.ArgumentParser()
 # parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
-#                     action="store_true")
-# parser.add_argument('-v',help='verbosity',dest='verbosity',action="store_true")
-# parser.add_argument('source')
-# args = parser.parse_args()
+#                      action="store_true")
+#parser.add_argument('--pass',dest='pass', help='pass connection password')
+parser.add_argument("password")
+args = parser.parse_args()# parser.add_argument('source')
 #
 # if args.verbosity:
 #    print("verbosity turned on")
@@ -21,16 +22,16 @@ import re
 #
 # print(args.source)
 
-if not os.path.exists('../../output/verdict/instacart'):
+if not os.path.exists('../../output/verdict-redshift/instacart'):
         # logger.info('creating directory Accuracy')
-        os.makedirs('../../output/verdict/instacart')
+        os.makedirs('../../output/verdict-redshift/instacart')
 
 if __name__=='__main__':
     print("main executing")
     with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
        queries = pickle.load(f)
 
-    verdict = pyverdict.postgres('127.0.0.1',5433,dbname='instacart',user='analyst',password='analyst')
+    verdict = pyverdict.redshift(host='examplecluster.ck9mym5op4yd.eu-west-1.redshift.amazonaws.com',port=5439,dbname='dev',user='awsuser',password=args.pass)
 
 #    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
  #                     FROM public.order_products SIZE 0.1""")
