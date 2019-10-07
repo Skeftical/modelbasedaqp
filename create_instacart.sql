@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS aisles (
-  aisleid int PRIMARY KEY,
+  aisleid int,
   aisle varchar(64)
 );
 
 CREATE TABLE IF NOT EXISTS departments (
-  departmentid int PRIMARY KEY,
+  departmentid int,
   department varchar(64)
 );
 
@@ -24,12 +24,11 @@ CREATE TABLE IF NOT EXISTS orders (
   order_dow int,
   order_hour_of_day int,
   days_since_prior_order float,
-  PRIMARY KEY(order_id, user_id)
 );
 
-  CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE IF NOT EXISTS products (
     product_id int,
     product_name varchar(512),
     aisle_id int,
     department_id int
-  );
+);
