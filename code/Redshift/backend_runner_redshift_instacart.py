@@ -10,10 +10,11 @@ import sys
 from psycopg2.extras import NamedTupleCursor
 
 # logger = logging.getLogger(__name__)
-# parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser()
 # parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
 #                      action="store_true")
-parser.add_argument('--pass',dest='pass' help='pass connection password')
+#parser.add_argument('--pass',dest='pass', help='pass connection password')
+parser.add_argument("password")
 args = parser.parse_args()# parser.add_argument('source')
 #
 # if args.verbosity:
@@ -24,14 +25,14 @@ args = parser.parse_args()# parser.add_argument('source')
 # #
 # print(args.source)
 if not os.path.exists('../../output/backend-redshift/instacart'):
-        logger.info('creating directory Accuracy')
+        print('creating directory Accuracy')
         os.makedirs('../../output/backend-redshift/instacart')
 
 if __name__=='__main__':
     print("main executing")
     with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
         queries = pickle.load(f)
-    conn = psycopg2.connect(host='examplecluster.ck9mym5op4yd.eu-west-1.redshift.amazonaws.com',port=5439,dbname='dev',user='awsuser',password=args.pass,cursor_factory=NamedTupleCursor)
+    conn = psycopg2.connect(host='examplecluster.ck9mym5op4yd.eu-west-1.redshift.amazonaws.com',port=5439,dbname='dev',user='awsuser',password=args.password,cursor_factory=NamedTupleCursor)
 
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
