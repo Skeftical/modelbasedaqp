@@ -44,7 +44,7 @@ if __name__=='__main__':
     for qname,q in queries:
         print("Query {}".format(q))
         counter[qname] = counter.get(qname,0)+1
-        if counter[qname]==5:
+        if counter[qname]>=5:
             continue;
         start = time.time()
         try:

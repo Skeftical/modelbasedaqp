@@ -33,10 +33,10 @@ if __name__=='__main__':
 
     verdict = pyverdict.redshift(host='examplecluster.ck9mym5op4yd.eu-west-1.redshift.amazonaws.com',port=5439,dbname='dev',user='awsuser',password=args.password)
     start = time.time()
-    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
-                     FROM public.order_products SIZE 0.1""")
-    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
-                     FROM public.orders SIZE 0.1""")
+#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
+#                     FROM public.order_products SIZE 0.1""")
+#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
+#                     FROM public.orders SIZE 0.1""")
     print("Time to build samples {}".format(time.time()-start))
 #    print(res)
     query_answers_dic = {}
