@@ -38,7 +38,7 @@ if __name__=='__main__':
     with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
        queries = pickle.load(f)
     signal.signal(signal.SIGALRM, handler)
-    THRESH = 60000 #minutes
+    THRESH = 60000*5 #minutes
     verdict = pyverdict.redshift(host='examplecluster.ck9mym5op4yd.eu-west-1.redshift.amazonaws.com',port=5439,dbname='dev',user='awsuser',password=args.password)
     start = time.time()
 #    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
@@ -76,13 +76,11 @@ if __name__=='__main__':
             except Exception as e:
                 print("Query {} not supported".format(qname))
                 print(e)
-                end = None
-
+                end = THRESH/1000
 
             query_answers_dic['time'].append(end)
             query_answers_dic['query_name'].append(qname)
             i+=1
-            break;
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
     qa.to_csv('../../output/verdict-redshift/instacart/query-response-time.csv')
