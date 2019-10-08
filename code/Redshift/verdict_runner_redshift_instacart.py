@@ -55,7 +55,7 @@ if __name__=='__main__':
     regex_order_products = re.compile(r"order_products", re.IGNORECASE)
     counter = {}
     for qname,q in queries:
-            print(q)
+            print("Query Name {}".format(qname))
             counter[qname] = counter.get(qname,0)+1
             if counter[qname]>=5:
                 continue;
@@ -66,7 +66,8 @@ if __name__=='__main__':
             print("================================")
             start = time.time()
             try:
-                signal.alarm(THRESH//1000)
+                if '14' in qname:
+                    signal.alarm(THRESH//1000)
                 res_df_v = verdict.sql(q)
                 end = time.time()-start
             except CustomException as e:
