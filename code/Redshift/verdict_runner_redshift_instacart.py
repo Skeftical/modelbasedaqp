@@ -12,7 +12,6 @@ class CustomException(Exception):
     pass
 
 def handler(signum, frame):
-        print "Forever is over!"
         raise CustomException("end of time")
 parser = argparse.ArgumentParser()
 # parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
@@ -67,11 +66,11 @@ if __name__=='__main__':
             print("================================")
             start = time.time()
             try:
-                signal.alarm(THRESH)
+                signal.alarm(THRESH//1000)
                 res_df_v = verdict.sql(q)
                 end = time.time()-start
             except CustomException as e:
-                print("Query {} not supported".format(qname))
+                print("Query {} timed outd".format(qname))
                 print(e)
                 end = THRESH/1000
             except Exception as e:
