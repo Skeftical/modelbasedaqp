@@ -15,6 +15,8 @@ import time
 if not os.path.exists('output/model-based-networn/instacart'):
         os.makedirs('output/model-based-network/instacart')
 
+with open('input/instacart_queries/queries-test.pkl', 'rb') as f:
+    queries = pickle.load(f)
 
 query_answers_dic = {}
 query_answers_dic['query_name'] = []
