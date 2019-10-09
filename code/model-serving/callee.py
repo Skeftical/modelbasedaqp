@@ -1,7 +1,6 @@
 import json
 # import boto3
 import pickle
-from sklearn.externals import joblib
 import numpy as np
 with open('distinct_attribute_catalogue.pkl', 'rb') as f:
     distinct_attr = pickle.load(f)
