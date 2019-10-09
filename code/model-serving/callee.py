@@ -45,17 +45,9 @@ def lambda_handler(event, context):
 
 
 if __name__=="__main__":
-    event = {
-      "data": [
-        [
-          6.2,
-          3.4
-        ],
-        [
-          6.2,
-          1
-        ]
-      ]
-    }
+    event = {}
+    event['projections'] = ['count']
+    event['groups'] = ['product_name']
+    event['filters']= {'order_dow_lb': 4.0, 'order_dow_ub': 4.0}
     res = lambda_handler(event, "")
     print(res)
