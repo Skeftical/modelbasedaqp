@@ -21,7 +21,7 @@ with open('catalogues/distinct_attribute_catalogue.pkl', 'rb') as f:
 
 with open('catalogues/model_catalogue.pkl', 'rb') as f:
     model_catalogue = pickle.load(f)
-print(os.listdir('.'))
+
 with open('catalogues/labels_catalogue.pkl', 'rb') as f:
     labels_catalogue = pickle.load(f)
 
@@ -59,7 +59,7 @@ for qname,q in queries:
         else:
             res[p].append(est.predict_one(dict_obj))
     end = time.time()-start
-    
+
     res_df = pd.DataFrame(res)
     print(res_df)
     print(res_df.describe())

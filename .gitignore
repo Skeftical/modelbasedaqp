@@ -4,3 +4,5 @@ output/
 *.log
 *.out
 *.pkl
+model-serving-packages
+function.zip
