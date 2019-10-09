@@ -12,7 +12,7 @@ from sql_parser.parser import Parser
 import numpy as np
 import time
 
-if not os.path.exists('output/model-based-networn/instacart'):
+if not os.path.exists('output/model-based-network/instacart'):
         os.makedirs('output/model-based-network/instacart')
 
 with open('input/instacart_queries/queries-test.pkl', 'rb') as f:
