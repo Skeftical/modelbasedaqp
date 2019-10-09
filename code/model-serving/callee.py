@@ -3,20 +3,14 @@ import json
 import pickle
 from sklearn.externals import joblib
 
-model = joblib.load('model.pkl')
+with open('distinct_attribute_catalogue.pkl', 'rb') as f:
+    distinct_attr = pickle.load(f)
 
-# BUCKET_NAME = 'uogbigdata-models'
-# MODEL_FILE_NAME = 'model.pkl'
+with open('model_catalogue.pkl', 'rb') as f:
+    model_catalogue = pickle.load(f)
 
-# S3 = boto3.client('s3', region_name='eu-west-1')
-
-# def load_model(key):
-#     # Load model from S3 bucket
-#     response = S3.get_object(Bucket=BUCKET_NAME, Key=key)# Load pickle model
-#     model_str = response['Body'].read()
-#     model = pickle.loads(model_str)
-#
-#     return model
+with open('labels_catalogue.pkl', 'rb') as f:
+    labels_catalogue = pickle.load(f)
 
 
 
@@ -24,17 +18,29 @@ model = joblib.load('model.pkl')
 
 def lambda_handler(event, context):
     # TODO implement
-    data = event['data']
+    proj_dict = event['projections']
+    groups = event['groups']
+    filters = event['filters']
 
-    # Load model
-    #model = load_model(MODEL_FILE_NAME)# Make prediction
-    prediction = model.predict(data).tolist()# Respond with prediction result
-    result = {'prediction': prediction}
+    for p in proj_dict:
+        res[p] = []
+        est = model_catalogue[p]
+        if len(gattr)>0:
+            for g in groups:
+                gvalues = distinct_attr[g]
+                print("length of groupby values {}".format(len(gvalues)))
+                res[g] = gvalues
+                filters[g+'_lb'] = [labels_catalogue.get(gval,np.nan) for gval in gvalues]
+                res[p]+=est.predict_many(filters).tolist()
+        else:
+            res[p].append(est.predict_one(filters))
+
+    result = {'result': res}
 
 
     return {
         'statusCode': 200,
-        'body': json.dumps(result)
+        'body': json.dumps(res)
     }
 
 
