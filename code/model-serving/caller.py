@@ -44,4 +44,4 @@ for qname,q in queries:
     print("{}/{} Queries Processed ================".format(i,len(queries)))
 
 qa = pd.DataFrame(query_answers_dic)
-qa.to_csv('output/model-based/instacart/query-response-time.csv')
+qa.to_csv('output/model-based-network/instacart/query-response-time.csv')
