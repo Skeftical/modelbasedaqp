@@ -13,13 +13,14 @@ with open('model_catalogue.pkl', 'rb') as f:
 with open('labels_catalogue.pkl', 'rb') as f:
     labels_catalogue = pickle.load(f)
 
-
+app = Flask(__name__)
 
 
 @app.route('/', methods=['POST'])
 def index():
     # Parse request body for model input
     event = request.get_json(silent=True)
+    print(event)
     proj_dict = event['projections']
     groups = event['groups']
     filters = event['filters']
@@ -40,7 +41,7 @@ def index():
             res[p].append(est.predict_one(filters))
 
     result = {'result': res}
-return json.dumps(result)
+    return json.dumps(result)
 
 if __name__ == '__main__':
     # listen on all IPs
