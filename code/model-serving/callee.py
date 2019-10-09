@@ -2,6 +2,8 @@ import json
 # import boto3
 import pickle
 import numpy as np
+from flask import Flask, request, json
+
 with open('distinct_attribute_catalogue.pkl', 'rb') as f:
     distinct_attr = pickle.load(f)
 
@@ -14,12 +16,15 @@ with open('labels_catalogue.pkl', 'rb') as f:
 
 
 
-
-def lambda_handler(event, context):
-    # TODO implement
+@app.route('/', methods=['POST'])
+def index():
+    # Parse request body for model input
+    event = request.get_json(silent=True)
     proj_dict = event['projections']
     groups = event['groups']
     filters = event['filters']
+
+    # Load model
     res = {}
     for p in proj_dict:
         res[p] = []
@@ -35,18 +40,11 @@ def lambda_handler(event, context):
             res[p].append(est.predict_one(filters))
 
     result = {'result': res}
+return json.dumps(result)
 
+if __name__ == '__main__':
+    # listen on all IPs
+    app.run(host='0.0.0.0')
 
-    return {
-        'statusCode': 200,
-        'body': json.dumps(res)
-    }
-
-
-if __name__=="__main__":
-    event = {}
-    event['projections'] = ['count']
-    event['groups'] = ['product_name']
-    event['filters']= {'order_dow_lb': 4.0, 'order_dow_ub': 4.0}
-    res = lambda_handler(event, "")
-    print(res)
+    # res = lambda_handler(event, "")
+    # print(res)

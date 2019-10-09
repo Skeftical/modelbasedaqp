@@ -1,0 +1,6 @@
+{
+  "projections"  : ["count"],
+  "groups" : ["product_name"],
+  "filters" : {"order_dow_lb": 4.0, "order_dow_ub": 4.0}
+
+}
