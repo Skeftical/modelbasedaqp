@@ -2,7 +2,7 @@ import json
 # import boto3
 import pickle
 from sklearn.externals import joblib
-
+import numpy as np
 with open('distinct_attribute_catalogue.pkl', 'rb') as f:
     distinct_attr = pickle.load(f)
 
@@ -21,11 +21,11 @@ def lambda_handler(event, context):
     proj_dict = event['projections']
     groups = event['groups']
     filters = event['filters']
-
+    res = {}
     for p in proj_dict:
         res[p] = []
         est = model_catalogue[p]
-        if len(gattr)>0:
+        if len(groups)>0:
             for g in groups:
                 gvalues = distinct_attr[g]
                 print("length of groupby values {}".format(len(gvalues)))

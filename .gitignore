@@ -4,5 +4,7 @@ output/
 *.log
 *.out
 *.pkl
-model-serving-packages
+code/model-serving-packages/
+code/model-serving/ml/
+code/model-serving/sql_parser/
 function.zip
