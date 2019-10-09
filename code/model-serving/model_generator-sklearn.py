@@ -68,15 +68,17 @@ models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_a
 del qdf
 # # read in data
 for df, label,af in models_train:
-
-    X = df[features].values
+    df = df.iloc[:5000]
+    X = df[features].replace(np.nan, -1).values
+#    X = np.nan_to_num(X)
     y = df[label].values
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
 
     clf = GradientBoostingRegressor()
+    start = time.time()
     clf.fit(X_train, y_train)
 
-    rel_error =relative_error(y_test, clf.predict(dtest))
+    rel_error =relative_error(y_test, clf.predict(X_test))
     print("Relative Error for {} is {}".format(label, rel_error))
     print("Time to train for {} \t took : {}".format(label, time.time()-start))
 
