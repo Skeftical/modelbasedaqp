@@ -236,6 +236,6 @@ def assess_on_clusters():
 if __name__=='__main__':
     np.random.seed(0)
     load_data()
-    # assess_on_queries()
-    assess_on_clusters()
+    assess_on_queries()
+    # assess_on_clusters()
     #assess_on_queries_lsn()

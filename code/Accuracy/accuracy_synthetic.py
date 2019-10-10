@@ -72,7 +72,7 @@ def assess_on_models():
             aggregate = range(workload.shape[1]-5,workload.shape[1])
             for t_y, l_Y in zip(aggregate, aggregate_str):
                 X_train, X_test, y_train, y_test = train_test_split(
-                     workload[:,:workload.shape[1]-5], workload[:,t_y], test_size=0.2, random_state=0)
+                     workload[:,:workload.shape[1]-5], workload[:,t_y], test_size=0.3, random_state=0)
                 # X_train[(X_train==1e-8) | (X_train==1e+8)] = np.mean(X_train)
                 # X_test[(X_test==1e-8) | (X_test==1e+8)] = np.mean(X_test)
                 scaler = StandardScaler()

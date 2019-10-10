@@ -53,17 +53,22 @@ complete_df_test = complete_df.drop(index=complete_df.loc[training_indices].inde
 complete_df = complete_df.loc[training_indices]
 
 estimators = {}
+mean_query_number = 0
 for target in tpch_targets:
     print("Target :{}".format(target))
     temp = complete_df.loc[complete_df[target].dropna(axis=0).index]
     X = temp[tpch_features].values
     y = temp[target].values
+    print("Number of queries for this target : {}".format(X.shape[0]))
+    mean_query_number+=X.shape[0]
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
     xgb_model = XGBRegressor()
     xgb_model.fit(X_train, y_train)
     estimators[target] = xgb_model
     print(relative_error(y_test, xgb_model.predict(X_test)))
-
+    
+print("Number of trained models {}".format(len(estimators)))
+print("Average number of queries per target {}".format(mean_query_number/len(tpch_targets)))
 query_answers_dic = {}
 query_answers_dic['query_name'] = []
 query_answers_dic['time'] = []
