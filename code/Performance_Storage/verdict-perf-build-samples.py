@@ -14,9 +14,9 @@ sys.path.append('.')
 if not os.path.exists('output/performance'):
         print('creating ', 'performance')
         os.makedirs('output/performance')
-if not os.path.exists('output/performance/csvs'):
+if not os.path.exists('output/performance/csvs/verdict'):
         print('creating ', 'performance csvs')
-        os.makedirs('output/performance/csvs')
+        os.makedirs('output/performance/csvs/verdict')
 
 if __name__=='__main__':
     print("main executing")
