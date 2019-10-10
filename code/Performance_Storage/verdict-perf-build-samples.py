@@ -21,6 +21,13 @@ if not os.path.exists('output/performance/csvs'):
 if __name__=='__main__':
     print("main executing")
 
+    verdict.sql("""DROP SCRAMBLE public.lineitem_x
+                     ON public.lineitem """)
+    verdict.sql("""DROP SCRAMBLE public.orders_x
+                     ON public.orders""")
+    verdict.sql("""DROP SCRAMBLE public.partsupp_x
+                     ON public.partsupp""")
+
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='tpch1g',user='analyst',password='analyst')
     result = {}
     result['sample_size'] = []
