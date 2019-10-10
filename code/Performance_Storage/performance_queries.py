@@ -44,24 +44,32 @@ no_queries = [1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000]
 query_results = {}
 query_results['no_queries'] = []
 query_results['time'] = []
+query_results['columns'] = []
+cols = [1,2,3,4,5]
+
 # # read in data
-for no in no_queries:
+for col in cols:
+    for no in no_queries:
 
-    X = count_df.loc[:no, features].values
-    y = count_df.loc[:no, target_count].values
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
-    dtrain = xgb.DMatrix(X_train,y_train, feature_names=features)
-    dtest = xgb.DMatrix(X_test, y_test, feature_names=features)
+        X = count_df.loc[:no, features].values
+        if col>1:
+            X = np.hstack((X,X))
 
-    params = {'max_depth':6, 'eta':0.3, 'objective': 'reg:squarederror', 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
-    for i in range(10):
-        start = time.time()
-        xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
-             verbose_eval=True)
-        end = time.time()-start
-        query_results['no_queries'].append(no)
-        query_results['time'].append(end)
-    print("Time to train for {} \t took : {}+-".format(no, np.mean(query_results['time']), np.std(query_results['time'])))
+        y = count_df.loc[:no, target_count].values
+        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
+        dtrain = xgb.DMatrix(X_train,y_train, feature_names=features)
+        dtest = xgb.DMatrix(X_test, y_test, feature_names=features)
+
+        params = {'max_depth':6, 'eta':0.3, 'objective': 'reg:squarederror', 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
+        for i in range(10):
+            start = time.time()
+            xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
+                 verbose_eval=True)
+            end = time.time()-start
+            query_results['no_queries'].append(no)
+            query_results['time'].append(end)
+            query_results['columns'].append(X.shape[1])
+        print("Time to train for {} \t took : {}+-".format(no, np.mean(query_results['time']), np.std(query_results['time'])))
 
     # xgb_model.save_model('/home/fotis/dev_projects/model-based-aqp/catalogues/{}.dict_model'.format(label))
 df = pd.DataFrame(query_results)
