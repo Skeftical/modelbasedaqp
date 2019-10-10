@@ -52,7 +52,7 @@ if __name__=='__main__':
         verdict.sql("""DROP SCRAMBLE public.partsupp_x
                          ON public.partsupp""")
 
-    resukt = pd.DataFrame(result)
-    qa.to_csv('../../output/performance/csvs/verdict/verdict-sample-building-ratio.csv')
+    result = pd.DataFrame(result)
+    result.to_csv('../../output/performance/csvs/verdict/verdict-sample-building-ratio.csv')
 
 #    print(res)
