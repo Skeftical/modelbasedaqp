@@ -53,6 +53,6 @@ if __name__=='__main__':
                          ON public.partsupp""")
 
     result = pd.DataFrame(result)
-    result.to_csv('../../output/performance/csvs/verdict/verdict-sample-building-ratio.csv')
+    result.to_csv('output/performance/csvs/verdict/verdict-sample-building-ratio.csv')
 
 #    print(res)
