@@ -6,7 +6,9 @@ import time
 import pandas as pd
 import pickle
 import re
-
+os.chdir('../../')
+#print(os.listdir('.'))
+sys.path.append('.')
 
 if not os.path.exists('output/performance'):
         print('creating ', 'performance')
@@ -39,7 +41,7 @@ if __name__=='__main__':
         verdict.sql("""DROP SCRAMBLE public.orders_x
                          ON public.orders""")
         verdict.sql("""DROP SCRAMBLE public.partsupp_x
-                         ON public.partsupp""")                         
+                         ON public.partsupp""")
 
     resukt = pd.DataFrame(result)
     qa.to_csv('../../output/performance/csvs/verdict/verdict-sample-building-ratio.csv')
