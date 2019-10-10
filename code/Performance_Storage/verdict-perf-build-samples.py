@@ -25,17 +25,21 @@ if __name__=='__main__':
     ratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
     start = time.time()
     for ratio in ratios:
-        verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
-                         FROM public.order_products SIZE {}""".format(ratio))
-        verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
+        verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
+                         FROM public.lineitem SIZE {}""".format(ratio))
+        verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_x
                          FROM public.orders SIZE {}""".format(ratio))
+        verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.partsupp_x
+                              FROM public.partsupp SIZE {}""".format(ratio))
         end = time.time()-start
         result['sample_size'].append(ratio)
         result['time'].append(end)
-        verdict.sql("""DROP SCRAMBLE public.order_products_instacart_x
-                         ON public.order_products """)
-        verdict.sql("""DROP SCRAMBLE public.orders_instacart_x
-                         ON public.orders""".format(ratio))
+        verdict.sql("""DROP SCRAMBLE public.lineitem_x
+                         ON public.lineitem """)
+        verdict.sql("""DROP SCRAMBLE public.orders_x
+                         ON public.orders""")
+        verdict.sql("""DROP SCRAMBLE public.partsupp_x
+                         ON public.partsupp""")                         
 
     resukt = pd.DataFrame(result)
     qa.to_csv('../../output/performance/csvs/verdict/verdict-sample-building-ratio.csv')
