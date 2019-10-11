@@ -53,7 +53,7 @@ for col in cols:
 
         X = count_df.loc[:no, features].values
         if col>1:
-            X = np.hstack((X,X))
+            X = np.hstack(tuple([X for i in range(col)]))
 
         y = count_df.loc[:no, target_count].values
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
@@ -61,7 +61,7 @@ for col in cols:
         dtest = xgb.DMatrix(X_test, y_test)
 
         params = {'max_depth':6, 'eta':0.3, 'objective': 'reg:squarederror', 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
-        for i in range(10):
+        for i in range(5):
             start = time.time()
             xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
                  verbose_eval=True)
