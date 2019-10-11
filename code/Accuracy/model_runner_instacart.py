@@ -9,9 +9,20 @@ import pandas as pd
 from sql_parser.parser import Parser
 import numpy as np
 import time
+import argparse
 
-if not os.path.exists('output/model-based/instacart'):
-        os.makedirs('output/model-based/instacart')
+parser = argparse.ArgumentParser()
+parser.add_argument("--custom", dest='custom', help="increase output verbosity",
+                     action="store_true")
+#parser.add_argument('--pass',dest='pass', help='pass connection password')
+args = parser.parse_args()
+
+if args.custom:
+    if not os.path.exists('output/model-based-custom/instacart'):
+            os.makedirs('output/model-based-custom/instacart')
+else:
+    if not os.path.exists('output/model-based/instacart'):
+            os.makedirs('output/model-based/instacart')
 
 with open('input/instacart_queries/queries-test.pkl', 'rb') as f:
     queries = pickle.load(f)
@@ -19,8 +30,12 @@ with open('input/instacart_queries/queries-test.pkl', 'rb') as f:
 with open('catalogues/distinct_attribute_catalogue.pkl', 'rb') as f:
     distinct_attr = pickle.load(f)
 
-with open('catalogues/model_catalogue.pkl', 'rb') as f:
-    model_catalogue = pickle.load(f)
+if args.custom:
+    with open('catalogues/model_catalogue_custom_objective.pkl', 'rb') as f:
+        model_catalogue = pickle.load(f)
+else:
+    with open('catalogues/model_catalogue.pkl', 'rb') as f:
+        model_catalogue = pickle.load(f)
 
 with open('catalogues/labels_catalogue.pkl', 'rb') as f:
     labels_catalogue = pickle.load(f)
@@ -75,6 +90,11 @@ for qname,q in queries:
     print("{}/{} Queries Processed ================".format(i,len(queries)))
 
 qa = pd.DataFrame(query_answers_dic)
-qa.to_csv('output/model-based/instacart/query-response-time.csv')
-with open('output/model-based/instacart/query-assoc-names.pkl', 'wb') as f:
-    pickle.dump(query_names, f)
+if args.custom:
+    qa.to_csv('output/model-based-custom/instacart/query-response-time.csv')
+    with open('output/model-based-custom/instacart/query-assoc-names.pkl', 'wb') as f:
+        pickle.dump(query_names, f)
+else:
+    qa.to_csv('output/model-based/instacart/query-response-time.csv')
+    with open('output/model-based/instacart/query-assoc-names.pkl', 'wb') as f:
+        pickle.dump(query_names, f)
