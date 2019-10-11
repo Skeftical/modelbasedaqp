@@ -22,7 +22,8 @@ if __name__=='__main__':
     print("main executing")
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='tpch1g',user='analyst',password='analyst')
-
+    res = verdict.sql("SHOW SCRAMBLES")
+    print(res)
     verdict.sql("""DROP SCRAMBLE public.lineitem_x
                      ON public.lineitem """)
     verdict.sql("""DROP SCRAMBLE public.orders_x

@@ -14,9 +14,19 @@ from sklearn.model_selection import train_test_split
 def relative_error(y_true, y_hat):
     return np.mean(np.abs((y_true-y_hat)/y_true))
 
-def f_relative_error(y_true, dtrain):
+def f_relative_error(y_true: np.ndarray, dtrain: xgb.DMatrix):
     y_hat = dtrain.get_label()
-    return np.mean(np.abs((y_true-y_hat)/y_true))
+    print(np.mean(np.abs((y_true-y_hat)/y_true)))
+    return 'RelativeError' , float(np.mean(np.abs((y_true-y_hat)/y_true)))
+
+def rmsle(predt: np.ndarray, dtrain: xgb.DMatrix):
+        ''' Root mean squared log error metric.
+        :math:`\sqrt{\frac{1}{N}[log(pred + 1) - log(label + 1)]^2}`
+        '''
+        y = dtrain.get_label()
+        predt[predt < -1] = -1 + 1e-6
+        elements = np.power(np.log1p(y) - np.log1p(predt), 2)
+        return 'PyRMSLE', float(np.sqrt(np.sum(elements) / len(y)))
 
 def gradient(preds, dtrain):
     #Gradient for custom error
@@ -72,14 +82,13 @@ for df, label,af in models_train:
     X = df[features].values
     y = df[label].values
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
-    dtrain = xgb.DMatrix(X_train,y_train, feature_names=features)
-    dtest = xgb.DMatrix(X_test, y_test, feature_names=features)
-
-    params = {'max_depth':6, 'eta':0.3, 'obj':custom_relative_error_loss, 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
+    dtrain = xgb.DMatrix(X_train,label=y_train, feature_names=features)
+    dtest = xgb.DMatrix(X_test, label=y_test, feature_names=features)
+    print((dtrain.num_row(), dtrain.num_col()))
+    print((dtest.num_row(), dtest.num_col()))
+    params = {'max_depth':6, 'eta':0.3,'obj':custom_relative_error_loss, 'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
     start = time.time()
-
-    xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')],
-         verbose_eval=True)
+    xgb_model = xgb.train(params, dtrain,obj=custom_relative_error_loss, num_boost_round=1000,early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')])
 
     rel_error =relative_error(y_test, xgb_model.predict(dtest))
     print("Relative Error for {} is {}".format(label, rel_error))
@@ -88,5 +97,5 @@ for df, label,af in models_train:
     ml_est = MLAF(xgb_model, rel_error, features, label)
     MODEL_CATALOGUE[af] = ml_est
     # xgb_model.save_model('/home/fotis/dev_projects/model-based-aqp/catalogues/{}.dict_model'.format(label))
-with open('catalogues/model_catalogue.pkl', 'wb') as f:
+with open('catalogues/model_catalogue_custom_objective.pkl', 'wb') as f:
     pickle.dump(MODEL_CATALOGUE, f)
