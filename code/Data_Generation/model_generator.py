@@ -16,9 +16,6 @@ def relative_error(y_true, y_hat):
 
 def f_relative_error(y_true: np.ndarray, dtrain: xgb.DMatrix):
     y_hat = dtrain.get_label()
-    print(y_hat.shape)
-    print(y_true.shape)
-    print(np.mean(np.abs((y_true-y_hat)/y_true)))
     return 'RelativeError' , float(np.mean(np.abs((y_true-y_hat)/y_true)))
 
 
@@ -80,7 +77,7 @@ for df, label,af in models_train:
     dtest = xgb.DMatrix(X_test, label=y_test, feature_names=features)
     print((dtrain.num_row(), dtrain.num_col()))
     print((dtest.num_row(), dtest.num_col()))
-    params = {'max_depth':6, 'eta':0.3, 'colsample_bytree':0.75,'disable_default_eval_metric': 1, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
+    params = {'max_depth':6, 'eta':0.2,'disable_default_eval_metric': 1, 'reg_alpha':0.3, 'reg_lambda':1}
     start = time.time()
     xgb_model = xgb.train(params, dtrain,obj=custom_relative_error_loss, num_boost_round=1000,early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')])
 

@@ -31,6 +31,7 @@ with open('catalogues/distinct_attribute_catalogue.pkl', 'rb') as f:
     distinct_attr = pickle.load(f)
 
 if args.custom:
+    print("Using custom catalogue of models")
     with open('catalogues/model_catalogue_custom_objective.pkl', 'rb') as f:
         model_catalogue = pickle.load(f)
 else:
