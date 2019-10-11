@@ -16,17 +16,11 @@ def relative_error(y_true, y_hat):
 
 def f_relative_error(y_true: np.ndarray, dtrain: xgb.DMatrix):
     y_hat = dtrain.get_label()
+    print(y_hat.shape)
+    print(y_true.shape)
     print(np.mean(np.abs((y_true-y_hat)/y_true)))
     return 'RelativeError' , float(np.mean(np.abs((y_true-y_hat)/y_true)))
 
-def rmsle(predt: np.ndarray, dtrain: xgb.DMatrix):
-        ''' Root mean squared log error metric.
-        :math:`\sqrt{\frac{1}{N}[log(pred + 1) - log(label + 1)]^2}`
-        '''
-        y = dtrain.get_label()
-        predt[predt < -1] = -1 + 1e-6
-        elements = np.power(np.log1p(y) - np.log1p(predt), 2)
-        return 'PyRMSLE', float(np.sqrt(np.sum(elements) / len(y)))
 
 def gradient(preds, dtrain):
     #Gradient for custom error

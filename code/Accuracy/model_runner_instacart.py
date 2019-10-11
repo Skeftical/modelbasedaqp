@@ -78,7 +78,10 @@ for qname,q in queries:
     res_df = pd.DataFrame(res)
     print(res_df)
     print(res_df.describe())
-    res_df.to_pickle('output/model-based/instacart/{}.pkl'.format(i))
+    if args.custom:
+        res_df.to_pickle('output/model-based-custom/instacart/{}.pkl'.format(i))
+    else:
+        res_df.to_pickle('output/model-based/instacart/{}.pkl'.format(i))
     #####
     query_answers_dic['time'].append(end)
     query_answers_dic['query_name'].append(qname)
