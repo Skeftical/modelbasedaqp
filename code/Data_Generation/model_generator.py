@@ -9,7 +9,6 @@ import numpy as np
 from ml.model import MLAF
 import xgboost as xgb
 import time
-from catboost import CatBoostRegressor
 from sklearn.model_selection import train_test_split
 
 def relative_error(y_true, y_hat):
@@ -76,7 +75,7 @@ for df, label,af in models_train:
     dtrain = xgb.DMatrix(X_train,y_train, feature_names=features)
     dtest = xgb.DMatrix(X_test, y_test, feature_names=features)
 
-    params = {'max_depth':6, 'eta':0.3, 'objective':custom_relative_error_loss, 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
+    params = {'max_depth':6, 'eta':0.3, 'obj':custom_relative_error_loss, 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
     start = time.time()
 
     xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')],
