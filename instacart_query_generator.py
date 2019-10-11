@@ -8,6 +8,7 @@ if not os.path.exists('input/instacart_queries'):
         # logger.info('creating directory Accuracy')
         print('creating')
         os.makedirs('input/instacart_queries')
+np.random.seed(15)
 
 query_templates = ['q2.sql', 'q4.sql', 'q6.sql', 'q8.sql','q10.sql','q12.sql']
 directory = os.fsencode('instacart_query_templates')
@@ -32,7 +33,6 @@ print(len(queries))
 with open('input/instacart_queries/queries.pkl', 'wb') as f:
   pickle.dump(queries, f)
 queries = []
-np.random.seed(15)
 for f in os.listdir(directory):
     # print(f)
     with open(os.path.join(directory,f),"r") as sql_query_file:

@@ -17,6 +17,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
                     action="store_true")
 parser.add_argument('-v',help='verbosity',dest='verbosity',action="store_true")
+
+parser.add_argument("--test", dest='custom', help="increase output verbosity",
+                     action="store_true")
 args = parser.parse_args()
 
 if args.verbosity:
@@ -27,11 +30,15 @@ if args.verbosity:
    handler.setLevel(logging.DEBUG)
    handler.setFormatter(formatter)
    logger.addHandler(handler)
-   
+
 
 queries = []
-with open('input/instacart_queries/queries.pkl','rb') as f:
-    queries = pickle.load(f)
+if args.custom:
+    with open('input/instacart_queries/queries-test.pkl','rb') as f:
+        queries = pickle.load(f)
+else:
+    with open('input/instacart_queries/queries.pkl','rb') as f:
+        queries = pickle.load(f)
 
 conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='instacart',user='analyst',password='analyst',cursor_factory=NamedTupleCursor)
 cur = conn.cursor()
@@ -123,9 +130,13 @@ for qname,q in queries:
     i=qdf.shape[0]
     j+=1
     logger.info("{}/{} Queries Processed ================".format(j,len(queries)))
-with open('catalogues/distinct_attribute_catalogue.pkl', 'wb') as f:
-    pickle.dump(distinct_attr, f)
-qdf.to_pickle('input/instacart_queries/qdf.pkl')
+if not args.custom:
+    with open('catalogues/distinct_attribute_catalogue.pkl', 'wb') as f:
+        pickle.dump(distinct_attr, f)
+if args.custom:
+    qdf.to_pickle('input/instacart_queries/qdf-test.pkl')
+else:
+    qdf.to_pickle('input/instacart_queries/qdf.pkl')
 cur.close()
 conn.close()
 end = time.time()-start
