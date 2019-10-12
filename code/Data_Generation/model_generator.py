@@ -7,17 +7,16 @@ import pickle
 import pandas as pd
 import numpy as np
 from ml.model import MLAF
-import xgboost as xgb
+from xgboost import XGBRegressor
 import time
-from sklearn.model_selection import train_test_split
-from sklearn.metric import r2_score
-
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import make_scorer
 def relative_error(y_true, y_hat):
     return np.mean(np.abs((y_true-y_hat)/y_true))
 
-def f_relative_error(y_true: np.ndarray, dtrain: xgb.DMatrix):
-    y_hat = dtrain.get_label()
-    return 'RelativeError' , float(np.mean(np.abs((y_true-y_hat)/y_true)))
+#def f_relative_error(y_true: np.ndarray, dtrain: xgb.DMatrix):
+#    y_hat = dtrain.get_label()
+#    return 'RelativeError' , float(np.mean(np.abs((y_true-y_hat)/y_true)))
 
 MODEL_CATALOGUE = {}
 
@@ -52,7 +51,8 @@ avg_df[target_avg] = avg_df[target_avg].astype(float)
 models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
 
 del qdf
-# # read in data
+# # read in datai
+rel_error_score = make_scorer(relative_error, greater_is_better=False)
 for df, label,af in models_train:
 
     X = df[features].values
@@ -70,11 +70,11 @@ for df, label,af in models_train:
     # Initialize XGB and GridSearch
     xgb = XGBRegressor(nthread=-1, n_estimators=500)
 
-    grid = GridSearchCV(xgb, params,n_jobs=-1, scoring=relative_error)
-    grid.fit(X, Y)
+    grid = GridSearchCV(xgb, params,n_jobs=-1, scoring=rel_error_score)
+    grid.fit(X, y)
     print("Best Parameters : {}".format(grid.best_params_))
     print("Best Score : {}".format(grid.best_score_))
-    xgb_model = grid_result.best_estimator_
+    xgb_model = grid.best_estimator_
 
     rel_error =relative_error(y, xgb_model.predict(X))
     print("Relative Error for {} is {}".format(label, rel_error))
