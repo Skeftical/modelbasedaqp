@@ -57,16 +57,26 @@ for df, label,af in models_train:
 
     X = df[features].values
     y = df[label].values
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
-    dtrain = xgb.DMatrix(X_train,label=y_train, feature_names=features)
-    dtest = xgb.DMatrix(X_test, label=y_test, feature_names=features)
-    print((dtrain.num_row(), dtrain.num_col()))
-    print((dtest.num_row(), dtest.num_col()))
-    params = {'max_depth':6, 'eta':0.2,, 'reg_alpha':0.3, 'reg_lambda':1, 'eval_metric': ['rmse', r2_score, f_relative_error]}
-    start = time.time()
-    xgb_model = xgb.train(params, dtrain,, num_boost_round=1000, early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')])
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
+    # dtrain = xgb.DMatrix(X_train,label=y_train, feature_names=features)
+    # dtest = xgb.DMatrix(X_test, label=y_test, feature_names=features)
 
-    rel_error =relative_error(y_test, xgb_model.predict(dtest))
+    # params = {'max_depth':6, 'eta':0.2,, 'reg_alpha':0.3, 'reg_lambda':1, 'eval_metric': ['rmse', r2_score, f_relative_error]}
+    start = time.time()
+    # xgb_model = xgb.train(params, dtrain,, num_boost_round=1000, early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')])
+    params = {'min_child_weight':[4,5], 'gamma':[i/10.0 for i in range(3,6)],  'subsample':[i/10.0 for i in range(6,11)],
+    'colsample_bytree':[i/10.0 for i in range(6,11)], 'max_depth': [3,4, 6]}
+
+    # Initialize XGB and GridSearch
+    xgb = XGBRegressor(nthread=-1, n_estimators=500)
+
+    grid = GridSearchCV(xgb, params,n_jobs=-1, scoring=relative_error)
+    grid.fit(X, Y)
+    print("Best Parameters : {}".format(grid.best_params_))
+    print("Best Score : {}".format(grid.best_score_))
+    xgb_model = grid_result.best_estimator_
+
+    rel_error =relative_error(y, xgb_model.predict(X))
     print("Relative Error for {} is {}".format(label, rel_error))
     print("Time to train for {} \t took : {}".format(label, time.time()-start))
 
