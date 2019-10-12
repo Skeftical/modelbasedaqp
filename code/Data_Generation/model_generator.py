@@ -10,7 +10,7 @@ from ml.model import MLAF
 import xgboost as xgb
 import time
 from sklearn.model_selection import train_test_split
-from sklearn.metric import r2_score
+from sklearn.metrics import r2_score
 
 def relative_error(y_true, y_hat):
     return np.mean(np.abs((y_true-y_hat)/y_true))
@@ -62,9 +62,9 @@ for df, label,af in models_train:
     dtest = xgb.DMatrix(X_test, label=y_test, feature_names=features)
     print((dtrain.num_row(), dtrain.num_col()))
     print((dtest.num_row(), dtest.num_col()))
-    params = {'max_depth':6, 'eta':0.2,, 'reg_alpha':0.3, 'reg_lambda':1, 'eval_metric': ['rmse', r2_score, f_relative_error]}
+    params = {'max_depth':6, 'eta':0.2, 'objective': 'reg:squarederror', 'reg_alpha':0.3, 'reg_lambda':1, 'eval_metric': ['mae','rmse']}
     start = time.time()
-    xgb_model = xgb.train(params, dtrain,, num_boost_round=1000, early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')])
+    xgb_model = xgb.train(params, dtrain, num_boost_round=1000, early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')])
 
     rel_error =relative_error(y_test, xgb_model.predict(dtest))
     print("Relative Error for {} is {}".format(label, rel_error))
