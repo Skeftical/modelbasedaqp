@@ -62,10 +62,9 @@ for df, label,af in models_train:
     dtest = xgb.DMatrix(X_test, label=y_test, feature_names=features)
     print((dtrain.num_row(), dtrain.num_col()))
     print((dtest.num_row(), dtest.num_col()))
-    params = {'max_depth':6, 'eta':0.2, 'objective': 'reg:squarederror', 'reg_alpha':0.3, 'reg_lambda':1, 'eval_metric': ['mae','rmse']}
+    params = {'max_depth':12,'tree_method':'exact', 'eta':0.1, 'objective': 'reg:squarederror', 'reg_alpha':0.3, 'reg_lambda':0.75, 'eval_metric': ['mae','rmse']}
     start = time.time()
-    xgb_model = xgb.train(params, dtrain, num_boost_round=1000, early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')])
-
+    xgb_model = xgb.train(params, dtrain, num_boost_round=2000, early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')])
     rel_error =relative_error(y_test, xgb_model.predict(dtest))
     print("Relative Error for {} is {}".format(label, rel_error))
     print("Time to train for {} \t took : {}".format(label, time.time()-start))
