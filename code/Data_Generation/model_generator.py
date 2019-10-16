@@ -61,8 +61,8 @@ for df, label,af in models_train:
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234, stratify=df['product_name_lb'].unique())
     else:
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
-    dtrain = lgb.Dataset(X_train,label=y_train, feature_names=features)
-    dtest = lgb.Dataset(X_test, label=y_test, feature_names=features)
+    dtrain = lgb.Dataset(X_train,label=y_train )
+    dtest = lgb.Dataset(X_test, label=y_test)
     print((dtrain.num_data(), dtrain.num_feature()))
     print((dtest.num_data(), dtest.num_feature()))
 
