@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
 from scipy import stats
 
 from sklearn.cluster import KMeans
@@ -10,19 +10,16 @@ from sklearn.cluster import KMeans
 from sklearn import metrics
 import sys
 import os
-os.chdir("../../../dynamic-reproducibility")
-sys.path.append('utils')
+os.chdir('../../')
+sys.path.append('.')
 from confs import Config
 from terminal_outputs import printProgressBar
-from ML_models.GrowingMiniBatchKMeans import GrowingMiniBatchKMeans
-from ML_models.GrowingNetwork import GrowingNetwork
-from ML_models.LocalSupervisedNetwork import LocalSupervisedNetwork, LocalSupervisedOfflineNetwork
 
 def load_data():
     print("Loading Data...")
     global df
     df = pd.read_csv('input/Sensors_Workload/queries_on_c_all_aggregates-{}.csv'.format(Config.sensors_queries), sep=",", index_col=0)
-    df = df.drop(['corr', 'min_', 'max_'], axis=1)
+    df = df.drop(['corr','avg','count','sum_'], axis=1)
     df['x_l'] = df['x']-df['theta']
     df['x_h'] = df['x']+df['theta']
     df = df.drop(['x','theta'],axis=1)
@@ -30,8 +27,8 @@ def load_data():
 
 def run_experiment():
     no_queries = np.linspace(0.1,1,10)*(15000)
-    agg_label = ['count', 'sum_', 'avg']
-    labels = ['COUNT','SUM','MEAN']
+    agg_label = ['min_', 'max_']
+    labels = ['MIN','MAX']
     alter_columns_1 = ['x_l', 'x_h']
     t_cuttoff = int(Config.sensors_queries*0.8)
     rel_errs_ml_queries = []
@@ -59,25 +56,17 @@ def run_experiment():
             X_train = scaler.transform(X_train)
             X_test = scaler.transform(X_test)
 
-            # part = GrowingNetwork(X_train, a=0.4)
-            kmeans = KMeans(n_clusters=10)
-            xgb = XGBRegressor()
+            lgb = LGBMRegressor()
 
-            LSNOff = LocalSupervisedOfflineNetwork(kmeans, xgb, warnings_b=False)
+            lgb.fit(X_train, y_train)
 
-            LSNOff.fit(X_train, y_train)
-            if len(LSNOff.associations) == 0:
-                raise Exception("No Models were trained")
-            print("Counts of each cluster {0}".format(LSNOff.counts))
 
-            y_pred = LSNOff.predict(X_test)
+            y_pred = lgb.predict(X_test)
             y_pred = y_pred.reshape(y_test.shape[0],)
             print(stats.describe(y_pred))
             print(stats.describe(y_test))
 
-            # xgb.fit(X_train, y_train)
-            # y_pred = xgb.predict(X_test)
-            rel_error_ML_sum = np.median(np.abs(y_pred-y_test)/y_test)
+            rel_error_ML_sum = np.mean(np.abs(y_pred-y_test)/y_test)
             nrmsd = np.sqrt(metrics.mean_squared_error(y_test, y_pred))/np.mean(y_test)
             rmse = np.sqrt(metrics.mean_squared_error(y_test, y_pred))
             mae = metrics.median_absolute_error(y_test, y_pred)

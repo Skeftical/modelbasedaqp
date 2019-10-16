@@ -12,8 +12,8 @@ from sklearn.linear_model import Ridge
 from sklearn import metrics
 import sys
 import os
-os.chdir("../../../dynamic-reproducibility")
-sys.path.append('utils')
+os.chdir('../../')
+sys.path.append('.')
 from confs import Config
 from ML_models.GrowingMiniBatchKMeans import GrowingMiniBatchKMeans
 from ML_models.GrowingNetwork import GrowingNetwork
