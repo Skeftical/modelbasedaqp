@@ -61,11 +61,12 @@ models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_a
 del qdf
 # # read in data
 for df, label,af in models_train:
-
+    print("For Aggregate {}".format(af))
     X = df[features]
     y = df[label]
+    print(df[features].dtypes)
     if af=='count':
-        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234, stratify=df['product_name_lb'].unique())
+        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234, stratify=df['product_name_lb'].replace(np.nan,'isnnan'))
     else:
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
     dtrain = lgb.Dataset(X_train,label=y_train )
@@ -88,7 +89,7 @@ for df, label,af in models_train:
     num_round = 10000
     clf = lgb.train(param, dtrain, num_round, valid_sets = [dtrain,dtest],valid_names=['train', 'test'],\
     feval=f_relative_error,verbose_eval=100, early_stopping_rounds=100)
-    rel_error =relative_error(y_test, clf.predict(dtest))
+    rel_error =relative_error(y_test, clf.predict(X_test))
     print("Relative Error for {} is {}".format(label, rel_error))
     print("Time to train for {} \t took : {}".format(label, time.time()-start))
 
