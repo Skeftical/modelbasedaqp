@@ -43,7 +43,6 @@ sum_df = qdf.iloc[qdf['sum_add_to_cart_order'].dropna(axis=0).index]
 avg_df = qdf.iloc[qdf['avg_add_to_cart_order'].dropna(axis=0).index]
 count_df = qdf.iloc[qdf['count'].dropna(axis=0).index]
 
-features = [name for name in sum_df.columns if name not in ['sum_add_to_cart_order','avg_add_to_cart_order','count']]
 
 target_sum = 'sum_add_to_cart_order'
 target_avg = 'avg_add_to_cart_order'
@@ -66,10 +65,15 @@ sum_df = pd.get_dummies(sum_df)
 avg_df = pd.get_dummies(avg_df)
 count_df = pd.get_dummies(count_df)
 
-models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
+features_sum = [name for name in sum_df.columns if name not in ['sum_add_to_cart_order','avg_add_to_cart_order','count']]
+features_avg = [name for name in avg_df.columns if name not in ['sum_add_to_cart_order','avg_add_to_cart_order','count']]
+features_count = [name for name in count_df.columns if name not in ['sum_add_to_cart_order','avg_add_to_cart_order','count']]
+
+models_train = [(sum_df, target_sum, 'sum_add_to_cart_order', features_sum), \
+(avg_df, target_avg, 'avg_add_to_cart_order', features_avg), (count_df, target_count, 'count', features_count)]
 
 # # read in data
-for df, label,af in models_train:
+for df, label,af,features in models_train:
 
     X = df[features].values
     y = df[label].values
