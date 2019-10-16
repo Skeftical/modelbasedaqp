@@ -49,6 +49,13 @@ with open('catalogues/labels_catalogue.pkl', 'wb') as f:
     pickle.dump(categorical_attribute_catalogue,f)
 
 avg_df[target_avg] = avg_df[target_avg].astype(float)
+sum_df[target_sum] = sum_df[target_sum].astype(float)
+count_df[target_count] = count_df[target_count].astype(float)
+
+avg_df = avg_df.infer_objects()
+sum_df = sum_df.infer_objects()
+count_df = count_df.infer_objects()
+
 models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
 
 del qdf
