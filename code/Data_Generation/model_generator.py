@@ -63,8 +63,6 @@ for df, label,af in models_train:
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
     dtrain = lgb.Dataset(X_train,label=y_train )
     dtest = lgb.Dataset(X_test, label=y_test)
-    print((dtrain.num_data(), dtrain.num_feature()))
-    print((dtest.num_data(), dtest.num_feature()))
 
     param = {'num_leaves': 50,
          'min_data_in_leaf': 30,
@@ -81,7 +79,7 @@ for df, label,af in models_train:
          "verbosity": -1}
     start = time.time()
     num_round = 10000
-    clf = lgb.train(param, trn_data, num_round, valid_sets = [dtrain,dtest],valid_names=['train', 'test'],\
+    clf = lgb.train(param, dtrain, num_round, valid_sets = [dtrain,dtest],valid_names=['train', 'test'],\
     feval=f_relative_error,verbose_eval=100, early_stopping_rounds=100)
     rel_error =relative_error(y_test, clf.predict(dtest))
     print("Relative Error for {} is {}".format(label, rel_error))
