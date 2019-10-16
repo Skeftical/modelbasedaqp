@@ -23,6 +23,16 @@ MODEL_CATALOGUE = {}
 
 
 qdf = pd.read_pickle('input/instacart_queries/qdf.pkl')
+#Transformations
+
+qdf['group'] = ((~qdf['product_name_lb'].isna()) | (~qdf['reordered_lb'].isna()) | (~qdf['order_hour_of_day_lb'].isna()))
+qdf['group_by_attr'] = [False for i in range(qdf.shape[0])]
+
+qdf.loc[~qdf['reordered_lb'].isna(),'group_by_attr'] = 'group_by_reordered'
+qdf.loc[~qdf['product_name_lb'].isna(),'group_by_attr'] = 'group_by_product'
+qdf.loc[~qdf['order_hour_of_day_lb'].isna(),'group_by_attr'] = 'group_by_order_hour'
+
+
 targets = [name  for name in qdf.columns if 'lb' not in name and 'ub' not in name]
 #Filtering out the product of joins in the aggregate functions
 sum_columns = [name for name in qdf[targets].columns if 'sum' in name]
@@ -52,6 +62,10 @@ avg_df[target_avg] = avg_df[target_avg].astype(float)
 models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
 
 del qdf
+
+sum_df = pd.get_dummies(sum_df)
+avg_df = pd.get_dummies(avg_df)
+count_df = pd.get_dummies(count_df)
 # # read in data
 for df, label,af in models_train:
 
