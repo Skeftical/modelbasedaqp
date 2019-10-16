@@ -33,11 +33,6 @@ qdf.loc[~qdf['product_name_lb'].isna(),'group_by_attr'] = 'group_by_product'
 qdf.loc[~qdf['order_hour_of_day_lb'].isna(),'group_by_attr'] = 'group_by_order_hour'
 
 
-targets = [name  for name in qdf.columns if 'lb' not in name and 'ub' not in name]
-#Filtering out the product of joins in the aggregate functions
-sum_columns = [name for name in qdf[targets].columns if 'sum' in name]
-avg_columns = [name for name in qdf[targets].columns if 'avg' in name]
-count_columns = [name for name in qdf[targets].columns if 'count' in name]
 #Generate Dataframes per aggregate function
 sum_df = qdf.iloc[qdf['sum_add_to_cart_order'].dropna(axis=0).index]
 avg_df = qdf.iloc[qdf['avg_add_to_cart_order'].dropna(axis=0).index]
@@ -74,7 +69,7 @@ models_train = [(sum_df, target_sum, 'sum_add_to_cart_order', features_sum), \
 
 # # read in data
 for df, label,af,features in models_train:
-
+    print(df)
     X = df[features].values
     y = df[label].values
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
@@ -82,7 +77,7 @@ for df, label,af,features in models_train:
     dtest = xgb.DMatrix(X_test, label=y_test, feature_names=features)
     print((dtrain.num_row(), dtrain.num_col()))
     print((dtest.num_row(), dtest.num_col()))
-    params = {'max_depth':12,'tree_method':'exact', 'eta':0.1, 'objective': 'reg:squarederror', 'reg_alpha':0.3, 'reg_lambda':0.75, 'eval_metric': ['mae','rmse']}
+    params = {'max_depth':10,'tree_method':'exact', 'eta':0.1, 'objective': 'reg:squarederror', 'reg_alpha':0.3, 'reg_lambda':0.75, 'eval_metric': ['mae','rmse']}
     start = time.time()
     xgb_model = xgb.train(params, dtrain, num_boost_round=2000, early_stopping_rounds=10, feval=f_relative_error, evals=[(dtrain,'train'),(dtest,'test')])
     rel_error =relative_error(y_test, xgb_model.predict(dtest))
