@@ -12,13 +12,11 @@ import sys
 import os
 os.chdir('../../')
 sys.path.append('.')
-from confs import Config
-from terminal_outputs import printProgressBar
 
 def load_data():
     print("Loading Data...")
     global df
-    df = pd.read_csv('input/Sensors_Workload/queries_on_c_all_aggregates-{}.csv'.format(Config.sensors_queries), sep=",", index_col=0)
+    df = pd.read_csv('input/Sensors_Workload/queries_on_c_all_aggregates-25000.csv', sep=",", index_col=0)
     df = df.drop(['corr','avg','count','sum_'], axis=1)
     df['x_l'] = df['x']-df['theta']
     df['x_h'] = df['x']+df['theta']
@@ -30,11 +28,12 @@ def run_experiment():
     agg_label = ['min_', 'max_']
     labels = ['MIN','MAX']
     alter_columns_1 = ['x_l', 'x_h']
-    t_cuttoff = int(Config.sensors_queries*0.8)
+    t_cuttoff = int(25000*0.8)
     rel_errs_ml_queries = []
-
+    print(labels)
+    print(agg_label)
     for l1,s in zip(agg_label,labels):
-
+        print(l1,s)
         for no in no_queries:
             no = int(no)
             test = df.sample(int(no*.2))
@@ -51,29 +50,28 @@ def run_experiment():
                 y_test = y_test[y_test!=0]
             print("Reconfigured shape {}".format(y_test.shape[0]))
 
-            scaler = StandardScaler()
-            scaler.fit(X_train)
-            X_train = scaler.transform(X_train)
-            X_test = scaler.transform(X_test)
+#            scaler = StandardScaler()
+#            scaler.fit(X_train)
+#            X_train = scaler.transform(X_train)
+#            X_test = scaler.transform(X_test)
 
-            lgb = LGBMRegressor()
+            lgb = LGBMRegressor(n_estimators=500)
 
             lgb.fit(X_train, y_train)
 
 
             y_pred = lgb.predict(X_test)
-            y_pred = y_pred.reshape(y_test.shape[0],)
             print(stats.describe(y_pred))
             print(stats.describe(y_test))
 
-            rel_error_ML_sum = np.mean(np.abs(y_pred-y_test)/y_test)
+            rel_error_ML_sum = np.mean(np.abs((y_test-y_pred)/np.mean(y_test)))
             nrmsd = np.sqrt(metrics.mean_squared_error(y_test, y_pred))/np.mean(y_test)
             rmse = np.sqrt(metrics.mean_squared_error(y_test, y_pred))
             mae = metrics.median_absolute_error(y_test, y_pred)
             rel_errs_ml_queries.append([no, s, rmse, mae, nrmsd, rel_error_ML_sum])
-
+    print(len(rel_errs_ml_queries))
     eval_df = pd.DataFrame(rel_errs_ml_queries, columns=['queries', 'aggregate','rmse','mae','nrmsd', 'rel_error_median'])
-    eval_df.to_csv('output/accuracy/csvs/sensors_assessment_on_queries_{}_queries.csv'.format(Config.sensors_queries))
+    eval_df.to_csv('output/accuracy/csvs/sensors_assessment_on_queries_25000_queries.csv')
 
 if __name__=='__main__':
     np.random.seed(0)
