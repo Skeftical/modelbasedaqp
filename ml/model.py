@@ -2,6 +2,7 @@ import numpy as np
 import lightgbm as lgb
 import pandas as pd
 import sys
+import time
 #os.chdir('../')
 #sys.path.append('.')
 from sql_parser.parser import QueryVectorizer
@@ -20,12 +21,15 @@ class MLAF:
         return float(self.estimator.predict(np.array(array).reshape(1,-1)))
 
     def predict_many(self, attr_dict):
+        start = time.time()
         qv = QueryVectorizer(self.features, SET_OWN=True)
         for a in attr_dict:
             qv.insert(a, attr_dict[a])
-        query_matrix = qv.to_dataframe().infer_objects()
+
+        query_matrix = qv.to_dataframe()
         if self.AF=='count':
              query_matrix['product_name_lb'] = query_matrix['product_name_lb'].astype('category')
+        print("Time for preprocessing".format(time.time()-start))
         return self.estimator.predict(query_matrix)
 
     def __init__(self, estimator, rel_error, feature_names, af):
