@@ -27,9 +27,10 @@ class MLAF:
             qv.insert(a, attr_dict[a])
 
         query_matrix = qv.to_dataframe()
+        print("Checkpoint {}".format(time.time()-start))
         if self.AF=='count':
              query_matrix['product_name_lb'] = query_matrix['product_name_lb'].astype('category')
-        print("Time for preprocessing".format(time.time()-start))
+        print("Time for preprocessing {}".format(time.time()-start))
         return self.estimator.predict(query_matrix)
 
     def __init__(self, estimator, rel_error, feature_names, af):
