@@ -71,7 +71,7 @@ for qname,q in queries:
                 print("length of groupby values {}".format(len(gvalues)))
                 res[g] = gvalues
                 dict_obj[g+'_lb'] = gvalues#[labels_catalogue.get(gval,np.nan) for gval in gvalues]
-                res[p]+=est.predict_many(dict_obj).tolist()
+                res[p]=est.predict_many(dict_obj)
         else:
             res[p].append(est.predict_one(dict_obj))
     end = time.time()-start
