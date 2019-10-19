@@ -37,7 +37,7 @@ if args.custom:
     with open('input/instacart_queries/queries-test.pkl','rb') as f:
         queries = pickle.load(f)
 else:
-    with open('input/instacart_queries/queries.pkl','rb') as f:
+    with open('input/instacart_queries/queries-1000.pkl','rb') as f:
         queries = pickle.load(f)
 
 conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='instacart',user='analyst',password='analyst',cursor_factory=NamedTupleCursor)
@@ -136,7 +136,7 @@ if not args.custom:
 if args.custom:
     qdf.to_pickle('input/instacart_queries/qdf-test.pkl')
 else:
-    qdf.to_pickle('input/instacart_queries/qdf.pkl')
+    qdf.to_pickle('input/instacart_queries/qdf-1000.pkl')
 cur.close()
 conn.close()
 end = time.time()-start

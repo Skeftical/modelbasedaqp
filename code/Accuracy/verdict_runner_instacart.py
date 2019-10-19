@@ -32,11 +32,12 @@ if __name__=='__main__':
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='instacart',user='analyst',password='analyst')
 
-#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
- #                     FROM public.order_products SIZE 0.1""")
- #   verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
-  #                    FROM public.orders SIZE 0.1""")
+    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
+                    FROM public.order_products SIZE 0.1""")
+    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
+                    FROM public.orders SIZE 0.1""")
 #    print(res)
+    sys.exit(0)
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []

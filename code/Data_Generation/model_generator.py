@@ -22,7 +22,7 @@ def f_relative_error(y_true: np.ndarray, dtrain: lgb.Dataset):
 MODEL_CATALOGUE = {}
 
 
-qdf = pd.read_pickle('input/instacart_queries/qdf.pkl')
+qdf = pd.read_pickle('input/instacart_queries/qdf-1000.pkl')
 targets = [name  for name in qdf.columns if 'lb' not in name and 'ub' not in name]
 #Filtering out the product of joins in the aggregate functions
 sum_columns = [name for name in qdf[targets].columns if 'sum' in name]
@@ -42,6 +42,7 @@ count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces 
 # count_df['product_name_lb'] = count_df['product_name_lb'].replace(np.nan, 'isnone')
 count_df['product_name_lb'] = count_df['product_name_lb'].astype('category')
 labels =  count_df['product_name_lb'].cat.codes
+count_df['product_name_lb'] = labels
 categorical_attribute_catalogue = {key : value for key,value in zip(count_df['product_name_lb'].values, labels)}
 # count_df['product_name_lb'] = labels
 
@@ -65,10 +66,7 @@ for df, label,af in models_train:
     X = df[features]
     y = df[label]
     print(df[features].dtypes)
-    if af=='count':
-        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234, stratify=df['product_name_lb'].replace(np.nan,'isnnan'))
-    else:
-        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
     dtrain = lgb.Dataset(X_train,label=y_train )
     dtest = lgb.Dataset(X_test, label=y_test)
 
@@ -86,7 +84,7 @@ for df, label,af in models_train:
          "lambda_l1": 0.1,
          "verbosity": -1}
     start = time.time()
-    num_round = 10000
+    num_round = 15000
     clf = lgb.train(param, dtrain, num_round, valid_sets = [dtrain,dtest],valid_names=['train', 'test'],\
     feval=f_relative_error,verbose_eval=100, early_stopping_rounds=100)
     rel_error =relative_error(y_test, clf.predict(X_test))

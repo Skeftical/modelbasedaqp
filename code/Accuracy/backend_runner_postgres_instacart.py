@@ -30,7 +30,7 @@ if not os.path.exists('../../output/backend-postgres-actual/instacart'):
 
 if __name__=='__main__':
     print("main executing")
-    with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
+    with open('../../input/instacart_queries/queries-test-1000.pkl', 'rb') as f:
         queries = pickle.load(f)
     conn = psycopg2.connect(host='127.0.0.1',port=5433,dbname='instacart',user='analyst',password='analyst',cursor_factory=NamedTupleCursor)
     cur = conn.cursor()
@@ -46,7 +46,7 @@ if __name__=='__main__':
         res = cur.fetchall()
         end = time.time()-start
         res_df = pd.DataFrame(res)
-        res_df.to_pickle('../../output/backend-postgres-actual/instacart/{}.pkl'.format(i))
+        res_df.to_pickle('../../output/backend-postgres-actual/instacart-1000/{}.pkl'.format(i))
         if qname not in query_names:
             query_names[qname] = [i]
         else:
@@ -57,6 +57,6 @@ if __name__=='__main__':
     cur.close()
     conn.close()
     qa = pd.DataFrame(query_answers_dic)
-    qa.to_csv('../../output/backend-postgres-actual/instacart/query-response-time.csv')
-    with open('../../output/backend-postgres-actual/instacart/query-assoc-names.pkl', 'wb') as f:
+    qa.to_csv('../../output/backend-postgres-actual/instacart-1000/query-response-time.csv')
+    with open('../../output/backend-postgres-actual/instacart-1000/query-assoc-names.pkl', 'wb') as f:
         pickle.dump(query_names, f)
