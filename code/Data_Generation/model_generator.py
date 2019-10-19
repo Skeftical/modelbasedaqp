@@ -70,18 +70,12 @@ for df, label,af in models_train:
     dtrain = lgb.Dataset(X_train,label=y_train )
     dtest = lgb.Dataset(X_test, label=y_test)
 
-    param = {'num_leaves': 50,
-         'min_data_in_leaf': 30,
+    param = {
          'objective':'regression',
          'max_depth': -1,
          'learning_rate': 0.005,
-         "boosting": "gbdt",
-         "feature_fraction": 0.9,
-         "bagging_freq": 1,
-         "bagging_fraction": 0.9,
-         "bagging_seed": 11,
+         "boosting": "dart",
          "metric": 'rmse',
-         "lambda_l1": 0.1,
          "verbosity": -1}
     start = time.time()
     num_round = 15000

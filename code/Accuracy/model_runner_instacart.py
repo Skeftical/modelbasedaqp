@@ -24,7 +24,7 @@ else:
     if not os.path.exists('output/model-based/instacart'):
             os.makedirs('output/model-based/instacart')
 
-with open('input/instacart_queries/queries-test.pkl', 'rb') as f:
+with open('input/instacart_queries/queries-test-1000.pkl', 'rb') as f:
     queries = pickle.load(f)
 
 with open('catalogues/distinct_attribute_catalogue.pkl', 'rb') as f:
@@ -70,7 +70,7 @@ for qname,q in queries:
                 gvalues = distinct_attr[g]
                 print("length of groupby values {}".format(len(gvalues)))
                 res[g] = gvalues
-                dict_obj[g+'_lb'] = gvalues#[labels_catalogue.get(gval,np.nan) for gval in gvalues]
+                dict_obj[g+'_lb'] = [labels_catalogue.get(gval,np.nan) for gval in gvalues]
                 res[p]+=est.predict_many(dict_obj).tolist()
         else:
             res[p].append(est.predict_one(dict_obj))
@@ -82,7 +82,7 @@ for qname,q in queries:
     if args.custom:
         res_df.to_pickle('output/model-based-custom/instacart/{}.pkl'.format(i))
     else:
-        res_df.to_pickle('output/model-based/instacart/{}.pkl'.format(i))
+        res_df.to_pickle('output/model-based/instacart-1000/{}.pkl'.format(i))
     #####
     query_answers_dic['time'].append(end)
     query_answers_dic['query_name'].append(qname)
@@ -99,6 +99,6 @@ if args.custom:
     with open('output/model-based-custom/instacart/query-assoc-names.pkl', 'wb') as f:
         pickle.dump(query_names, f)
 else:
-    qa.to_csv('output/model-based/instacart/query-response-time.csv')
-    with open('output/model-based/instacart/query-assoc-names.pkl', 'wb') as f:
+    qa.to_csv('output/model-based/instacart-1000/query-response-time.csv')
+    with open('output/model-based/instacart-1000/query-assoc-names.pkl', 'wb') as f:
         pickle.dump(query_names, f)

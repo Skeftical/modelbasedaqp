@@ -27,17 +27,17 @@ if not os.path.exists('../../output/verdict/instacart'):
 
 if __name__=='__main__':
     print("main executing")
-    with open('../../input/instacart_queries/queries-test.pkl', 'rb') as f:
+    with open('../../input/instacart_queries/queries-test-1000.pkl', 'rb') as f:
        queries = pickle.load(f)
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='instacart',user='analyst',password='analyst')
 
-    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
-                    FROM public.order_products SIZE 0.1""")
-    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
-                    FROM public.orders SIZE 0.1""")
+#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.order_products_instacart_x
+#                    FROM public.order_products SIZE 0.1""")
+#    verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_instacart_x
+#                    FROM public.orders SIZE 0.1""")
 #    print(res)
-    sys.exit(0)
+#    sys.exit(0)
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
@@ -59,7 +59,7 @@ if __name__=='__main__':
                 print("Query {} not supported".format(qname))
                 print(e)
             end = time.time()-start
-            res_df_v.to_pickle('../../output/verdict/instacart/{}.pkl'.format(i))
+            res_df_v.to_pickle('../../output/verdict/instacart-1000/{}.pkl'.format(i))
             if qname not in query_names:
                 query_names[qname] = [i]
             else:
@@ -69,6 +69,6 @@ if __name__=='__main__':
             i+=1
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
-    qa.to_csv('../../output/verdict/instacart/query-response-time.csv')
-    with open('../../output/verdict/instacart/query-assoc-names.pkl', 'wb') as f:
+    qa.to_csv('../../output/verdict/instacart-1000/query-response-time.csv')
+    with open('../../output/verdict/instacart-1000/query-assoc-names.pkl', 'wb') as f:
         pickle.dump(query_names, f)

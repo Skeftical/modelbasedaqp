@@ -25,10 +25,10 @@ class MLAF:
         qv = QueryVectorizer(self.features, SET_OWN=True)
         for a in attr_dict:
             qv.insert(a, attr_dict[a])
-
-        query_matrix = qv.to_dataframe()
-        if self.AF=='count':
-             query_matrix['product_name_lb'] = query_matrix['product_name_lb'].astype('category')
+        d= qv._get_internal_representation()
+        query_matrix = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.items() ]))
+#        if self.AF=='count':
+#           query_matrix['product_name_lb'] = query_matrix['product_name_lb'].astype('int')
         print("Time for preprocessing".format(time.time()-start))
         return self.estimator.predict(query_matrix)
 
