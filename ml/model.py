@@ -26,10 +26,10 @@ class MLAF:
         for a in attr_dict:
             qv.insert(a, attr_dict[a])
         d= qv._get_internal_representation()
-        query_matrix = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.items() ]))
+        query_matrix =pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.items() ]))
 #        if self.AF=='count':
 #           query_matrix['product_name_lb'] = query_matrix['product_name_lb'].astype('int')
-        print("Time for preprocessing".format(time.time()-start))
+        print("Time for preprocessing {}".format(time.time()-start))
         return self.estimator.predict(query_matrix)
 
     def __init__(self, estimator, rel_error, feature_names, af):
