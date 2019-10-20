@@ -42,9 +42,8 @@ count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces 
 # count_df['product_name_lb'] = count_df['product_name_lb'].replace(np.nan, 'isnone')
 count_df['product_name_lb'] = count_df['product_name_lb'].astype('category')
 labels =  count_df['product_name_lb'].cat.codes
-count_df['product_name_lb'] = labels
 categorical_attribute_catalogue = {key : value for key,value in zip(count_df['product_name_lb'].values, labels)}
-# count_df['product_name_lb'] = labels
+count_df['product_name_lb'] = labels
 
 with open('catalogues/labels_catalogue.pkl', 'wb') as f:
     pickle.dump(categorical_attribute_catalogue,f)
@@ -69,18 +68,28 @@ for df, label,af in models_train:
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
     dtrain = lgb.Dataset(X_train,label=y_train )
     dtest = lgb.Dataset(X_test, label=y_test)
-
-    param = {
+    if label!='count':
+          param = {
+         'objective':'regression',
+         'max_depth': -1, 
+         'learning_rate': 0.005,
+         "boosting": "gbdt",
+         "metric": 'rmse',
+         "verbosity": -1} 
+    else:
+         param = {'num_leaves': 40,
+         'min_data_in_leaf': 10, 
          'objective':'regression',
          'max_depth': -1,
          'learning_rate': 0.005,
-         "boosting": "dart",
+         "boosting": "gbdt",
+         "bagging_freq": 1,
          "metric": 'rmse',
+         "lambda_l1": 0.1,
          "verbosity": -1}
     start = time.time()
     num_round = 15000
-    clf = lgb.train(param, dtrain, num_round, valid_sets = [dtrain,dtest],valid_names=['train', 'test'],\
-    feval=f_relative_error,verbose_eval=100, early_stopping_rounds=100)
+    clf = lgb.train(param, dtrain, num_round, valid_sets = [dtrain,dtest],valid_names=['train', 'test'],verbose_eval=100, early_stopping_rounds=100)
     rel_error =relative_error(y_test, clf.predict(X_test))
     print("Relative Error for {} is {}".format(label, rel_error))
     print("Time to train for {} \t took : {}".format(label, time.time()-start))

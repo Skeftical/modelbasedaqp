@@ -70,8 +70,11 @@ for qname,q in queries:
                 gvalues = distinct_attr[g]
                 print("length of groupby values {}".format(len(gvalues)))
                 res[g] = gvalues
-                dict_obj[g+'_lb'] = [labels_catalogue.get(gval,np.nan) for gval in gvalues]
-                res[p]+=est.predict_many(dict_obj).tolist()
+                if g=='product_name':
+                     dict_obj[g+'_lb'] = [labels_catalogue.get(gval,np.nan) for gval in gvalues]
+                else:
+                     dict_obj[g+'_lb'] = gvalues
+                res[p]=est.predict_many(dict_obj)
         else:
             res[p].append(est.predict_one(dict_obj))
     end = time.time()-start
