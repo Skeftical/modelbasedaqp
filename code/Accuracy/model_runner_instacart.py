@@ -71,6 +71,7 @@ for qname,q in queries:
                 print("length of groupby values {}".format(len(gvalues)))
                 res[g] = gvalues
                 if g=='product_name':
+                    est - model_catalogue['g'+'_g']
                      dict_obj[g+'_lb'] = [labels_catalogue.get(gval,np.nan) for gval in gvalues]
                 else:
                      dict_obj[g+'_lb'] = gvalues

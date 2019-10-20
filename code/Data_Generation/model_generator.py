@@ -56,7 +56,10 @@ avg_df = avg_df.infer_objects()
 sum_df = sum_df.infer_objects()
 count_df = count_df.infer_objects()
 
-models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
+count_df_1 = count_df[count_df['product_name_lb'].isna()].shape
+count_df_2 = count_df[~count_df['product_name_lb'].isna()].shape
+models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'),\
+                (count_df_1, target_count, 'count'), (count_df_2, target_count, 'count_g')]
 
 del qdf
 # # read in data
@@ -71,14 +74,14 @@ for df, label,af in models_train:
     if label!='count':
           param = {
          'objective':'regression',
-         'max_depth': -1, 
+         'max_depth': -1,
          'learning_rate': 0.005,
          "boosting": "gbdt",
          "metric": 'rmse',
-         "verbosity": -1} 
+         "verbosity": -1}
     else:
          param = {'num_leaves': 40,
-         'min_data_in_leaf': 10, 
+         'min_data_in_leaf': 10,
          'objective':'regression',
          'max_depth': -1,
          'learning_rate': 0.005,
