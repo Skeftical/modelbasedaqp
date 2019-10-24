@@ -7,6 +7,7 @@ import lightgbm as lgb
 import time
 import os
 import sys
+from sklearn.model_selection import train_test_split
 os.chdir('../../')
 print(os.listdir('.'))
 sys.path.append('.')
@@ -50,7 +51,9 @@ avg_df = avg_df.infer_objects()
 sum_df = sum_df.infer_objects()
 count_df = count_df.infer_objects()
 
-models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df, target_count, 'count')]
+count_df_s = count_df.sample(frac=.25)
+
+models_train = [(sum_df, target_sum, 'sum_add_to_cart_order'), (avg_df, target_avg, 'avg_add_to_cart_order'), (count_df_s, target_count, 'count')]
 
 del qdf
 
@@ -67,18 +70,17 @@ for df, label,af in models_train:
     y = df[label]
     print(df[features].dtypes)
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=1234)
-    dtrain = lgb.Dataset(X_train,label=y_train )
-    dtest = lgb.Dataset(X_test, label=y_test)
 
     start = time.time()
     y_mean = y_test
 
     for i in range(5):
         print("Run {}/5".format(i+1))
+        print((X_train.shape, y_train.shape))
         clf_upper = lgb.LGBMRegressor(n_estimators=1500,objective='quantile',alpha=ALPHA, learning_rate=0.001)
         clf_upper.fit(X_train, y_train)
         y_upper = clf_upper.predict(X_test)
-
+        
         clf_lower = lgb.LGBMRegressor(n_estimators=1500,objective='quantile',alpha=1.-ALPHA, learning_rate=0.001)
         clf_lower.fit(X_train, y_train)
         y_lower = clf_lower.predict(X_test)
@@ -87,6 +89,6 @@ for df, label,af in models_train:
         coverage = (error_est_df.apply(lambda x: x['y_l']<=x['y_']<=x['y_u'],axis=1).value_counts()/error_est_df.shape[0])[True]
         width = np.mean(error_est_df['y_u']-error_est_df['y_l'])
         results[label].append((coverage, width))
-
-    with open('output/model-based/error_estimation/results.pkl', 'wb') as f:
-        pickle.dump(query_names, f)
+     
+df = pd.DataFrame(results)
+df.to_csv('output/model-based/error_estimation/results.csv')
