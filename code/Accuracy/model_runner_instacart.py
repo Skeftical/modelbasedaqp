@@ -41,6 +41,9 @@ else:
 with open('catalogues/labels_catalogue.pkl', 'rb') as f:
     labels_catalogue = pickle.load(f)
 
+with open('catalogues/bin_catalogue.pkl', 'rb') as f:
+    bin_catalogue = pickle.load(f)
+
 print(model_catalogue)
 query_answers_dic = {}
 query_answers_dic['query_name'] = []
@@ -72,6 +75,7 @@ for qname,q in queries:
                 res[g] = gvalues
                 if g=='product_name':
                      dict_obj[g+'_lb'] = [labels_catalogue.get(gval,np.nan) for gval in gvalues]
+                     dict_obj['bins'] = [bin_catalogue.get(gval,np.nan) for gval in gvalues]
                 else:
                      dict_obj[g+'_lb'] = gvalues
                 res[p]=est.predict_many(dict_obj)

@@ -39,11 +39,18 @@ target_sum = 'sum_add_to_cart_order'
 target_avg = 'avg_add_to_cart_order'
 target_count = 'count'
 count_df = count_df[(count_df[target_count]!=0)] # Remove 0 because it produces an error on relative error
-# count_df['product_name_lb'] = count_df['product_name_lb'].replace(np.nan, 'isnone')
+count_df['product_name_lb'] = count_df['product_name_lb'].replace(np.nan, 'isnone')
 count_df['product_name_lb'] = count_df['product_name_lb'].astype('category')
 labels =  count_df['product_name_lb'].cat.codes
 categorical_attribute_catalogue = {key : value for key,value in zip(count_df['product_name_lb'].values, labels)}
 count_df['product_name_lb'] = labels
+
+mapping = { k : np.log1p(k)+v for k,v in count_df.groupby('product_name_lb')['count'].mean().iteritems()}
+
+count_df['bins'] = count_df['product_name_lb'].map(mapping)
+
+with open('catalogues/bin_catalogue.pkl', 'wb') as f:
+    pickle.dump(mapping,f)
 
 with open('catalogues/labels_catalogue.pkl', 'wb') as f:
     pickle.dump(categorical_attribute_catalogue,f)
@@ -71,14 +78,14 @@ for df, label,af in models_train:
     if label!='count':
           param = {
          'objective':'regression',
-         'max_depth': -1, 
+         'max_depth': -1,
          'learning_rate': 0.005,
          "boosting": "gbdt",
          "metric": 'rmse',
-         "verbosity": -1} 
+         "verbosity": -1}
     else:
          param = {'num_leaves': 40,
-         'min_data_in_leaf': 10, 
+         'min_data_in_leaf': 10,
          'objective':'regression',
          'max_depth': -1,
          'learning_rate': 0.005,
