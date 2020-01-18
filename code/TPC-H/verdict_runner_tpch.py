@@ -9,7 +9,7 @@ import re
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-s',help='sampling ratio',dest='sampling_ratio')
+parser.add_argument('-s','-sampling_ratio',help='sampling ratio',dest='sampling_ratio',required=True)
 
 args = parser.parse_args()
 
