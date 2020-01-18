@@ -6,21 +6,16 @@ import time
 import pandas as pd
 import pickle
 import re
-# parser = argparse.ArgumentParser()
-# parser.add_argument("--verbose", dest='verbosity', help="increase output verbosity",
-#                     action="store_true")
-# parser.add_argument('-v',help='verbosity',dest='verbosity',action="store_true")
-# parser.add_argument('source')
-# args = parser.parse_args()
-#
-# if args.verbosity:
-#    print("verbosity turned on")
-#    handler = logging.StreamHandler(sys.stdout)
-#    handler.setLevel(logging.DEBUG)
-#    logger.addHandler(handler)
-#
-# print(args.source)
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-s',help='sampling ratio',dest='sampling_ratio')
+
+args = parser.parse_args()
+
+print(args.sampling_ratio)
+
+exit()
 if not os.path.exists('../../output/verdict/tpch'):
         # logger.info('creating directory Accuracy')
         os.makedirs('../../output/verdict/tpch')
