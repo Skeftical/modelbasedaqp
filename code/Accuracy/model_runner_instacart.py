@@ -75,7 +75,7 @@ for qname,q in queries:
                 res[g] = gvalues
                 if g=='product_name':
                      dict_obj[g+'_lb'] = [labels_catalogue.get(gval,np.nan) for gval in gvalues]
-                     dict_obj['bins'] = [bin_catalogue.get(gval,np.nan) for gval in gvalues]
+                     dict_obj['bins'] = [bin_catalogue.get(labels_catalogue.get(gval),np.nan) for gval in gvalues]
                 else:
                      dict_obj[g+'_lb'] = gvalues
                 res[p]=est.predict_many(dict_obj)

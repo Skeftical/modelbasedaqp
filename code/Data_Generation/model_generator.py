@@ -48,7 +48,6 @@ count_df['product_name_lb'] = labels
 mapping = { k : np.log1p(k)+v for k,v in count_df.groupby('product_name_lb')['count'].mean().iteritems()}
 
 count_df['bins'] = count_df['product_name_lb'].map(mapping)
-
 with open('catalogues/bin_catalogue.pkl', 'wb') as f:
     pickle.dump(mapping,f)
 
@@ -69,6 +68,10 @@ del qdf
 # # read in data
 for df, label,af in models_train:
     print("For Aggregate {}".format(af))
+    if label=='count':
+       features.append('bins')
+    elif 'bins' in features and label!='count':
+       features.remove('bins')
     X = df[features]
     y = df[label]
     print(df[features].dtypes)
