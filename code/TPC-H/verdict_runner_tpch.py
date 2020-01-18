@@ -28,14 +28,12 @@ if __name__=='__main__':
     verdict.sql("DROP ALL SCRAMBLE public.lineitem;")
     verdict.sql("DROP ALL SCRAMBLE public.orders;")
     verdict.sql("DROP ALL SCRAMBLE public.partsupp;")
-
     res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
                       FROM public.lineitem SIZE {}""".format(sampling_ratio))
     verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_x
                       FROM public.orders SIZE {}""".format(sampling_ratio))
     verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.partsupp_x
                       FROM public.partsupp SIZE {}""".format(sampling_ratio))
-    exit()
     query_answers_dic = {}
     query_answers_dic['query_name'] = []
     query_answers_dic['time'] = []
