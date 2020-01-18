@@ -16,9 +16,9 @@ args = parser.parse_args()
 print(args.sampling_ratio)
 sampling_ratio = args.sampling_ratio
 
-if not os.path.exists('../../output/verdict/tpch'):
+if not os.path.exists('../../output/verdict/tpch-{}'.format(sampling_ratio)):
         # logger.info('creating directory Accuracy')
-        os.makedirs('../../output/verdict/tpch')
+        os.makedirs('../../output/verdict/tpch-{}'.format(sampling_ratio))
 
 if __name__=='__main__':
     print("main executing")
@@ -28,7 +28,7 @@ if __name__=='__main__':
     verdict.sql("DROP ALL SCRAMBLE public.lineitem;")
     verdict.sql("DROP ALL SCRAMBLE public.orders;")
     verdict.sql("DROP ALL SCRAMBLE public.partsupp;")
-    
+
     res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.lineitem_x
                       FROM public.lineitem SIZE {}""".format(sampling_ratio))
     verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.orders_x
