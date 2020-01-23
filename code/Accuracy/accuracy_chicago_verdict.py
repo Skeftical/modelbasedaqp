@@ -41,7 +41,7 @@ if __name__=='__main__':
         print(tup)
         y_count, y_sum, y_avg, x_l, x_h, y_l, y_h = tup[1]
         break;
-    print(y_count, y_sum, y_avg, x_l, x_h, y_l, y_h)
+    print(np.exp(y_count), np.exp(y_sum), y_avg, x_l, x_h, y_l, y_h)
     res = verdict.sql("""
         SELECT COUNT(*), SUM(arrest), AVG(beat)
         FROM crimes
