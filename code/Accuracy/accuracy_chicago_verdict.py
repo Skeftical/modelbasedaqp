@@ -45,7 +45,7 @@ if __name__=='__main__':
     # verdict.sql("DROP ALL SCRAMBLE public.crimes;")
     # res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.crimes_x
     #                   FROM public.crimes SIZE {}""".format(sampling_ratio))
-    print(res)
+    #print(res)
     #Evaluate on queries
     test_queries = load_data()
     query_answers_dic = {}
