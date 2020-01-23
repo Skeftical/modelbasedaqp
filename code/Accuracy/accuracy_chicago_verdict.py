@@ -38,7 +38,8 @@ if __name__=='__main__':
 
     print(test_queries.head(5))
     for tup in test_queries.iterrows():
-        y_count, y_sum, y_avg, x_l, x_h, y_l, y_h = tup
+        print(tup)
+        y_count, y_sum, y_avg, x_l, x_h, y_l, y_h = tup[1]
         break;
     print(y_count, y_sum, y_avg, x_l, x_h, y_l, y_h)
     # res = verdict.sql("SELECT DISTINCT(primary_type) FROM crimes;")
