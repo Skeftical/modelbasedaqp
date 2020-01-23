@@ -6,18 +6,37 @@ import time
 import pandas as pd
 import pickle
 import re
-
+from sklearn import metrics
 
 
 if not os.path.exists('../../output/verdict/crimes'):
         os.makedirs('../../output/verdict/crimes')
 
+def load_data():
+    print("Loading Data...")
+
+    test_df = pd.read_csv('../../input/Crimes_Workload/test_workload_gauss-5-users-50000.csv', header=0, index_col=0)
+    test_df.reset_index(drop=True, inplace=True)
+
+    test_df = test_df.replace([np.inf,-np.inf], np.nan).dropna()
+
+    test_df['x_l'] = test_df['x']-test_df['x_range']
+    test_df['x_h'] = complete['x']+test_df['x_range']
+    test_df['y_l'] = complete['y']-test_df['y_range']
+    test_df['y_h'] = complete['y']+test_df['y_range']
+    test_df = test_df.drop(['x','y','x_range','y_range'],axis=1)
+
+    return test_df
+
 if __name__=='__main__':
     print("main executing")
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='postgres',user='analyst',password='analyst')
-    res = verdict.sql("SELECT DISTINCT(primary_type) FROM crimes;")
-    print(res)
+    test_queries = load_data()
+    print(test_queries.head(5))
+    # res = verdict.sql("SELECT DISTINCT(primary_type) FROM crimes;")
+    # print(res)
+
     # verdict.sql("DROP ALL SCRAMBLE public.lineitem;")
     # verdict.sql("DROP ALL SCRAMBLE public.orders;")
     # verdict.sql("DROP ALL SCRAMBLE public.partsupp;")
