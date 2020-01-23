@@ -34,7 +34,13 @@ if __name__=='__main__':
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='postgres',user='analyst',password='analyst')
     test_queries = load_data()
+
+
     print(test_queries.head(5))
+    for tup in test_queries.iterrows():
+        y_count, y_sum, y_avg, x_l, x_h, y_l, y_h = tup
+        break;
+    print(y_count, y_sum, y_avg, x_l, x_h, y_l, y_h)
     # res = verdict.sql("SELECT DISTINCT(primary_type) FROM crimes;")
     # print(res)
 
