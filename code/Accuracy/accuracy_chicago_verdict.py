@@ -15,7 +15,7 @@ if not os.path.exists('../../output/verdict/crimes'):
 if __name__=='__main__':
     print("main executing")
 
-    verdict = pyverdict.postgres('127.0.0.1',5433,dbname='public',user='analyst',password='analyst')
+    verdict = pyverdict.postgres('127.0.0.1',5433,dbname='postgres',user='analyst',password='analyst')
     res = verdict.sql("SELECT DISTINCT(primary_type) FROM crimes;")
     print(res)
     # verdict.sql("DROP ALL SCRAMBLE public.lineitem;")
