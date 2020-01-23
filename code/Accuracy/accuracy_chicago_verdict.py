@@ -15,7 +15,6 @@ if not os.path.exists('../../output/verdict/crimes'):
 
 if __name__=='__main__':
     print("main executing")
-    directory = os.fsencode('/home/fotis/Desktop/tpch_2_17_0/dbgen/tpch_queries_10/')
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='public',user='analyst',password='analyst')
     res = verdict.sql("SELECT DISTINCT(primary_type) FROM crimes;")
