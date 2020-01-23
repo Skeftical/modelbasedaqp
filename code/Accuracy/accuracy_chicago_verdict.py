@@ -10,8 +10,7 @@ import re
 
 
 if not os.path.exists('../../output/verdict/crimes'):
-        # logger.info('creating directory Accuracy')
-        os.makedirs('../../output/verdict/tpch')
+        os.makedirs('../../output/verdict/crimes')
 
 if __name__=='__main__':
     print("main executing")
