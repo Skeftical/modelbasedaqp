@@ -41,7 +41,7 @@ if __name__=='__main__':
         print(tup)
         y_count, y_sum, y_avg, x_l, x_h, y_l, y_h = tup[1]
         break;
-    print(np.exp(y_count), np.exp(y_sum), y_avg, x_l, x_h, y_l, y_h)
+    print(y_count, y_sum, y_avg, x_l, x_h, y_l, y_h)
     res = verdict.sql("""
         SELECT COUNT(*), SUM(arrest), AVG(beat)
         FROM crimes
@@ -49,6 +49,8 @@ if __name__=='__main__':
         AND y_coordinate>={}   AND y_coordinate<={}
     """.format(x_l, x_h, y_l, y_h))
     print(res)
+    y_hat_count, y_hat_sum, y_hat_avg = np.log(res['c2']), np.log(res['s3']), res['a4']
+    print(y_hat_count, y_hat_sum, y_hat_avg)
 
     # verdict.sql("DROP ALL SCRAMBLE public.lineitem;")
     # verdict.sql("DROP ALL SCRAMBLE public.orders;")
