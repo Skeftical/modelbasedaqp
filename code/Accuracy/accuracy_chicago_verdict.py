@@ -22,9 +22,9 @@ def load_data():
     test_df = test_df.replace([np.inf,-np.inf], np.nan).dropna()
 
     test_df['x_l'] = test_df['x']-test_df['x_range']
-    test_df['x_h'] = complete['x']+test_df['x_range']
-    test_df['y_l'] = complete['y']-test_df['y_range']
-    test_df['y_h'] = complete['y']+test_df['y_range']
+    test_df['x_h'] = test_df['x']+test_df['x_range']
+    test_df['y_l'] = test_df['y']-test_df['y_range']
+    test_df['y_h'] = test_df['y']+test_df['y_range']
     test_df = test_df.drop(['x','y','x_range','y_range'],axis=1)
 
     return test_df
