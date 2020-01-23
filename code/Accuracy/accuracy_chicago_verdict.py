@@ -57,9 +57,10 @@ if __name__=='__main__':
         AND y_coordinate>={}   AND y_coordinate<={}
     """.format(x_l, x_h, y_l, y_h))
     print(res)
-    y_hat_count = np.log(res['c2'].values)
-    y_hat_sum = np.log(res['s3'].values)
-    y_hat_avg = res['a4'].values
+    print(res['c2'].values)
+    y_hat_count = np.log(res['c2'].values.astype(float))
+    y_hat_sum = np.log(res['s3'].values.astype(float))
+    y_hat_avg = res['a4'].values.astype(float)
     print(y_hat_count, y_hat_sum, y_hat_avg)
 
     # verdict.sql("DROP ALL SCRAMBLE public.lineitem;")
