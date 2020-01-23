@@ -42,10 +42,10 @@ if __name__=='__main__':
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='postgres',user='analyst',password='analyst')
     #Prepare Samples
-    # verdict.sql("DROP ALL SCRAMBLE public.crimes;")
-    # res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.crimes_x
-    #                   FROM public.crimes SIZE {}""".format(sampling_ratio))
-    #print(res)
+    verdict.sql("DROP ALL SCRAMBLE public.crimes;")
+    res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.crimes_x
+                      FROM public.crimes SIZE {}""".format(sampling_ratio))
+    print(res)
     #Evaluate on queries
     test_queries = load_data()
     query_answers_dic = {}
@@ -58,7 +58,6 @@ if __name__=='__main__':
 
     for tup in test_queries.iterrows():
         y_count, y_sum, y_avg, x_l, x_h, y_l, y_h = tup[1]
-        print(y_count, y_sum, y_avg, x_l, x_h, y_l, y_h)
         res = verdict.sql("""
             SELECT COUNT(*), SUM(arrest), AVG(beat)
             FROM crimes_x
@@ -75,7 +74,6 @@ if __name__=='__main__':
         query_answers_dic['y_hat_sum'].append(y_hat_sum)
         query_answers_dic['y_avg'].append(y_avg)
         query_answers_dic['y_hat_avg'].append(y_hat_avg)
-        break;
     verdict.close()
     qa = pd.DataFrame(query_answers_dic)
     qa.to_csv('../../output/verdict/crimes-{}/predictions-answers.csv'.format(sampling_ratio))
