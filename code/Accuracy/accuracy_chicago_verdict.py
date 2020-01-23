@@ -42,8 +42,13 @@ if __name__=='__main__':
         y_count, y_sum, y_avg, x_l, x_h, y_l, y_h = tup[1]
         break;
     print(y_count, y_sum, y_avg, x_l, x_h, y_l, y_h)
-    # res = verdict.sql("SELECT DISTINCT(primary_type) FROM crimes;")
-    # print(res)
+    res = verdict.sql("""
+        SELECT COUNT(*), SUM(arrest), AVG(beat)
+        FROM crimes
+        WHERE x_coordinate>={} AND x_coordinate<={}
+        AND y_coordinate>={}   AND y_coordinate<={}
+    """.format(x_l, x_h, y_l, y_h))
+    print(res)
 
     # verdict.sql("DROP ALL SCRAMBLE public.lineitem;")
     # verdict.sql("DROP ALL SCRAMBLE public.orders;")
