@@ -7,6 +7,7 @@ import pandas as pd
 import pickle
 import re
 from sklearn import metrics
+import numpy as np
 
 
 if not os.path.exists('../../output/verdict/crimes'):
