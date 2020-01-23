@@ -43,8 +43,8 @@ if __name__=='__main__':
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='postgres',user='analyst',password='analyst')
     #Prepare Samples
     verdict.sql("DROP ALL SCRAMBLE crimes;")
-    res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS crimes_x
-                      FROM crimes SIZE {}""".format(sampling_ratio))
+    res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS public.crimes_x
+                      FROM public.crimes SIZE {}""".format(sampling_ratio))
     print(res)
     #Evaluate on queries
     test_queries = load_data()
