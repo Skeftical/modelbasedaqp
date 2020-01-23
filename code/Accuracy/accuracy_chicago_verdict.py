@@ -41,9 +41,13 @@ if __name__=='__main__':
     print("main executing")
 
     verdict = pyverdict.postgres('127.0.0.1',5433,dbname='postgres',user='analyst',password='analyst')
+    #Prepare Samples
+    verdict.sql("DROP ALL SCRAMBLE crimes;")
+    res = verdict.sql("""CREATE SCRAMBLE IF NOT EXISTS crimes_x
+                      FROM crimes SIZE {}""".format(sampling_ratio))
+    print(res)
+    #Evaluate on queries
     test_queries = load_data()
-
-
     print(test_queries.head(5))
     for tup in test_queries.iterrows():
         print(tup)
@@ -52,15 +56,15 @@ if __name__=='__main__':
     print(y_count, y_sum, y_avg, x_l, x_h, y_l, y_h)
     res = verdict.sql("""
         SELECT COUNT(*), SUM(arrest), AVG(beat)
-        FROM crimes
+        FROM crimes_x
         WHERE x_coordinate>={} AND x_coordinate<={}
         AND y_coordinate>={}   AND y_coordinate<={}
     """.format(x_l, x_h, y_l, y_h))
     print(res)
-    print(res['c2'].values)
-    y_hat_count = np.log(res['c2'].values.astype(float))
-    y_hat_sum = np.log(res['s3'].values.astype(float))
-    y_hat_avg = res['a4'].values.astype(float)
+
+    y_hat_count = float(np.log(res['c2'].values.astype(float)))
+    y_hat_sum = float(np.log(res['s3'].values.astype(float)))
+    y_hat_avg = float(res['a4'].values.astype(float))
     print(y_hat_count, y_hat_sum, y_hat_avg)
 
     # verdict.sql("DROP ALL SCRAMBLE public.lineitem;")
