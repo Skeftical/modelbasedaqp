@@ -9,9 +9,17 @@ import re
 from sklearn import metrics
 import numpy as np
 
+parser = argparse.ArgumentParser()
 
-if not os.path.exists('../../output/verdict/crimes'):
-        os.makedirs('../../output/verdict/crimes')
+parser.add_argument('-s','-sampling_ratio',help='sampling ratio',dest='sampling_ratio',required=True)
+
+args = parser.parse_args()
+
+print(args.sampling_ratio)
+sampling_ratio = args.sampling_ratio
+
+if not os.path.exists('../../output/verdict/crimes-{}'.format(sampling_ratio)):
+        os.makedirs('../../output/verdict/crimes-{}'.format(sampling_ratio))
 
 def load_data():
     print("Loading Data...")
@@ -49,9 +57,9 @@ if __name__=='__main__':
         AND y_coordinate>={}   AND y_coordinate<={}
     """.format(x_l, x_h, y_l, y_h))
     print(res)
-    y_hat_count = np.log(res['c2'])
-    y_hat_sum = np.log(res['s3'])
-    y_hat_avg = res['a4']
+    y_hat_count = np.log(res['c2'].values)
+    y_hat_sum = np.log(res['s3'].values)
+    y_hat_avg = res['a4'].values
     print(y_hat_count, y_hat_sum, y_hat_avg)
 
     # verdict.sql("DROP ALL SCRAMBLE public.lineitem;")
