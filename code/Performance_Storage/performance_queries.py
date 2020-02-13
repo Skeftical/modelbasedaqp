@@ -7,7 +7,7 @@ import pickle
 import pandas as pd
 import numpy as np
 from ml.model import MLAF
-import xgboost as xgb
+import lightgbm as lgb
 import time
 from sklearn.model_selection import train_test_split
 
@@ -40,7 +40,11 @@ categorical_attribute_catalogue = {key : value for key,value in zip(count_df['pr
 count_df['product_name_lb'] = labels
 
 del qdf
-no_queries = [1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000]
+
+X = count_df[features].values
+y = count_df['count'].values
+model = lgb.LGBMRegressor(n_estimators=5000,)
+queries_no = np.linspace(10000, X.shape[0],20,dtype=int)
 query_results = {}
 query_results['no_queries'] = []
 query_results['time'] = []
@@ -49,22 +53,17 @@ cols = [1,2,3,4,5]
 
 # # read in data
 for col in cols:
-    for no in no_queries:
+    for no in queries_no:
 
-        X = count_df.loc[:no, features].values
         if col>1:
             X = np.hstack(tuple([X for i in range(col)]))
 
-        y = count_df.loc[:no, target_count].values
-        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
-        dtrain = xgb.DMatrix(X_train,y_train)
-        dtest = xgb.DMatrix(X_test, y_test)
+        time_runs = []
 
-        params = {'max_depth':6, 'eta':0.3, 'objective': 'reg:squarederror', 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
-        for i in range(5):
+        print("Running for {} queries".format(no))
+        for _ in range(10):
             start = time.time()
-            xgb_model = xgb.train(params, dtrain,num_boost_round=1000,early_stopping_rounds=10, evals=[(dtrain,'train'),(dtest,'test')],
-                 verbose_eval=True)
+            model.fit(X[:no],y[:no])
             end = time.time()-start
             query_results['no_queries'].append(no)
             query_results['time'].append(end)
