@@ -45,36 +45,26 @@ count_df['product_name_lb'] = labels
 
 del qdf
 
+X = count_df[features].values[:10000]
+y = count_df['count'].values
+model = lgb.LGBMRegressor()
 print("NUmber of total rows : {}".format(count_df.shape[0]))
 query_results = {}
 query_results['boosting'] = []
-query_results['max_depth'] = []
 query_results['time'] = []
 query_results['size'] = []
-boosting = [10, 100, 300, 500, 1000]
-max_depth = [1,3,5,7,9,12]
+boosting = np.linspace(500, 20000, 20)
 # # read in data
 for b in boosting:
-    for d in max_depth:
-
-        X = count_df.loc[:, features].values
-        y = count_df.loc[:, target_count].values
-        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=1234)
-        dtrain = xgb.DMatrix(X_train,y_train, feature_names=features)
-        dtest = xgb.DMatrix(X_test, y_test, feature_names=features)
-
-        params = {'max_depth':d, 'eta':0.3, 'objective':"reg:squarederror", 'eval_metric':['rmse'],'colsample_bytree':0.75, 'colsample_bylevel':0.75, 'colsample_bynode':0.75, 'reg_alpha':0.3, 'reg_lambda':1}
-        for i in range(5):
+        for i in range(10):
             start = time.time()
-            xgb_model = xgb.train(params, dtrain,num_boost_round=b, evals=[(dtrain,'train'),(dtest,'test')],
-                 verbose_eval=True)
+            lgb_model = lgb.fit(n_estimators=b)
             end = time.time()-start
             query_results['boosting'].append(b)
-            query_results['max_depth'].append(d)
             query_results['time'].append(end)
             pkl_filename = "pickle_model.pkl"
             with open(pkl_filename, 'wb') as file:
-               pickle.dump(xgb_model, file)
+               pickle.dump(lgb_model, file)
             statinfo = os.stat('pickle_model.pkl')
             query_results['size'].append(statinfo.st_size)
         print("Time to train for {} \t took : {}+-".format((b,d), np.mean(query_results['time']), np.std(query_results['time'])))
