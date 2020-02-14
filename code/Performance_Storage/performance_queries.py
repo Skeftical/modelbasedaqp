@@ -44,12 +44,12 @@ del qdf
 X = count_df[features].values
 y = count_df['count'].values
 model = lgb.LGBMRegressor(n_estimators=5000,)
-queries_no = np.linspace(10000, X.shape[0],20,dtype=int)
+queries_no = np.linspace(10000, X.shape[0],10,dtype=int)
 query_results = {}
 query_results['no_queries'] = []
 query_results['time'] = []
 query_results['columns'] = []
-cols = [1,2,3,4,5]
+cols = [1,2]
 
 # # read in data
 for col in cols:
@@ -58,18 +58,18 @@ for col in cols:
         if col>1:
             X = np.hstack(tuple([X for i in range(col)]))
 
-        time_runs = []
+        
 
         print("Running for {} queries".format(no))
-        for _ in range(10):
+        for _ in range(5):
             start = time.time()
             model.fit(X[:no],y[:no])
             end = time.time()-start
             query_results['no_queries'].append(no)
             query_results['time'].append(end)
             query_results['columns'].append(X.shape[1])
-        print("Time to train for {} \t took : {}+-".format(no, np.mean(query_results['time']), np.std(query_results['time'])))
-
+        print("Time to train for {} \t took : {}".format(no, np.mean(query_results['time']), np.std(query_results['time'])))
+        sys.stdout.flush()	
     # xgb_model.save_model('/home/fotis/dev_projects/model-based-aqp/catalogues/{}.dict_model'.format(label))
 df = pd.DataFrame(query_results)
 df.to_csv('output/performance/csvs/query_training.csv')
